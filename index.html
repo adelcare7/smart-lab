@@ -1860,6 +1860,62 @@
         .toast.warning { background: #f59e0b; }
         .toast i { font-size: 18px; }
 
+        /* ===== Mobile Bottom Nav ===== */
+        .mobile-bottom-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 1px solid var(--border);
+            z-index: 9999;
+            padding: 4px 0;
+            padding-bottom: calc(4px + env(safe-area-inset-bottom));
+            box-shadow: 0 -2px 12px rgba(0,0,0,0.08);
+        }
+        .mobile-bottom-nav-inner {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        .mobile-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            padding: 6px 8px;
+            border: none;
+            background: none;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: color 0.2s;
+            position: relative;
+            min-width: 56px;
+        }
+        .mobile-nav-item i { font-size: 20px; transition: transform 0.2s; }
+        .mobile-nav-item.active { color: var(--primary); }
+        .mobile-nav-item.active i { transform: scale(1.1); }
+        .mobile-nav-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%) scaleX(0);
+            width: 24px;
+            height: 3px;
+            background: var(--primary);
+            border-radius: 0 0 4px 4px;
+            transition: transform 0.2s;
+        }
+        .mobile-nav-item.active::before { transform: translateX(-50%) scaleX(1); }
+        [data-theme="dark"] .mobile-bottom-nav { background: var(--card-bg); border-color: var(--border); }
+
         /* Responsive */
         @media (max-width: 768px) {
             /* منع الزوم التلقائي في iOS عند الضغط على خانات الإدخال (يتطلب 16px على الأقل) */
@@ -1889,6 +1945,12 @@
             .tab { font-size: 12px; padding: 8px 12px; }
             .category-select { min-width: 150px; font-size: 13px; }
             .header-actions .btn-text { display: none; }
+
+            /* Show bottom nav, hide top tabs */
+            .mobile-bottom-nav { display: block; }
+            .page-tabs { display: none !important; }
+            .lab-tabs { display: none !important; }
+            body { padding-bottom: 70px; }
         }
 
         /* Paste area modal */
@@ -2280,6 +2342,28 @@ Ferritin"></textarea>
             </div>
         </div>
     </div>
+
+    <!-- Mobile Bottom Nav -->
+    <nav class="mobile-bottom-nav" id="mobileBottomNav">
+        <div class="mobile-bottom-nav-inner">
+            <button class="mobile-nav-item active" data-nav="packages" onclick="mobileNav('packages')">
+                <i class="fas fa-boxes"></i>
+                <span>الباقات</span>
+            </button>
+            <button class="mobile-nav-item" data-nav="individual" onclick="mobileNav('individual')">
+                <i class="fas fa-vial"></i>
+                <span>التحاليل</span>
+            </button>
+            <button class="mobile-nav-item" data-nav="services" onclick="mobileNav('services')">
+                <i class="fas fa-concierge-bell"></i>
+                <span>الخدمات</span>
+            </button>
+            <button class="mobile-nav-item" data-nav="settings" onclick="mobileNav('settings')">
+                <i class="fas fa-cog"></i>
+                <span>الإعدادات</span>
+            </button>
+        </div>
+    </nav>
 
     <!-- Toast -->
     <div class="toast" id="toast"></div>
@@ -4098,6 +4182,15 @@ Ferritin"></textarea>
         adminUnlocked = false;
         renderIndividualTests();
         renderServices();
+        // Restore mobile bottom nav to the correct active tab
+        const settingsBtn = document.querySelector('.mobile-nav-item[data-nav="settings"]');
+        if (settingsBtn && settingsBtn.classList.contains('active')) {
+            settingsBtn.classList.remove('active');
+            const labVisible = document.getElementById('labPage').style.display !== 'none';
+            const pkgVisible = document.getElementById('packagesPage').style.display !== 'none';
+            let restore = labVisible ? (pkgVisible ? 'packages' : 'individual') : 'services';
+            document.querySelector(`.mobile-nav-item[data-nav="${restore}"]`)?.classList.add('active');
+        }
     }
 
     function checkAdminPass() {
@@ -4901,6 +4994,26 @@ Ferritin"></textarea>
         else document.querySelector(`.lab-tab[onclick*="${tab}"]`)?.classList.add('active');
         document.getElementById('packagesPage').style.display = tab === 'packages' ? '' : 'none';
         document.getElementById('individualPage').style.display = tab === 'individual' ? '' : 'none';
+    }
+
+    function mobileNav(section) {
+        document.querySelectorAll('.mobile-nav-item').forEach(b => b.classList.remove('active'));
+        document.querySelector(`.mobile-nav-item[data-nav="${section}"]`)?.classList.add('active');
+
+        if (section === 'packages') {
+            switchPage('lab');
+            switchLabTab('packages');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else if (section === 'individual') {
+            switchPage('lab');
+            switchLabTab('individual');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else if (section === 'services') {
+            switchPage('services');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else if (section === 'settings') {
+            toggleAdmin();
+        }
     }
 
     // ============================================
