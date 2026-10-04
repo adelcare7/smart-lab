@@ -2805,6 +2805,126 @@
         .sync-pill i { color: var(--primary-fg); margin-left: 4px; }
         @media (max-width: 768px) { .sync-pill { bottom: 78px; } }
 
+        /* ---------- أسعار الفروع ---------- */
+        .bp-strip { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px; margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border); }
+        .bp-cell { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; min-height: 40px; padding: 4px 2px; border-radius: 8px; background: var(--primary-soft); border: 1px solid var(--primary-border); text-align: center; min-width: 0; }
+        .bp-name { font-size: 10.5px; color: var(--text-light); font-weight: 600; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+        .bp-val { font-size: 14px; font-weight: 800; color: var(--primary-fg); line-height: 1.2; }
+        .bp-cell.na { background: var(--bg); border-style: dashed; border-color: var(--border); }
+        .bp-cell.na .bp-val { font-size: 10px; font-weight: 600; color: var(--text-light); }
+        .bp-from { display: block; font-size: 10px; font-weight: 600; color: var(--text-light); line-height: 1.1; }
+        .service-card .bp-strip { margin-top: auto; }
+        .service-card-top { margin-bottom: 8px; }
+        .bp-pkg { padding: 0 16px; }
+        .bp-pkg:empty { display: none; }
+        .bp-pkg .bp-strip { margin-top: 0; margin-bottom: 10px; }
+        .il-bp { font-size: 10px; color: var(--accent-fg, var(--text-light)); font-weight: 600; white-space: nowrap; }
+        .ph-branch { display: inline-block; font-size: 10.5px; font-weight: 700; color: var(--primary-fg); background: var(--primary-soft); border-radius: 6px; padding: 0 6px; }
+        .bp-edit label small { color: var(--text-light); font-weight: 500; }
+        .bp-edit-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+        .bp-edit-cell { display: flex; flex-direction: column; gap: 4px; padding: 8px; border: 1px solid var(--border); border-radius: 10px; background: var(--bg); min-width: 0; }
+        .bp-edit-name { font-size: 12px; font-weight: 700; color: var(--text); }
+        .bp-edit-cell .admin-input { padding: 7px 8px; min-width: 0; }
+        .bp-edit-cell .admin-input:disabled { opacity: .45; }
+        .bp-edit-na { display: flex; align-items: center; gap: 4px; font-size: 11px; color: var(--text-light); cursor: pointer; font-weight: 500; }
+        @media (max-width: 640px) { .bp-edit-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+        @media (max-width: 400px) {
+            .bp-strip { gap: 3px; }
+            .bp-name { font-size: 9.5px; }
+            .bp-val { font-size: 12.5px; }
+            .bp-cell.na .bp-val { font-size: 9px; }
+        }
+
+        /* ---------- البطاقات المدمجة الموحّدة (تحاليل / خدمات / عروض) ---------- */
+        .individual-grid, .services-grid { grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr)); gap: 10px; align-items: stretch; }
+        .ic { min-width: 0; }
+        .test-card.ic, .service-card.ic { display: flex; flex-direction: column; flex-wrap: nowrap; align-items: stretch; justify-content: flex-start; gap: 6px; padding: 12px 14px; min-height: 0; height: 100%; cursor: pointer; }
+        .ic:hover { border-color: var(--primary-light); box-shadow: var(--shadow-sm); }
+        .ic:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+        .ic-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+        .ic-titles { min-width: 0; flex: 1; }
+        .ic .ic-name { font-size: 14px; font-weight: 700; line-height: 1.45; margin: 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .ic .ic-sub { font-size: 12px; color: var(--text-light); margin: 1px 0 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .test-card.ic .ic-sub { color: var(--text); }
+        .ic .ic-price { margin: 0; text-align: center; flex-shrink: 0; line-height: 1.1; }
+        .ic .ic-price .price-val { font-size: 19px; }
+        .ic .ic-price .price-cur { font-size: 10.5px; }
+        .ic-orig { display: block; font-size: 11px; color: var(--text-light); }
+        .ic-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; min-width: 0; }
+        .ic-meta .service-card-cat { margin: 0; font-size: 10.5px; padding: 1px 8px; }
+        .ic-chip { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; color: var(--text-light); }
+        .ic-note { font-size: 11.5px; color: var(--text-light); flex: 1 1 100%; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .ic-offer { display: inline-flex; align-items: center; gap: 3px; background: var(--gold); color: var(--primary-deep); border-radius: 8px; padding: 1px 7px; font-size: 10px; font-weight: 700; margin-left: 5px; vertical-align: 2px; }
+        .ic-meta .badge-fasting { font-size: 10px; padding: 1px 7px; }
+        .ic-meta .test-add-btn { margin-right: auto; padding: 3px 10px; }
+        .ic .bp-strip { margin-top: auto; padding-top: 8px; }
+        .ic .bp-cell { min-height: 34px; padding: 3px 2px; }
+        .ic .bp-val { font-size: 13px; }
+        .offer-card.ic .offer-dept { margin: 0; }
+        .ic-pkg { cursor: pointer; }
+        /* بطاقات العروض (مدمجة) */
+        #offersGrid { grid-template-columns: repeat(auto-fill, minmax(min(230px, 100%), 1fr)); gap: 10px; }
+        .oc { background: var(--card-bg); border: 1px solid var(--gold-border); border-inline-start: 4px solid var(--gold); border-radius: 12px; padding: 10px 12px; display: flex; flex-direction: column; gap: 4px; cursor: pointer; height: 100%; min-width: 0; transition: box-shadow .2s, border-color .2s; content-visibility: auto; contain-intrinsic-size: auto 96px; }
+        .oc:hover { border-color: var(--gold); box-shadow: var(--shadow-sm); }
+        .oc-top { display: flex; align-items: center; gap: 6px; min-width: 0; }
+        .oc-dept { font-size: 10.5px; font-weight: 700; color: var(--accent-fg); min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .oc-end { margin-right: auto; font-size: 10px; color: var(--text-light); white-space: nowrap; flex-shrink: 0; }
+        .oc-end.soon { color: var(--danger-fg); font-weight: 700; }
+        .oc-name { font-size: 13.5px; font-weight: 800; color: var(--text); line-height: 1.4; overflow-wrap: anywhere; }
+        .oc-tat { font-size: 11px; font-weight: 600; color: var(--gold-text); display: flex; align-items: center; gap: 4px; }
+        .oc-en { font-size: 11px; font-weight: 600; color: var(--text-light); line-height: 1.35; direction: ltr; text-align: right; overflow-wrap: anywhere; margin-top: -2px; }
+        .oc-price { margin-top: auto; display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 6px; padding-top: 2px; }
+        .oc-val { font-size: 20px; font-weight: 800; color: var(--warning-fg); line-height: 1.1; }
+        .oc-cur { font-size: 11px; font-weight: 700; color: var(--gold-text); }
+        .oc-orig { font-size: 11.5px; color: var(--text-light); }
+        .oc-uni { margin-right: auto; font-size: 10px; font-weight: 600; color: var(--gold-text); background: var(--gold-soft); border: 1px solid var(--gold-border); border-radius: 999px; padding: 1px 7px; white-space: nowrap; align-self: center; }
+        .oc-pct { background: var(--success); color: #fff; font-size: 10.5px; font-weight: 800; border-radius: 999px; padding: 1px 7px; white-space: nowrap; align-self: center; }
+        .idt-uni { display: inline-flex; align-items: center; gap: 5px; margin-top: 10px; font-size: 12px; font-weight: 600; color: var(--gold-text); background: var(--gold-soft); border: 1px solid var(--gold-border); border-radius: 8px; padding: 4px 10px; }
+        .ic.ic-is-offer { border-color: var(--gold-border); border-inline-start: 4px solid var(--gold); }
+        #browseGrid { grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr)); gap: 10px; align-items: stretch; }
+        .package-card.ic { display: flex; flex-direction: column; gap: 6px; padding: 12px 14px; height: 100%; overflow: visible; contain-intrinsic-size: auto 130px; }
+        .package-card.ic .ic-price .price-val { font-size: 19px; font-weight: 800; color: var(--primary-fg); }
+        .package-card.ic .ic-price .price-cur { color: var(--text-light); }
+        .package-card.ic.compared { border-color: var(--primary); box-shadow: 0 0 0 1px var(--primary); }
+        .ic-cmp { margin-right: auto; background: var(--primary-soft); color: var(--primary-fg); border: 1px solid var(--primary-border); border-radius: 8px; padding: 2px 9px; font-size: 11px; font-family: inherit; font-weight: 600; cursor: pointer; }
+        .ic-cmp:hover, .ic-cmp.active { background: var(--primary); border-color: var(--primary); color: #fff; }
+
+        /* شريط أسعار الفروع: شريط أفقي واحد منخفض — بلا مربعات ولا خط فاصل */
+        .bp-strip { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0; margin-top: 8px; padding: 3px 0; border-top: none; background: var(--primary-soft); border: 1px solid var(--primary-border); border-radius: 8px; }
+        .bp-cell, .ic .bp-cell { min-height: 0; padding: 0 2px; gap: 0; background: none; border: none; border-radius: 0; border-inline-start: 1px solid var(--primary-border); }
+        .bp-cell:first-child { border-inline-start: none; }
+        .bp-name { font-size: 9.5px; line-height: 1.25; }
+        .bp-val, .ic .bp-val { font-size: 12.5px; line-height: 1.2; }
+        .bp-cell.na { background: none; border-style: none; border-inline-start: 1px solid var(--primary-border); }
+        .bp-cell.na:first-child { border-inline-start: none; }
+        .bp-cell.na .bp-val { font-size: 9px; font-weight: 600; color: var(--text-light); }
+        .ic .bp-strip { margin-top: auto; padding-top: 3px; }
+        .modal .bp-strip { padding: 6px 0; }
+        .modal .bp-name { font-size: 11px; }
+        .modal .bp-val { font-size: 15px; }
+        .modal .bp-cell.na .bp-val { font-size: 11px; }
+        /* نافذة التفاصيل */
+        .idt-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+        .idt-title { margin: 0; font-size: 18px; line-height: 1.45; }
+        .idt-sub { font-size: 13px; color: var(--text-light); margin-top: 2px; }
+        .idt-badges { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; align-items: center; }
+        .idt-badges .service-card-cat { margin: 0; }
+        .idt-price { text-align: center; flex-shrink: 0; }
+        .idt-price .price-val { font-size: 26px; font-weight: 800; color: var(--primary-fg); line-height: 1.1; }
+        .idt-price .price-cur { font-size: 11px; color: var(--text-light); }
+        .idt-label { font-size: 11px; color: var(--text-light); margin-bottom: 2px; }
+        .idt-rows { margin-top: 8px; }
+        .idt-row { display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+        .idt-row > i { color: var(--primary-fg); width: 18px; margin-top: 3px; }
+        .idt-row > div { flex: 1; min-width: 0; }
+        .idt-val { font-size: 13.5px; font-weight: 600; line-height: 1.6; word-break: break-word; }
+        .idt-actions { display: flex; gap: 8px; margin-top: 18px; flex-wrap: wrap; }
+        .idt-btn { flex: 1; min-width: 110px; color: #fff; border: none; border-radius: 10px; padding: 11px; font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer; }
+        @media (max-width: 600px) {
+            .individual-grid, .services-grid, #browseGrid { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+            .test-card.ic, .service-card.ic { padding: 11px 12px; }
+        }
+
         /* ---------- تبويب العروض (مستقل ومميز) + ترتيب الأقسام ---------- */
         .page-tab-sep { width: 1px; align-self: stretch; margin: 6px 4px; background: var(--border-strong); }
         .page-tab.offers-tab { background: var(--gold-soft); color: var(--gold-text); border: 1px solid var(--gold-border); }
@@ -3147,7 +3267,7 @@
         <section class="services-section">
             <div class="services-header">
                 <h2><i class="fas fa-tags"></i> العروض</h2>
-                <p style="color:var(--text-light);font-size:13px;">كل العروض السارية في جميع الأقسام — تُضاف وتُعدَّل من القسم الأصلي لكل عرض</p>
+                <p style="color:var(--text-light);font-size:13px;">كل العروض السارية في جميع الأقسام — اضغط على العرض لعرض تفاصيله</p>
             </div>
             <div class="services-search-wrap">
                 <input type="text" class="individual-search" id="offersSearchInput" placeholder="ابحث عن عرض..." oninput="renderOffersPage()">
@@ -4093,7 +4213,7 @@ Ferritin"></textarea>
             }
 
             return `
-                <div class="package-card ${isCompared ? 'compared' : ''}" id="card-${pkg.id}">
+                <div class="package-card ic-pkg ${isCompared ? 'compared' : ''}" id="card-${pkg.id}" onclick="if(!event.target.closest('button,a,input,select'))showDetails(${pkg.id})">
                     <div class="card-match-bar">
                         <div class="card-match-bar-fill ${matchClass}" style="width:${pkg.matchPercent}%"></div>
                     </div>
@@ -4108,7 +4228,7 @@ Ferritin"></textarea>
                             </div>
                         </div>
                         <div class="card-price">
-                            <div class="price-value">${pkg.price}</div>
+                            <div class="price-value">${cardPriceHtml(pkg)}</div>
                             <div class="price-currency">ريال${pkg.individualTest ? '/تحليل' : ''}</div>
                         </div>
                     </div>
@@ -4135,7 +4255,8 @@ Ferritin"></textarea>
                             </div>` : ''}
                     </div>
                     ${salesTip}
-                    <div class="card-footer">
+                    <div class="bp-pkg">${branchStrip(pkg)}</div>
+                <div class="card-footer">
                         <span class="total-tests"><i class="fas fa-vial"></i> ${pkg.tests.length} تحاليل إجمالية</span>
                         ${(() => { const tat = getPackageTat(pkg); return tat ? `<span class="total-tests" style="color:var(--gold-text);"><i class="fas fa-clock"></i> النتيجة: ${formatTat(tat)}</span>` : ''; })()}
                         <div class="card-actions">
@@ -4398,43 +4519,28 @@ Ferritin"></textarea>
         }
         document.getElementById('browseGrid').innerHTML = filtered.length === 0
             ? '<div style="text-align:center;padding:40px;color:var(--text-light);"><i class="fas fa-inbox" style="font-size:32px;margin-bottom:12px;display:block;"></i>لا توجد باقات بهذا السعر</div>'
-            : filtered.map(pkg => `
-            <div class="package-card" id="card-${pkg.id}">
-                <div class="card-header">
-                    <div>
-                        <div class="card-title">${pkg.name}</div>
-                        <div class="card-lab"><i class="fas fa-hospital"></i> ${pkg.lab} • ${pkg.code}</div>
-                        <div class="card-badges">
-                            ${pkg.individualTest ? '<span class="badge-individual"><i class="fas fa-hand-pointer"></i> اختر تحليل واحد</span>' : ''}
-                            ${pkg.fasting ? '<span class="badge-fasting requires"><i class="fas fa-moon"></i> يتطلب صيام</span>' : '<span class="badge-fasting no-fasting"><i class="fas fa-utensils"></i> لا يتطلب صيام</span>'}
-                            ${pkg.homeVisit ? '<span class="badge-home-visit"><i class="fas fa-home"></i> زيارة منزلية</span>' : ''}
-                        </div>
+            : filtered.map(pkg => { const tat = getPackageTat(pkg); const n = (pkg.tests || []).length; return `
+            <div class="package-card ic ic-pkg ${compareList.includes(pkg.id) ? 'compared' : ''}" id="card-${pkg.id}" onclick="if(!event.target.closest('button,a,input,select'))showDetails(${pkg.id})" title="عرض التفاصيل">
+                <div class="ic-head">
+                    <div class="ic-titles">
+                        <div class="card-title ic-name">${escapeHtml(pkg.name)}</div>
+                        ${pkg.nameEn ? `<div class="ic-sub" style="direction:ltr;text-align:right;">${escapeHtml(pkg.nameEn)}</div>` : ''}
                     </div>
-                    <div class="card-price">
-                        <div class="price-value">${pkg.price}</div>
-                        <div class="price-currency">ريال${pkg.individualTest ? '/تحليل' : ''}</div>
+                    <div class="ic-price">
+                        <div class="price-val">${cardPriceHtml(pkg)}</div>
+                        <div class="price-cur">ريال${pkg.individualTest ? '/تحليل' : ''}</div>
                     </div>
                 </div>
-                <div class="card-body">
-                    <div class="test-list">
-                        ${pkg.tests.slice(0, 6).map(t => { const ar = getTestNameAr(t); return `<span class="test-chip extra">${t}${ar ? `<small class="chip-ar">${ar}</small>` : ''}</span>`; }).join('')}
-                        ${pkg.tests.length > 6 ? `<span class="test-chip extra">+${pkg.tests.length - 6}</span>` : ''}
-                    </div>
+                <div class="ic-meta">
+                    ${pkg.category ? `<span class="service-card-cat">${escapeHtml(pkg.category)}</span>` : ''}
+                    <span class="ic-chip"><i class="fas fa-vial"></i> ${n} ${pkg.individualTest ? 'تحاليل متاحة' : 'تحليل'}</span>
+                    ${tat ? `<span class="ic-chip" style="color:var(--gold-text);"><i class="fas fa-clock"></i> ${formatTat(tat)}</span>` : ''}
+                    ${pkg.fasting ? '<span class="badge-fasting requires"><i class="fas fa-moon"></i> صيام</span>' : ''}
+                    ${pkg.homeVisit ? '<span class="ic-chip"><i class="fas fa-home"></i> منزلية</span>' : ''}
+                    <button class="ic-cmp ${compareList.includes(pkg.id) ? 'active' : ''}" onclick="event.stopPropagation();toggleCompare(${pkg.id})" title="إضافة للمقارنة"><i class="fas fa-columns"></i> ${compareList.includes(pkg.id) ? 'في المقارنة' : 'مقارنة'}</button>
                 </div>
-                <div class="card-footer">
-                    <span class="total-tests"><i class="fas fa-vial"></i> ${pkg.individualTest ? pkg.tests.length + ' تحاليل متاحة' : pkg.tests.length + ' تحاليل'}</span>
-                    ${(() => { const tat = getPackageTat(pkg); return tat ? `<span class="total-tests" style="color:var(--gold-text);"><i class="fas fa-clock"></i> النتيجة: ${formatTat(tat)}</span>` : ''; })()}
-                    <div class="card-actions">
-                        <button class="btn-sm btn-compare ${compareList.includes(pkg.id) ? 'active' : ''}" onclick="toggleCompare(${pkg.id})">
-                            <i class="fas fa-columns"></i> مقارنة
-                        </button>
-                        <button class="btn-sm btn-details" onclick="showDetails(${pkg.id})">
-                            <i class="fas fa-eye"></i> التفاصيل
-                        </button>
-                    </div>
-                </div>
-            </div>
-        `).join('');
+                ${branchStrip(pkg)}
+            </div>`; }).join('');
     }
 
     // ============================================
@@ -4652,6 +4758,10 @@ Ferritin"></textarea>
                         <div style="font-size:13px;color:var(--text-light);margin-bottom:4px;">السعر</div>
                         <div style="font-size:24px;font-weight:800;color:var(--primary-fg);">${pkg.price} <small style="font-size:13px;">ريال${pkg.individualTest ? '/تحليل' : ''}</small></div>
                     </div>
+                    <div style="flex-basis:100%;">
+                        <div style="font-size:13px;color:var(--text-light);margin-bottom:4px;">أسعار الفروع</div>
+                        ${branchStrip(pkg)}
+                    </div>
                     <div>
                         <div style="font-size:13px;color:var(--text-light);margin-bottom:4px;">المختبر</div>
                         <div style="font-size:15px;font-weight:600;">${escapeHtml(dash(pkg.lab))}</div>
@@ -4688,8 +4798,8 @@ Ferritin"></textarea>
                     <button onclick="copyPackage(${pkg.id})" style="background:var(--primary);color:white;border:none;padding:10px 24px;border-radius:10px;font-size:14px;font-family:inherit;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:all 0.2s;">
                         <i class="fas fa-copy" style="font-size:16px;"></i> نسخ البيانات
                     </button>
-                    ${canItem(KINDS.package, 'edit') ? `<button onclick="openItemCard('package','${refFor(pkg)}')" style="background:var(--primary);color:white;border:none;padding:10px 20px;border-radius:10px;font-size:14px;font-family:inherit;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:8px;"><i class="fas fa-edit"></i> تعديل الباقة</button>` : ''}
-                    ${canItem(KINDS.package, 'add') ? `<button onclick="openItemCard('package', null, '${refFor(pkg)}')" style="background:var(--accent);color:white;border:none;padding:10px 20px;border-radius:10px;font-size:14px;font-family:inherit;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:8px;"><i class="fas fa-clone"></i> نسخ كباقة جديدة</button>` : ''}
+                    ${canItem(KINDS.package, 'edit') ? `<button onclick="openItemCard('package','${refFor(found)}')" style="background:var(--primary);color:white;border:none;padding:10px 20px;border-radius:10px;font-size:14px;font-family:inherit;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:8px;"><i class="fas fa-edit"></i> تعديل الباقة</button>` : ''}
+                    ${canItem(KINDS.package, 'add') ? `<button onclick="openItemCard('package', null, '${refFor(found)}')" style="background:var(--accent);color:white;border:none;padding:10px 20px;border-radius:10px;font-size:14px;font-family:inherit;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:8px;"><i class="fas fa-clone"></i> نسخ كباقة جديدة</button>` : ''}
                 </div>
             </div>`;
         document.getElementById('modalOverlay').classList.add('show');
@@ -4766,7 +4876,9 @@ Ferritin"></textarea>
             return ar ? `• ${ar}` : `• ${t}`;
         }).join('\n');
         const fasting = pkg.fasting ? '🌙 يتطلب صيام' : '🍽️ لا يتطلب صيام';
-        const msg = `*${pkg.name}*\nكود الباقة: ${pkg.code}\n\n${tests}\n\n💰 الإجمالي: ${pkg.price} ريال\n${fasting}`;
+        const r = branchRange(pkg);
+        const bpLines = r && r.varied ? '\n' + BRANCH_PRICES.map(b => { const v = branchPrice(pkg, b); return '• ' + b.n + ': ' + (v === null ? 'غير متوفرة' : v + ' ريال'); }).join('\n') : '';
+        const msg = `*${pkg.name}*\nكود الباقة: ${pkg.code}\n\n${tests}\n\n💰 الإجمالي: ${pkg.price} ريال${bpLines}\n${fasting}`;
         copyToClipboard(msg).then(ok => {
             showToast(ok ? 'تم النسخ بنجاح' : 'تعذّر النسخ، حاول مرة أخرى', ok ? 'success' : 'warning');
         });
@@ -4822,10 +4934,11 @@ Ferritin"></textarea>
                     <thead>
                         <tr>
                             <th>التحليل</th>
-                            ${pkgs.map(p => `<th style="text-align:center;">${p.name}<br><small style="color:var(--primary-fg);font-weight:800;">${p.price} ريال</small></th>`).join('')}
+                            ${pkgs.map(p => `<th style="text-align:center;">${p.name}<br><small style="color:var(--primary-fg);font-weight:800;">${priceLabel(p)} ريال</small></th>`).join('')}
                         </tr>
                     </thead>
                     <tbody>
+                        ${BRANCH_PRICES.map(b => `<tr><td style="font-weight:600;">سعر ${b.n}</td>${pkgs.map(p => { const v = branchPrice(p, b); return `<td style="text-align:center;${v === null ? 'color:var(--text-light);font-size:12px;' : 'font-weight:700;'}">${v === null ? 'غير متوفرة' : escapeHtml(v)}</td>`; }).join('')}</tr>`).join('')}
                         <tr>
                             <td style="font-weight:600;">عدد التحاليل</td>
                             ${pkgs.map(p => `<td style="text-align:center;font-weight:700;">${p.tests.length}</td>`).join('')}
@@ -5241,11 +5354,58 @@ Ferritin"></textarea>
     const F = {
         nameEn:  { k: 'name', label: 'الاسم بالإنجليزي', req: true, upper: true, ltr: true },
         nameAr:  { k: 'nameAr', label: 'الاسم بالعربي', req: true },
-        price:   { k: 'price', label: 'السعر (ريال)', type: 'number', req: true },
+        price:   { k: 'price', label: 'السعر العام (ريال)', type: 'number', req: true },
         tat:     { k: 'tat', label: 'مدة النتيجة' },
         code:    { k: 'code', label: 'الكود', ltr: true },
         fasting: { k: 'fasting', label: 'يتطلب صيام', type: 'checkbox' }
     };
+
+    // ---------- أسعار الفروع ----------
+    // كل فرع حقل مستقل في العنصر نفسه (نفس مكان الحفظ — لا نسخ منفصلة):
+    //   رقم = سعر هذا الفرع · 'na' = غير متوفرة في الفرع · غير موجود = يتبع السعر العام (price)
+    // العروض مستثناة: سعرها موحّد على كل الفروع.
+    const BRANCH_PRICES = [
+        { k: 'priceZarqa', n: 'الزرقاء' }, { k: 'priceUfuq', n: 'الأفق' }, { k: 'priceShamal', n: 'الشمال' },
+        { k: 'priceIskan', n: 'الإسكان' }, { k: 'priceSharq', n: 'الشرق' }
+    ];
+    const BP_NA = 'na';
+    function branchPrice(o, b) {
+        const v = o ? o[b.k] : undefined;
+        if (v === BP_NA) return null;
+        return (v === undefined || v === null || v === '') ? o.price : v;
+    }
+    // الزيارات المنزلية أسعارها موحّدة في كل الفروع — لا تُقسَّم حسب الفرع (أي حقول فروع قديمة تبقى محفوظة لكن لا تُستخدم)
+    function hasBranchPrices(o) { return !!o && !o.isOffer && !o._placeholder && !services.includes(o); }
+    function branchRange(o) {
+        const vals = BRANCH_PRICES.map(b => branchPrice(o, b)).filter(v => v !== null && v !== undefined && v !== '').map(Number).filter(v => !isNaN(v));
+        if (!vals.length) return null;
+        const min = Math.min(...vals), max = Math.max(...vals);
+        return { min, max, varied: min !== max || vals.length < BRANCH_PRICES.length };
+    }
+    // نص السعر المختصر (القوائم والمقارنة): سعر واحد أو "من–إلى"
+    function priceLabel(o) {
+        if (!hasBranchPrices(o)) return o.price;
+        const r = branchRange(o);
+        if (!r) return o.price;
+        return r.min === r.max ? r.min : r.min + '–' + r.max;
+    }
+    // الشريط المدمج أسفل البطاقة: الفروع الخمسة وأسعارها مباشرة
+    function branchStrip(o) {
+        if (!hasBranchPrices(o)) return '';
+        return `<div class="bp-strip">${BRANCH_PRICES.map(b => {
+            const v = branchPrice(o, b);
+            return v === null
+                ? `<div class="bp-cell na"><span class="bp-name">${b.n}</span><span class="bp-val">غير متوفرة</span></div>`
+                : `<div class="bp-cell"><span class="bp-name">${b.n}</span><span class="bp-val">${escapeHtml(v)}</span></div>`;
+        }).join('')}</div>`;
+    }
+    // السعر الكبير في البطاقة: إن اختلفت الأسعار بين الفروع يظهر "يبدأ من" أقل سعر
+    function cardPriceHtml(o) {
+        if (!hasBranchPrices(o)) return escapeHtml(o.price);
+        const r = branchRange(o);
+        return r && r.varied ? `<span class="bp-from">يبدأ من</span>${r.min}` : escapeHtml(o.price);
+    }
+    const F_BRANCHES = { k: '__branches', type: 'branchprices', label: 'أسعار الفروع' };
 
     const KINDS = {
         test: {
@@ -5255,7 +5415,7 @@ Ferritin"></textarea>
             remove: o => removeFrom(individualTests, o),
             save: () => saveToStorage(), refresh: refreshTestsUI,
             title: o => o.nameAr || o.name, sub: o => o.name, price: o => o.price,
-            fields: [F.nameEn, F.nameAr, F.price, F.tat, F.code,
+            fields: [F.nameEn, F.nameAr, F.price, F_BRANCHES, F.tat, F.code,
                 { k: 'cat', label: 'التصنيف', type: 'catselect', cats: () => getCategoriesFor('tests') },
                 F.fasting, { k: 'desc', label: 'وصف مختصر' }]
         },
@@ -5280,7 +5440,7 @@ Ferritin"></textarea>
             save: () => saveToStorage(), refresh: () => { renderCategories(); renderBrowseAll(); updateStats(); },
             title: o => o.name, sub: o => [o.code, (o.tests || []).length + ' تحليل'].filter(Boolean).join(' · '), price: o => o.price,
             fields: [{ k: 'name', label: 'اسم الباقة بالعربي', req: true }, { k: 'nameEn', label: 'الاسم بالإنجليزي', ltr: true },
-                F.code, F.price, { k: 'category', label: 'الفئة', type: 'catselect', cats: () => getCategoriesFor('packages') },
+                F.code, F.price, F_BRANCHES, { k: 'category', label: 'الفئة', type: 'catselect', cats: () => getCategoriesFor('packages') },
                 { k: 'lab', label: 'المختبر' }, { k: 'tests', label: 'التحاليل (مفصولة بفاصلة)', type: 'tests', req: true },
                 F.fasting, { k: 'homeVisit', label: 'زيارة منزلية', type: 'checkbox' }]
         },
@@ -5291,7 +5451,7 @@ Ferritin"></textarea>
             remove: o => removeFrom(services, o),
             save: () => saveToStorage(), refresh: () => renderServices(),
             title: o => o.name, sub: o => o.cat || '', price: o => o.price,
-            fields: [{ k: 'name', label: 'اسم الخدمة', req: true }, F.price,
+            fields: [{ k: 'name', label: 'اسم الخدمة', req: true }, { k: 'price', label: 'السعر (ريال) — موحّد لجميع الفروع', type: 'number', req: true },
                 { k: 'cat', label: 'التصنيف', type: 'catselect', cats: () => getCategoriesFor('services') }, F.code,
                 { k: 'note', label: 'ملاحظة' }, { k: 'details', label: 'تفاصيل إضافية' }]
         },
@@ -5356,7 +5516,7 @@ Ferritin"></textarea>
                 save: () => saveGenericServices(dept),
                 refresh: () => { if (currentDeptId === dept) renderGenericServices(dept); },
                 title: o => o.name, sub: o => [o.code, o.cat].filter(Boolean).join(' · ') || o.description || '', price: o => o.price,
-                fields: [{ k: 'name', label: 'اسم الخدمة', req: true }, F.price,
+                fields: [{ k: 'name', label: 'اسم الخدمة', req: true }, F.price, F_BRANCHES,
                     { k: 'cat', label: 'التصنيف', type: 'catselect', cats: () => uniqueValues(genericServicesByDept[dept] || [], 'cat') }, F.code,
                     { k: 'nameEn', label: 'الاسم بالإنجليزي', ltr: true }, { k: 'description', label: 'الوصف' }]
             };
@@ -5409,6 +5569,16 @@ Ferritin"></textarea>
             const id = 'card_f' + i;
             const style = f.ltr ? 'direction:ltr;text-align:right;' : '';
             if (f.type === 'checkbox') return `<div class="form-group"><label style="display:flex;align-items:center;gap:6px;cursor:pointer;"><input type="checkbox" id="${id}" ${v ? 'checked' : ''} ${dis}> ${f.label}</label></div>`;
+            if (f.type === 'branchprices') return `<div class="form-group bp-edit" style="grid-column:1/-1;">
+                <label>${f.label} <small>(الفارغ = السعر العام)</small></label>
+                <div class="bp-edit-grid">${BRANCH_PRICES.map((b, j) => {
+                    const bv = src ? src[b.k] : undefined, na = bv === BP_NA;
+                    return `<div class="bp-edit-cell">
+                        <span class="bp-edit-name">${b.n}</span>
+                        <input type="number" min="0" class="admin-input" id="${id}_${j}" value="${na || bv == null ? '' : escapeHtml(bv)}" placeholder="${src && src.price != null && src.price !== '' ? escapeHtml(src.price) : 'عام'}" title="فارغ = السعر العام" ${na ? 'disabled' : ''} ${dis}>
+                        <label class="bp-edit-na"><input type="checkbox" id="${id}_${j}na" ${na ? 'checked' : ''} ${dis} onchange="document.getElementById('${id}_${j}').disabled=this.checked"> غير متوفرة</label>
+                    </div>`;
+                }).join('')}</div></div>`;
             if (f.options) return `<div class="form-group"><label>${f.label}</label><select class="admin-input" id="${id}" ${dis}>${f.options.map(o => `<option value="${escapeHtml(o)}" ${o === v ? 'selected' : ''}>${escapeHtml(o)}</option>`).join('')}</select></div>`;
             if (f.type === 'catselect') {
                 const cats = f.cats();
@@ -5434,7 +5604,7 @@ Ferritin"></textarea>
             <details class="price-history">
                 <summary><i class="fas fa-chart-line"></i> سجل تغيّر السعر (${obj.priceHistory.length})</summary>
                 <div class="ph-list">${obj.priceHistory.slice().reverse().map(h => `
-                    <div class="ph-row"><span class="ph-change"><s>${escapeHtml(h.from)}</s> ← <b>${escapeHtml(h.to)}</b> ريال</span>
+                    <div class="ph-row"><span class="ph-change">${h.branch ? `<span class="ph-branch">${escapeHtml(h.branch)}</span> ` : ''}<s>${escapeHtml(h.from)}</s> ← <b>${escapeHtml(h.to)}</b>${typeof h.to === 'number' ? ' ريال' : ''}</span>
                     <span class="ph-meta">${fmtStamp(h.at)}${h.by ? ' — ' + escapeHtml(h.by) : ''}</span></div>`).join('')}
                 </div>
             </details>` : ''}` : '';
@@ -5471,6 +5641,17 @@ Ferritin"></textarea>
         for (let i = 0; i < kind.fields.length; i++) {
             const f = kind.fields[i], el = document.getElementById('card_f' + i);
             let v;
+            if (f.type === 'branchprices') {
+                for (let j = 0; j < BRANCH_PRICES.length; j++) {
+                    const b = BRANCH_PRICES[j], inp = document.getElementById('card_f' + i + '_' + j);
+                    let bv;
+                    if (document.getElementById('card_f' + i + '_' + j + 'na').checked) bv = BP_NA;
+                    else if (inp.value.trim() === '') bv = null;
+                    else { bv = Number(inp.value); if (isNaN(bv) || bv < 0) { showToast('سعر غير صحيح لفرع ' + b.n, 'warning'); inp.focus(); return; } }
+                    if (bv === null) { if (!isNew) data[b.k] = null; } else data[b.k] = bv;
+                }
+                continue;
+            }
             if (f.type === 'checkbox') v = el.checked;
             else if (f.type === 'catselect') {
                 v = el.value;
@@ -5501,9 +5682,20 @@ Ferritin"></textarea>
         } else {
             target = obj;
             // سجل السعر: يُحفظ مع العنصر نفسه (آخر 20 تغييراً)
+            let ph = Array.isArray(obj.priceHistory) ? obj.priceHistory.slice() : [];
             if ('price' in data && data.price !== null && obj.price !== undefined && Number(obj.price) !== Number(data.price)) {
-                target.priceHistory = [...(Array.isArray(obj.priceHistory) ? obj.priceHistory : []), { from: Number(obj.price), to: Number(data.price), at: now, by }].slice(-20);
+                ph.push({ from: Number(obj.price), to: Number(data.price), at: now, by });
             }
+            // أسعار الفروع: يُسجل التغيير الفعلي لكل فرع على حدة (بعد احتساب الوراثة من السعر العام)
+            if (hasBranchPrices(obj) && kind.fields.includes(F_BRANCHES)) {
+                const after = { ...obj }; Object.keys(data).forEach(k => { if (data[k] === null) delete after[k]; else after[k] = data[k]; });
+                BRANCH_PRICES.forEach(b => {
+                    if (!(b.k in data)) return;
+                    const was = branchPrice(obj, b), now2 = branchPrice(after, b);
+                    if (String(was) !== String(now2) && obj[b.k] !== after[b.k]) ph.push({ branch: b.n, from: was === null ? 'غير متوفرة' : Number(was), to: now2 === null ? 'غير متوفرة' : Number(now2), at: now, by });
+                });
+            }
+            if (ph.length !== (Array.isArray(obj.priceHistory) ? obj.priceHistory.length : 0)) target.priceHistory = ph.slice(-20);
             Object.keys(data).forEach(k => { if (data[k] === null) delete target[k]; else target[k] = data[k]; });
             target.updatedAt = now; target.updatedBy = by;
         }
@@ -5630,7 +5822,7 @@ Ferritin"></textarea>
                     <div class="il-title">${escapeHtml(kind.title(o))} ${(st2 => `<span class="item-status ${st2.on ? 'on' : 'off'}">${escapeHtml(st2.text)}</span>`)(itemStatusLabel(o))}</div>
                     <div class="il-sub">${escapeHtml(kind.sub(o) || '')}${o.updatedAt ? ' · آخر تعديل ' + fmtStamp(o.updatedAt) + (o.updatedBy ? ' — ' + escapeHtml(o.updatedBy) : '') : ''}</div>
                 </div>
-                <div class="il-price">${kind.price(o) != null && kind.price(o) !== '' ? escapeHtml(kind.price(o)) + ' <small>ريال</small>' : ''}</div>
+                <div class="il-price">${kind.price(o) != null && kind.price(o) !== '' ? escapeHtml(kind.fields.includes(F_BRANCHES) ? priceLabel(o) : kind.price(o)) + ' <small>ريال</small>' : ''}${kind.fields.includes(F_BRANCHES) && (branchRange(o) || {}).varied ? '<div class="il-bp" title="' + escapeHtml(BRANCH_PRICES.map(b => { const v = branchPrice(o, b); return b.n + ': ' + (v === null ? 'غير متوفرة' : v); }).join(' · ')) + '"><i class="fas fa-store"></i> أسعار الفروع مختلفة</div>' : ''}</div>
                 <div class="il-actions">
                     <button title="فتح البطاقة" onclick="openItemCard('${st.kind}','${r}')" class="il-btn"><i class="fas fa-id-card"></i></button>
                     ${canT ? `<button title="${on ? 'إيقاف الظهور' : 'إعادة التفعيل'}" onclick="toggleItem('${st.kind}','${r}')" class="il-btn ${on ? 'warn' : 'ok'}"><i class="fas ${on ? 'fa-eye-slash' : 'fa-eye'}"></i></button>` : ''}
@@ -7134,20 +7326,20 @@ Ferritin"></textarea>
         departments.filter(d => d.active !== false).forEach(d => {
             if (d.type === 'lab') {
                 individualTests.filter(t => t && t.isOffer && isActiveItem(t)).forEach(t => out.push({
-                    dept: d, name: t.nameAr || t.name, sub: t.nameAr ? t.name : '', price: t.price,
+                    kk: 'labOffer', obj: t, dept: d, name: t.nameAr || t.name, sub: t.nameAr ? t.name : '', price: t.price,
                     orig: (individualTests.find(x => x && !x.isOffer && x.name === t.name) || {}).price,
-                    cat: t.cat, code: t.code, note: t.desc, endDate: t.endDate,
+                    cat: t.cat, code: t.code, note: t.desc, incl: t.desc || (individualTests.find(x => x && !x.isOffer && x.name === t.name) || {}).desc, tat: t.tat || (individualTests.find(x => x && !x.isOffer && x.name === t.name) || {}).tat, endDate: t.endDate,
                     tag: t.offerType === 'فروع' ? 'عرض فروع' : (t.offerType ? 'عرض زيارات منزلية' : '')
                 }));
             } else if (d.type === 'visits') {
                 services.filter(x => x && x.isOffer && isActiveItem(x)).forEach(x => out.push({
-                    dept: d, name: x.name, sub: '', price: x.price, orig: x.origPrice, cat: x.cat, code: x.code,
-                    note: x.note || x.details, endDate: x.endDate, tag: ''
+                    kk: 'serviceOffer', obj: x, dept: d, name: x.name, sub: '', price: x.price, orig: x.origPrice, cat: x.cat, code: x.code,
+                    note: x.note || x.details, incl: x.details || x.note, endDate: x.endDate, tag: ''
                 }));
             } else if (d.type === 'generic') {
                 (genericServicesByDept[d.id] || []).filter(x => x && x.isOffer && isActiveItem(x)).forEach(x => out.push({
-                    dept: d, name: x.name, sub: x.nameEn || '', price: x.price, orig: x.origPrice, cat: x.cat, code: x.code,
-                    note: x.description, endDate: x.endDate, tag: ''
+                    kk: 'go:' + d.id, obj: x, dept: d, name: x.name, sub: x.nameEn || '', price: x.price, orig: x.origPrice, cat: x.cat, code: x.code,
+                    note: x.description, incl: x.description, endDate: x.endDate, tag: ''
                 }));
             }
             // الشركات: لا يوجد فيها حالياً مفهوم "عرض" في بياناتها (تُضاف هنا إن أُضيف لاحقاً)
@@ -7180,26 +7372,34 @@ Ferritin"></textarea>
             grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1;"><div class="empty-icon"><i class="fas fa-tags"></i></div><h3>${all.length ? 'لا توجد عروض مطابقة' : 'لا توجد عروض سارية حالياً'}</h3></div>`;
             return;
         }
-        grid.innerHTML = list.map(o => `
-            <div class="service-card offer-card">
-                <div class="service-card-top">
-                    <div>
-                        <div class="offer-dept"><i class="fas ${escapeHtml(o.dept.icon || 'fa-star')}"></i> ${escapeHtml(o.dept.name)}</div>
-                        <div class="service-card-name"><span style="background:var(--gold);color:var(--primary-deep);border-radius:8px;padding:1px 7px;font-size:10px;margin-left:4px;"><i class="fas fa-tag"></i> عرض</span>${escapeHtml(o.name)}</div>
-                        ${o.sub ? `<div style="font-size:11px;color:var(--text-light);margin-top:2px;direction:ltr;text-align:right;">${escapeHtml(o.sub)}</div>` : ''}
-                        ${o.code ? `<div style="font-size:11px;color:var(--text-light);margin-top:2px;"><i class="fas fa-barcode"></i> ${escapeHtml(o.code)}</div>` : ''}
-                        ${o.note ? `<div class="service-card-note"><i class="fas fa-info-circle"></i> ${escapeHtml(o.note)}</div>` : ''}
-                        ${o.tag ? `<div style="font-size:11px;color:var(--accent-fg);margin-top:3px;font-weight:600;">${escapeHtml(o.tag)}</div>` : ''}
-                        ${o.endDate ? `<div style="font-size:11px;color:var(--warning-fg);margin-top:3px;"><i class="fas fa-hourglass-half"></i> ينتهي العرض: ${escapeHtml(o.endDate)}</div>` : ''}
-                        ${o.cat ? `<span class="service-card-cat">${escapeHtml(o.cat)}</span>` : ''}
-                    </div>
-                    <div class="service-card-price">
-                        ${o.orig && Number(o.orig) > Number(o.price) ? `<div style="font-size:11px;color:var(--text-light);text-decoration:line-through;">${escapeHtml(o.orig)}</div>` : ''}
-                        <div class="price-val" style="color:var(--warning-fg);">${escapeHtml(o.price)}</div>
-                        <div class="price-cur">ريال</div>
-                    </div>
+        grid.innerHTML = list.map(offerCardHtml).join('');
+    }
+    // بطاقة العرض المدمجة: القسم + المدة، الاسم، ثم سطر السعر الموحّد (التفاصيل والمزايا في نافذة التفاصيل)
+    function offerCardHtml(o) {
+        const price = Number(o.price), orig = Number(o.orig);
+        const disc = orig > price && price >= 0 ? Math.round((orig - price) / orig * 100) : 0;
+        let end = '';
+        if (o.endDate) {
+            const days = Math.ceil((new Date(o.endDate + 'T23:59:59') - Date.now()) / 86400000);
+            end = days <= 7
+                ? `<span class="oc-end soon"><i class="fas fa-hourglass-half"></i> ${days <= 1 ? 'ينتهي اليوم' : days === 2 ? 'باقي يومان' : 'باقي ' + days + ' أيام'}</span>`
+                : `<span class="oc-end"><i class="far fa-calendar"></i> حتى ${escapeHtml(o.endDate)}</span>`;
+        }
+        return `
+            <div class="oc" onclick="showItemDetails('${o.kk}','${refFor(o.obj)}')" title="${escapeHtml(o.name)} — اضغط لعرض التفاصيل">
+                <div class="oc-top">
+                    <span class="oc-dept"><i class="fas ${escapeHtml(o.dept.icon || 'fa-star')}"></i> ${escapeHtml(o.dept.name)}${o.tag ? ' · ' + escapeHtml(o.tag) : ''}</span>
+                    ${end}
                 </div>
-            </div>`).join('');
+                <div class="oc-name">${escapeHtml(o.name)}</div>
+                ${o.sub ? `<div class="oc-en">${escapeHtml(o.sub)}</div>` : ''}
+                ${o.tat ? `<div class="oc-tat"><i class="fas fa-clock"></i> النتيجة: ${escapeHtml(formatTat(o.tat))}</div>` : ''}
+                <div class="oc-price">
+                    <span class="oc-val">${escapeHtml(o.price)}</span><span class="oc-cur">ريال</span>
+                    ${disc ? `<s class="oc-orig">${escapeHtml(o.orig)}</s><span class="oc-pct">خصم ${disc}%</span>` : ''}
+                    <span class="oc-uni" title="سعر موحّد لجميع الفروع"><i class="fas fa-store"></i> موحّد</span>
+                </div>
+            </div>`;
     }
     function openOffersPage() {
         currentDeptId = '__offers';
@@ -7373,24 +7573,25 @@ Ferritin"></textarea>
         }
 
         const canEdit = hasPerm(deptId, 'edit'), canDelete = hasPerm(deptId, 'delete');
-        grid.innerHTML = list.map(s => `
-            <div class="service-card" style="${s.active === false ? 'opacity:.5;' : ''}">
-                <div class="service-card-top">
-                    <div>
-                        <div class="service-card-name">${s.isOffer ? '<span style="background:var(--gold);color:var(--primary-deep);border-radius:8px;padding:1px 7px;font-size:10px;margin-left:4px;"><i class="fas fa-tag"></i> عرض</span>' : ''}${s.name}</div>
-                        ${s.code ? `<div style="font-size:11px;color:var(--text-light);margin-top:2px;"><i class="fas fa-barcode"></i> ${s.code}</div>` : ''}
-                        ${s.description ? `<div class="service-card-note"><i class="fas fa-info-circle"></i> ${s.description}</div>` : ''}
-                        ${s.cat ? `<span class="service-card-cat">${s.cat}</span>` : ''}
-                        ${s.active === false ? `<div style="font-size:11px;color:var(--danger-fg);margin-top:4px;"><i class="fas fa-ban"></i> معطّلة</div>` : ''}
-                        ${canItem(getKind((s.isOffer ? 'go:' : 'g:') + deptId), 'edit') ? `<div style="margin-top:6px;"><button title="فتح البطاقة للتعديل" onclick="openItemCard('${(s.isOffer ? 'go:' : 'g:') + deptId}','${refFor(s)}')" style="background:var(--primary);color:white;border:none;border-radius:6px;padding:3px 8px;cursor:pointer;font-size:10px;"><i class="fas fa-edit"></i></button></div>` : ''}
+        grid.innerHTML = list.map(s => { const kk = (s.isOffer ? 'go:' : 'g:') + deptId; return `
+            <div class="service-card ic ${s.isOffer ? 'ic-is-offer' : ''}" onclick="showItemDetails('${kk}','${refFor(s)}')" title="عرض التفاصيل">
+                <div class="ic-head">
+                    <div class="ic-titles">
+                        <div class="service-card-name ic-name">${s.isOffer ? '<span class="ic-offer"><i class="fas fa-tag"></i> عرض</span>' : ''}${escapeHtml(s.name)}</div>
+                        ${s.nameEn ? `<div class="ic-sub">${escapeHtml(s.nameEn)}</div>` : ''}
                     </div>
-                    <div class="service-card-price">
-                        ${s.isOffer && s.origPrice ? `<div style="font-size:11px;color:var(--text-light);text-decoration:line-through;">${s.origPrice}</div>` : ''}
-                        <div class="price-val" ${s.isOffer ? 'style="color:var(--warning-fg);"' : ''}>${s.price}</div>
+                    <div class="service-card-price ic-price">
+                        ${s.isOffer && s.origPrice ? `<s class="ic-orig">${escapeHtml(s.origPrice)}</s>` : ''}
+                        <div class="price-val" ${s.isOffer ? 'style="color:var(--warning-fg);"' : ''}>${cardPriceHtml(s)}</div>
                         <div class="price-cur">ريال</div>
                     </div>
                 </div>
-            </div>`).join('');
+                <div class="ic-meta">
+                    ${s.cat ? `<span class="service-card-cat">${escapeHtml(s.cat)}</span>` : ''}
+                    ${s.description ? `<span class="ic-note"><i class="fas fa-info-circle"></i> ${escapeHtml(s.description)}</span>` : ''}
+                </div>
+                ${branchStrip(s)}
+            </div>`; }).join('');
     }
 
     let currentGenericCat = 'all';
@@ -7626,37 +7827,93 @@ Ferritin"></textarea>
 
         document.getElementById('individualGrid').innerHTML = filtered.map(t => {
             const realIdx = individualTests.indexOf(t);
+            const kk = t.isOffer ? 'labOffer' : 'test';
+            const inCart = testCart.some(c => c.idx === realIdx);
+            const orig = t.isOffer ? (individualTests.find(x => !x.isOffer && x.name === t.name) || {}).price : '';
             return `
-            <div class="test-card">
-                <div class="test-card-info">
-                    <div style="display:flex;align-items:start;justify-content:space-between;gap:6px;">
-                        <div>
-                            <div class="test-card-name">${t.name}</div>
-                            <div class="test-card-name-ar">${t.nameAr}</div>
-                        </div>
-                        ${(() => { const d = t.desc || (t.isOffer ? (individualTests.find(x=>!x.isOffer&&x.name===t.name)||{}).desc : '') || ''; return d ? `<button class="test-info-btn" onclick="showTestInfo(event, '${t.name.replace(/'/g,"\\'")}', '${(t.nameAr||'').replace(/'/g,"\\'")}', '${d.replace(/'/g,"\\'")}')" title="معلومات عن التحليل"><i class="fas fa-info-circle"></i></button>` : ''; })()}
+            <div class="test-card ic ${t.isOffer ? 'ic-is-offer' : ''}" onclick="showItemDetails('${kk}','${refFor(t)}')" title="عرض التفاصيل">
+                <div class="ic-head">
+                    <div class="ic-titles">
+                        <div class="test-card-name ic-name">${escapeHtml(t.name)}</div>
+                        <div class="test-card-name-ar ic-sub">${escapeHtml(t.nameAr || '')}</div>
                     </div>
-                    <div class="test-card-meta">
-                        <span><i class="fas fa-clock"></i> ${formatTat(t.tat)}</span>
-                        ${t.code && !t.isOffer ? `<span><i class="fas fa-barcode"></i> ${t.code}</span>` : ''}
-                        ${t.cat ? `<span><i class="fas fa-tag"></i> ${t.cat}</span>` : ''}
-                    </div>
-                    <div style="margin-top:6px;display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
-                        ${t.fasting ? '<span class="badge-fasting requires"><i class="fas fa-moon"></i> يتطلب صيام</span>' : ''}
-                        ${canItem(getKind(t.isOffer ? 'labOffer' : 'test'), 'edit') ? `<button title="فتح البطاقة للتعديل" onclick="openItemCard('${t.isOffer ? 'labOffer' : 'test'}','${refFor(t)}')" style="background:var(--primary);color:white;border:none;border-radius:6px;padding:3px 8px;cursor:pointer;font-size:10px;"><i class="fas fa-edit"></i></button>` : ''}
+                    <div class="test-card-price ic-price">
+                        ${orig ? `<s class="ic-orig">${escapeHtml(orig)}</s>` : ''}
+                        <div class="price-val" ${t.isOffer ? 'style="color:var(--warning-fg);"' : ''}>${cardPriceHtml(t)}</div>
+                        <div class="price-cur">ريال</div>
                     </div>
                 </div>
-                <div class="test-card-price">
-                    ${t.isOffer ? `<div style="font-size:9px;background:${t.offerType==='فروع'?'var(--primary)':'var(--accent)'};color:white;border-radius:8px;padding:1px 6px;margin-bottom:2px;font-weight:700;"><i class="fas fa-${t.offerType==='فروع'?'store':'home'}" style="margin-left:3px;"></i> ${t.offerType==='فروع'?'عرض فروع':'عرض زيارات منزلية'}</div>
-                    <div style="font-size:11px;color:var(--text-light);text-decoration:line-through;">${(individualTests.find(x=>!x.isOffer&&x.name===t.name)||{}).price||''}</div>` : ''}
-                    <div class="price-val" ${t.isOffer ? 'style="color:var(--warning-fg);"' : ''}>${t.price}</div>
-                    <div class="price-cur">ريال</div>
-                    <button class="test-add-btn ${testCart.some(c => c.idx === realIdx) ? 'added' : ''}" onclick="toggleTestCart(${realIdx})" style="margin-top:6px;">
-                        ${testCart.some(c => c.idx === realIdx) ? '<i class="fas fa-check"></i> مضاف' : '<i class="fas fa-plus"></i> أضف'}
+                <div class="ic-meta">
+                    ${t.isOffer ? `<span class="ic-offer"><i class="fas fa-${t.offerType === 'فروع' ? 'store' : 'home'}"></i> ${t.offerType === 'فروع' ? 'عرض فروع' : 'عرض زيارات منزلية'}</span>` : ''}
+                    ${t.tat ? `<span class="ic-chip"><i class="fas fa-clock"></i> ${formatTat(t.tat)}</span>` : ''}
+                    ${t.cat ? `<span class="ic-chip"><i class="fas fa-tag"></i> ${escapeHtml(t.cat)}</span>` : ''}
+                    ${t.fasting ? '<span class="badge-fasting requires"><i class="fas fa-moon"></i> صيام</span>' : ''}
+                    <button class="test-add-btn ${inCart ? 'added' : ''}" onclick="event.stopPropagation();toggleTestCart(${realIdx})">
+                        ${inCart ? '<i class="fas fa-check"></i> مضاف' : '<i class="fas fa-plus"></i> أضف'}
                     </button>
                 </div>
+                ${branchStrip(t)}
             </div>`;
         }).join('');
+    }
+
+    // نافذة تفاصيل العنصر: كل البيانات + أسعار الفروع، وزر التعديل هنا فقط (يفتح بطاقة التعديل الحالية)
+    function showItemDetails(kindKey, ref, viewOnly) {
+        const kind = getKind(kindKey), o = objFor(ref);
+        if (!kind || !o || !kind.all().includes(o)) { showToast('تعذّر فتح التفاصيل — حدّث الصفحة وحاول مجدداً', 'warning'); return; }
+        const row = (icon, label, val) => (val === undefined || val === null || val === '') ? '' : `
+            <div class="idt-row">
+                <i class="fas ${icon}"></i>
+                <div><div class="idt-label">${label}</div><div class="idt-val">${escapeHtml(val)}</div></div>
+            </div>`;
+        const isTest = kindKey === 'test' || kindKey === 'labOffer';
+        const title = isTest ? (o.nameAr || o.name) : o.name;
+        const sub = isTest ? (o.nameAr ? o.name : '') : (o.nameEn || '');
+        const orig = o.isOffer ? (o.origPrice || (isTest ? (individualTests.find(x => !x.isOffer && x.name === o.name) || {}).price : '')) : '';
+        const st = itemStatusLabel(o);
+        const deptName = (departments.find(d => d.id === kind.dept) || {}).name || '';
+        const realIdx = isTest ? individualTests.indexOf(o) : -1;
+        const inCart = isTest && testCart.some(c => c.idx === realIdx);
+        const html = `
+            <div style="padding:20px;">
+                <div class="idt-head">
+                    <div style="min-width:0;">
+                        <h3 class="idt-title">${o.isOffer ? '<span class="ic-offer"><i class="fas fa-tag"></i> عرض</span>' : ''}${escapeHtml(title)}</h3>
+                        ${sub ? `<div class="idt-sub">${escapeHtml(sub)}</div>` : ''}
+                        <div class="idt-badges">
+                            ${deptName ? `<span class="ic-chip"><i class="fas fa-layer-group"></i> ${escapeHtml(deptName)}</span>` : ''}
+                            ${(o.cat || o.category) ? `<span class="service-card-cat">${escapeHtml(o.cat || o.category)}</span>` : ''}
+                            ${o.fasting ? '<span class="badge-fasting requires"><i class="fas fa-moon"></i> يتطلب صيام</span>' : ''}
+                            ${!st.on ? `<span class="item-status off">${escapeHtml(st.text)}</span>` : ''}
+                        </div>
+                    </div>
+                    <div class="idt-price">
+                        ${orig ? `<s class="ic-orig">${escapeHtml(orig)}</s>` : ''}
+                        <div class="price-val" ${o.isOffer ? 'style="color:var(--warning-fg);"' : ''}>${cardPriceHtml(o)}</div>
+                        <div class="price-cur">ريال</div>
+                        ${o.isOffer && Number(orig) > Number(o.price) ? `<span class="oc-pct" style="display:inline-block;margin-top:4px;">وفّر ${Math.round((orig - o.price) / orig * 100)}%</span>` : ''}
+                    </div>
+                </div>
+                ${!hasBranchPrices(o) ? `<div class="idt-uni"><i class="fas fa-store"></i> سعر موحّد لجميع الفروع</div>` : ''}
+                ${hasBranchPrices(o) ? `<div class="idt-label" style="margin-top:12px;">أسعار الفروع</div>${branchStrip(o)}` : ''}
+                <div class="idt-rows">
+                    ${row('fa-barcode', 'الكود', o.code)}
+                    ${(tt => row('fa-clock', 'مدة النتيجة', tt ? formatTat(tt) : ''))(o.tat || (isTest && o.isOffer ? (individualTests.find(x => x && !x.isOffer && x.name === o.name) || {}).tat : ''))}
+                    ${row('fa-info-circle', 'الوصف', o.desc || o.description || (isTest && o.isOffer ? (individualTests.find(x => x && !x.isOffer && x.name === o.name) || {}).desc : ''))}
+                    ${row('fa-sticky-note', 'ملاحظة', o.note)}
+                    ${row('fa-check-circle', 'تفاصيل إضافية', o.details)}
+                    ${row('fa-store', 'نوع العرض', o.offerType ? 'عرض ' + o.offerType : '')}
+                    ${row('fa-calendar-plus', 'بداية العرض', o.startDate)}
+                    ${row('fa-calendar-xmark', 'نهاية العرض', o.endDate)}
+                </div>
+                <div class="idt-actions">
+                    ${isTest && realIdx >= 0 ? `<button class="idt-btn" style="background:${inCart ? 'var(--success)' : 'var(--primary)'};" onclick="toggleTestCart(${realIdx}); showItemDetails('${kindKey}','${ref}'${viewOnly ? ',true' : ''})"><i class="fas ${inCart ? 'fa-check' : 'fa-plus'}"></i> ${inCart ? 'مضاف للقائمة' : 'أضف للقائمة'}</button>` : ''}
+                    ${!viewOnly && canItem(kind, 'edit') ? `<button class="idt-btn" style="background:var(--accent);" onclick="openItemCard('${kindKey}','${ref}')"><i class="fas fa-edit"></i> تعديل</button>` : ''}
+                    <button class="idt-btn" style="background:var(--neutral);" onclick="document.getElementById('modalOverlay').classList.remove('show')"><i class="fas fa-times"></i> إغلاق</button>
+                </div>
+            </div>`;
+        document.getElementById('modalOverlay').innerHTML = `<div class="modal" style="max-width:560px;" onclick="event.stopPropagation()">${html}</div>`;
+        document.getElementById('modalOverlay').classList.add('show');
     }
 
     function showTestInfo(e, name, nameAr, desc) {
@@ -7793,24 +8050,24 @@ Ferritin"></textarea>
 
         document.getElementById('servicesStats').innerHTML = `عرض ${filtered.length} خدمة`;
         document.getElementById('servicesGrid').innerHTML = filtered.map(s => {
-            const realIdx = services.indexOf(s);
+            const kk = s.isOffer ? 'serviceOffer' : 'service';
             return `
-            <div class="service-card">
-                <div class="service-card-top">
-                    <div>
-                        <div class="service-card-name">${s.isOffer ? '<span style="background:var(--gold);color:var(--primary-deep);border-radius:8px;padding:1px 7px;font-size:10px;margin-left:4px;"><i class="fas fa-tag"></i> عرض</span>' : ''}${s.name}</div>
-                        ${s.code ? `<div style="font-size:11px;color:var(--text-light);margin-top:2px;"><i class="fas fa-barcode"></i> ${s.code}</div>` : ''}
-                        ${s.note ? `<div class="service-card-note"><i class="fas fa-info-circle"></i> ${s.note}</div>` : ''}
-                        ${s.details ? `<div class="service-card-detail"><i class="fas fa-check-circle"></i> ${s.details}</div>` : ''}
-                        ${s.cat ? `<span class="service-card-cat">${s.cat}</span>` : ''}
-                        ${canItem(getKind(s.isOffer ? 'serviceOffer' : 'service'), 'edit') ? `<div style="margin-top:6px;"><button title="فتح البطاقة للتعديل" onclick="openItemCard('${s.isOffer ? 'serviceOffer' : 'service'}','${refFor(s)}')" style="background:var(--primary);color:white;border:none;border-radius:6px;padding:3px 8px;cursor:pointer;font-size:10px;"><i class="fas fa-edit"></i></button></div>` : ''}
+            <div class="service-card ic ${s.isOffer ? 'ic-is-offer' : ''}" onclick="showItemDetails('${kk}','${refFor(s)}')" title="عرض التفاصيل">
+                <div class="ic-head">
+                    <div class="ic-titles">
+                        <div class="service-card-name ic-name">${s.isOffer ? '<span class="ic-offer"><i class="fas fa-tag"></i> عرض</span>' : ''}${escapeHtml(s.name)}</div>
                     </div>
-                    <div class="service-card-price">
-                        ${s.isOffer && s.origPrice ? `<div style="font-size:11px;color:var(--text-light);text-decoration:line-through;">${s.origPrice}</div>` : ''}
-                        <div class="price-val" ${s.isOffer ? 'style="color:var(--warning-fg);"' : ''}>${s.price}</div>
+                    <div class="service-card-price ic-price">
+                        ${s.isOffer && s.origPrice ? `<s class="ic-orig">${escapeHtml(s.origPrice)}</s>` : ''}
+                        <div class="price-val" ${s.isOffer ? 'style="color:var(--warning-fg);"' : ''}>${cardPriceHtml(s)}</div>
                         <div class="price-cur">ريال</div>
                     </div>
                 </div>
+                <div class="ic-meta">
+                    ${s.cat ? `<span class="service-card-cat">${escapeHtml(s.cat)}</span>` : ''}
+                    ${s.note ? `<span class="ic-note"><i class="fas fa-info-circle"></i> ${escapeHtml(s.note)}</span>` : ''}
+                </div>
+                ${branchStrip(s)}
             </div>`;
         }).join('');
     }
