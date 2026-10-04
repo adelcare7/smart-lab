@@ -2862,6 +2862,25 @@
         .ic .bp-val { font-size: 13px; }
         .offer-card.ic .offer-dept { margin: 0; }
         .ic-pkg { cursor: pointer; }
+        /* ملخص أسعار الفروع (يظهر الاختلاف فقط) + «فرعي» */
+        .bps { display: flex; flex-wrap: wrap; gap: 4px; margin-top: auto; padding-top: 4px; }
+        .bps span { font-size: 10.5px; font-weight: 700; border-radius: 999px; padding: 1px 8px; white-space: nowrap; line-height: 1.6; }
+        .bps-same { color: var(--success-fg); background: var(--success-soft); border: 1px solid var(--success-border); }
+        .bps-diff { color: var(--warning-fg); background: var(--gold-soft); border: 1px solid var(--gold-border); }
+        .bps-na { color: var(--text-light); background: var(--bg); border: 1px dashed var(--border-strong); }
+        .bps-rest { color: var(--primary-fg); background: var(--primary-soft); border: 1px solid var(--primary-border); }
+        .bps-note { margin-top: auto; padding-top: 4px; font-size: 10.5px; font-weight: 600; color: var(--warning-fg); }
+        .bp-pkg .bps, .bp-pkg .bps-note { margin: 0 0 10px; }
+        .bp-na-big { font-size: 12px; color: var(--text-light); font-weight: 700; }
+        .price-val:has(.bp-na-big) + .price-cur { display: none; }
+        .bp-cell.mine { background: var(--primary); border-radius: 6px; }
+        .bp-cell.mine .bp-name, .bp-cell.mine .bp-val { color: #fff !important; }
+        .branch-pick { position: relative; cursor: pointer; }
+        .branch-pick select { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; font-size: 16px; }
+        .branch-pick-text { font-size: 12.5px; white-space: nowrap; }
+        .branch-pick.on { background: var(--primary); border-color: var(--primary); color: #fff; }
+        @media (max-width: 520px) { .branch-pick-text { display: none; } }
+
         /* بطاقات العروض (مدمجة) */
         #offersGrid { grid-template-columns: repeat(auto-fill, minmax(min(230px, 100%), 1fr)); gap: 10px; }
         .oc { background: var(--card-bg); border: 1px solid var(--gold-border); border-inline-start: 4px solid var(--gold); border-radius: 12px; padding: 10px 12px; display: flex; flex-direction: column; gap: 4px; cursor: pointer; height: 100%; min-width: 0; transition: box-shadow .2s, border-color .2s; content-visibility: auto; contain-intrinsic-size: auto 96px; }
@@ -2998,6 +3017,18 @@
                 </div>
             </div>
             <div class="header-actions">
+                <label class="btn-header branch-pick" id="myBranchBox" title="فرعي: عرض أسعار فرع معيّن على هذا الجهاز فقط">
+                    <i class="fas fa-location-dot"></i>
+                    <span class="branch-pick-text" id="myBranchLabel">كل الفروع</span>
+                    <select id="myBranchSelect" aria-label="اختيار الفرع" onchange="setMyBranch(this.value)">
+                        <option value="">كل الفروع</option>
+                        <option value="الزرقاء">الزرقاء</option>
+                        <option value="الأفق">الأفق</option>
+                        <option value="الشمال">الشمال</option>
+                        <option value="الإسكان">الإسكان</option>
+                        <option value="الشرق">الشرق</option>
+                    </select>
+                </label>
                 <button class="btn-theme" onclick="toggleTheme()" id="themeToggle" title="الوضع الليلي">
                     <i class="fas fa-moon"></i>
                 </button>
@@ -4255,7 +4286,7 @@ Ferritin"></textarea>
                             </div>` : ''}
                     </div>
                     ${salesTip}
-                    <div class="bp-pkg">${branchStrip(pkg)}</div>
+                    <div class="bp-pkg">${branchSummary(pkg)}</div>
                 <div class="card-footer">
                         <span class="total-tests"><i class="fas fa-vial"></i> ${pkg.tests.length} تحاليل إجمالية</span>
                         ${(() => { const tat = getPackageTat(pkg); return tat ? `<span class="total-tests" style="color:var(--gold-text);"><i class="fas fa-clock"></i> النتيجة: ${formatTat(tat)}</span>` : ''; })()}
@@ -4539,7 +4570,7 @@ Ferritin"></textarea>
                     ${pkg.homeVisit ? '<span class="ic-chip"><i class="fas fa-home"></i> منزلية</span>' : ''}
                     <button class="ic-cmp ${compareList.includes(pkg.id) ? 'active' : ''}" onclick="event.stopPropagation();toggleCompare(${pkg.id})" title="إضافة للمقارنة"><i class="fas fa-columns"></i> ${compareList.includes(pkg.id) ? 'في المقارنة' : 'مقارنة'}</button>
                 </div>
-                ${branchStrip(pkg)}
+                ${branchSummary(pkg)}
             </div>`; }).join('');
     }
 
@@ -5389,21 +5420,86 @@ Ferritin"></textarea>
         if (!r) return o.price;
         return r.min === r.max ? r.min : r.min + '–' + r.max;
     }
-    // الشريط المدمج أسفل البطاقة: الفروع الخمسة وأسعارها مباشرة
+    // جدول الفروع الخمسة كاملاً (نافذة التفاصيل وتفاصيل الباقة) — فرع الموظف المختار يُميَّز
     function branchStrip(o) {
         if (!hasBranchPrices(o)) return '';
         return `<div class="bp-strip">${BRANCH_PRICES.map(b => {
-            const v = branchPrice(o, b);
+            const v = branchPrice(o, b), mine = myBranch === b.n ? ' mine' : '';
             return v === null
-                ? `<div class="bp-cell na"><span class="bp-name">${b.n}</span><span class="bp-val">غير متوفرة</span></div>`
-                : `<div class="bp-cell"><span class="bp-name">${b.n}</span><span class="bp-val">${escapeHtml(v)}</span></div>`;
+                ? `<div class="bp-cell na${mine}"><span class="bp-name">${b.n}</span><span class="bp-val">غير متوفرة</span></div>`
+                : `<div class="bp-cell${mine}"><span class="bp-name">${b.n}</span><span class="bp-val">${escapeHtml(v)}</span></div>`;
         }).join('')}</div>`;
     }
-    // السعر الكبير في البطاقة: إن اختلفت الأسعار بين الفروع يظهر "يبدأ من" أقل سعر
+
+    // «فرعي»: اختيار محلي على هذا الجهاز فقط (localStorage) — لا يُحفظ في الحساب ولا في Firebase
+    let myBranch = '';
+    try { myBranch = localStorage.getItem('myBranch') || ''; } catch (e) {}
+    if (!BRANCH_PRICES.some(b => b.n === myBranch)) myBranch = '';
+    // تحليل أسعار العنصر: السعر الأكثر تكراراً بين الفروع، والفروع المختلفة عنه، وغير المتوفرة
+    function branchInfo(o) {
+        const list = BRANCH_PRICES.map(b => ({ b, v: branchPrice(o, b) }));
+        const avail = list.filter(x => x.v !== null && x.v !== undefined && x.v !== '' && !isNaN(Number(x.v)));
+        const counts = {};
+        avail.forEach(x => { const k = String(Number(x.v)); counts[k] = (counts[k] || 0) + 1; });
+        let common = null, best = 0;
+        Object.keys(counts).forEach(k => {
+            const c = counts[k];
+            if (c > best || (c === best && (Number(k) === Number(o.price) || (common !== null && Number(k) < Number(common) && Number(common) !== Number(o.price))))) { best = c; common = k; }
+        });
+        const min = avail.length ? Math.min(...avail.map(x => Number(x.v))) : null;
+        return { list, common: common === null ? null : Number(common), commonCount: best, min, allSame: avail.length === BRANCH_PRICES.length && best === BRANCH_PRICES.length };
+    }
+    // ملخص البطاقة: سطر صغير يُظهر الاختلاف فقط
+    function branchSummary(o) {
+        if (!hasBranchPrices(o)) return '';
+        const info = branchInfo(o);
+        if (myBranch) {
+            if (info.allSame) return '';
+            const mineV = branchPrice(o, BRANCH_PRICES.find(b => b.n === myBranch));
+            return `<div class="bps-note"><i class="fas fa-circle-info"></i> ${mineV === null ? 'غير متوفرة في فرعك' : 'السعر يختلف في فروع أخرى'} — اضغط للتفاصيل</div>`;
+        }
+        if (info.allSame) return `<div class="bps"><span class="bps-same"><i class="fas fa-check"></i> نفس السعر في الفروع الخمسة</span></div>`;
+        const groupRest = info.commonCount >= 2;
+        const chips = info.list.filter(x => !groupRest || x.v === null || Number(x.v) !== info.common).map(x => x.v === null
+            ? `<span class="bps-na">${x.b.n} غير متوفرة</span>`
+            : `<span class="bps-diff">${x.b.n} ${escapeHtml(x.v)}</span>`);
+        if (groupRest) chips.push(`<span class="bps-rest">باقي الفروع ${info.common}</span>`);
+        return `<div class="bps">${chips.join('')}</div>`;
+    }
+    // السعر الكبير في البطاقة: سعر فرعي إن اختير، وإلا السعر الأكثر شيوعاً (أو "يبدأ من" إن اختلفت كلها)
     function cardPriceHtml(o) {
         if (!hasBranchPrices(o)) return escapeHtml(o.price);
-        const r = branchRange(o);
-        return r && r.varied ? `<span class="bp-from">يبدأ من</span>${r.min}` : escapeHtml(o.price);
+        if (myBranch) {
+            const v = branchPrice(o, BRANCH_PRICES.find(b => b.n === myBranch));
+            return v === null ? `<span class="bp-from">${escapeHtml(myBranch)}</span><span class="bp-na-big">غير متوفرة</span>` : `<span class="bp-from">${escapeHtml(myBranch)}</span>${escapeHtml(v)}`;
+        }
+        const info = branchInfo(o);
+        if (info.allSame || info.commonCount >= 2) return escapeHtml(info.common);
+        return info.min === null ? escapeHtml(o.price) : `<span class="bp-from">يبدأ من</span>${info.min}`;
+    }
+    // السعر الفعلي لهذا الجهاز (قائمة التحاليل المضافة): سعر فرعي إن اختير ومتوفر، وإلا السعر العام
+    function effectivePrice(o) {
+        if (!myBranch || !hasBranchPrices(o)) return Number(o.price) || 0;
+        const v = branchPrice(o, BRANCH_PRICES.find(b => b.n === myBranch));
+        return v === null ? (Number(o.price) || 0) : Number(v);
+    }
+    function setMyBranch(v) {
+        myBranch = BRANCH_PRICES.some(b => b.n === v) ? v : '';
+        try { if (myBranch) localStorage.setItem('myBranch', myBranch); else localStorage.removeItem('myBranch'); } catch (e) {}
+        updateMyBranchUI();
+        // إعادة رسم ما يعرض الأسعار
+        try { testCart.forEach(c => { const t = individualTests[c.idx]; if (t) c.price = effectivePrice(t); }); updateTestCartUI(); } catch (e) {}
+        try { refreshTestsUI(); } catch (e) {}
+        try { renderBrowseAll(); } catch (e) {}
+        try { if (currentResults && currentResults.length) renderResults(currentResults); } catch (e) {}
+        try { if (currentDeptId && genericServicesByDept[currentDeptId]) renderGenericServices(currentDeptId); } catch (e) {}
+        showToast(myBranch ? 'تُعرض الآن أسعار فرع ' + myBranch + ' (على هذا الجهاز فقط)' : 'تُعرض أسعار كل الفروع');
+    }
+    function updateMyBranchUI() {
+        const lbl = document.getElementById('myBranchLabel'), sel = document.getElementById('myBranchSelect'), box = document.getElementById('myBranchBox');
+        if (lbl) lbl.textContent = myBranch || 'كل الفروع';
+        if (sel) sel.value = myBranch;
+        if (box) box.classList.toggle('on', !!myBranch);
     }
     const F_BRANCHES = { k: '__branches', type: 'branchprices', label: 'أسعار الفروع' };
 
@@ -7590,7 +7686,7 @@ Ferritin"></textarea>
                     ${s.cat ? `<span class="service-card-cat">${escapeHtml(s.cat)}</span>` : ''}
                     ${s.description ? `<span class="ic-note"><i class="fas fa-info-circle"></i> ${escapeHtml(s.description)}</span>` : ''}
                 </div>
-                ${branchStrip(s)}
+                ${branchSummary(s)}
             </div>`; }).join('');
     }
 
@@ -7852,7 +7948,7 @@ Ferritin"></textarea>
                         ${inCart ? '<i class="fas fa-check"></i> مضاف' : '<i class="fas fa-plus"></i> أضف'}
                     </button>
                 </div>
-                ${branchStrip(t)}
+                ${branchSummary(t)}
             </div>`;
         }).join('');
     }
@@ -7941,7 +8037,7 @@ Ferritin"></textarea>
         if (existing !== -1) {
             testCart.splice(existing, 1);
         } else {
-            testCart.push({ idx, name: t.name, nameAr: t.nameAr, price: t.price });
+            testCart.push({ idx, name: t.name, nameAr: t.nameAr, price: effectivePrice(t) });
         }
         updateTestCartUI();
         const q = document.getElementById('individualSearchInput').value;
@@ -8003,6 +8099,7 @@ Ferritin"></textarea>
         document.getElementById('themeToggle').innerHTML = isDark ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
     }
 
+    try { updateMyBranchUI(); } catch (e) {}
     (function initTheme() {
         const saved = localStorage.getItem('theme');
         if (saved === 'dark') {
@@ -8067,7 +8164,7 @@ Ferritin"></textarea>
                     ${s.cat ? `<span class="service-card-cat">${escapeHtml(s.cat)}</span>` : ''}
                     ${s.note ? `<span class="ic-note"><i class="fas fa-info-circle"></i> ${escapeHtml(s.note)}</span>` : ''}
                 </div>
-                ${branchStrip(s)}
+                ${branchSummary(s)}
             </div>`;
         }).join('');
     }
