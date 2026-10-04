@@ -12,6 +12,14 @@
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon-180x180.png">
     <!-- Web App Manifest (Android + PWA) -->
     <link rel="manifest" href="manifest.json">
+    <!-- سرعة الدخول: فتح الاتصال بخوادم Firebase وتحميل مكتباتها أثناء تحميل الصفحة نفسها -->
+    <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://adel-care-lab-default-rtdb.asia-southeast1.firebasedatabase.app">
+    <link rel="preconnect" href="https://identitytoolkit.googleapis.com">
+    <link rel="preconnect" href="https://securetoken.googleapis.com">
+    <link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js">
+    <link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js">
+    <link rel="preload" as="script" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js">
     <meta name="theme-color" content="#005a8c">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -1346,7 +1354,7 @@
         .companies-filters {
             display: flex;
             gap: 10px;
-            justify-content: center;
+            justify-content: flex-start;   /* الجهة اليمنى في الاتجاه العربي */
             align-items: center;
             flex-wrap: wrap;
             margin-bottom: 14px;
@@ -2785,6 +2793,18 @@
         #offersDeptFilter .individual-cat-btn i { margin-left: 3px; }
         @media (max-width: 420px) { .mobile-nav-item { padding: 6px 3px; } }
 
+
+        /* ---------- سرعة الدخول: مؤشرات التحميل ---------- */
+        .data-loading-box { display: none; text-align: center; padding: 60px 16px; color: var(--text-light); font-size: 15px; font-weight: 600; }
+        .data-loading-box i { margin-left: 6px; color: var(--primary-fg); }
+        body.data-loading .data-loading-box { display: block; }
+        body.data-loading #labPage, body.data-loading #visitsPage, body.data-loading #companiesPage,
+        body.data-loading #genericDeptPage, body.data-loading #offersPage { display: none !important; }
+        .sync-pill { position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%); z-index: 9000; background: var(--card-bg); color: var(--text-light);
+            border: 1px solid var(--border); border-radius: 999px; padding: 6px 14px; font-size: 12.5px; font-weight: 600; box-shadow: var(--shadow); white-space: nowrap; }
+        .sync-pill i { color: var(--primary-fg); margin-left: 4px; }
+        @media (max-width: 768px) { .sync-pill { bottom: 78px; } }
+
         /* ---------- الجوال ---------- */
         @media (max-width: 768px) {
             .header-content { height: 61px; padding: 0 14px; }
@@ -2860,6 +2880,10 @@
     </header>
 
     <!-- Main Page Tabs -->
+    <!-- أول دخول على جهاز جديد: مؤشر تحميل بدل صفحة فارغة -->
+    <div class="data-loading-box" id="dataLoadingBox"><i class="fas fa-spinner fa-spin"></i> جاري تحميل البيانات…</div>
+    <!-- عند عرض آخر بيانات محفوظة على الجهاز: تنبيه صغير حتى تصل البيانات الحية -->
+    <div class="sync-pill" id="syncPill" style="display:none;"><i class="fas fa-sync-alt fa-spin"></i> <span>جاري تحديث البيانات…</span></div>
     <div class="page-tabs" id="pageTabs">
         <span id="pageTabsDepts" style="display:contents;"></span>
     </div>
@@ -3138,18 +3162,14 @@
                        oninput="filterCompanies()">
                 <i class="fas fa-search individual-search-icon"></i>
             </div>
+            <!-- نوع التعاقد: أزرار تنقّل مثل باقي الأقسام -->
+            <div class="individual-cats" id="coTypeChips"></div>
+            <!-- الفرع: قائمة منسدلة كما هي، في الجهة اليمنى -->
             <div class="companies-filters">
-                <div class="co-filter" id="coTypeWrap">
-                    <i class="fas fa-layer-group"></i>
-                    <select id="coTypeSelect" onchange="filterCompanyType(this.value)" aria-label="نوع التعاقد"></select>
-                </div>
                 <div class="co-filter" id="coBranchWrap">
                     <i class="fas fa-map-marker-alt"></i>
                     <select id="coBranchSelect" onchange="filterCompanyBranch(this.value)" aria-label="الفرع"></select>
                 </div>
-                <button class="co-reset" id="coResetBtn" onclick="resetCompanyFilters()" style="display:none;">
-                    <i class="fas fa-times"></i> إلغاء الفلترة
-                </button>
             </div>
             <div class="individual-stats" id="companiesStats"></div>
             <div class="companies-grid" id="companiesGrid"></div>
@@ -4964,6 +4984,7 @@ Ferritin"></textarea>
 
     // الخروج ينهي جلسة Firebase فعلياً، ثم يعيد تحميل الصفحة لمسح كل البيانات من الذاكرة
     function staffSignOut() {
+        clearDataCache();
         const done = () => location.reload();
         auth.signOut().then(done, done);
     }
@@ -5083,6 +5104,7 @@ Ferritin"></textarea>
 
     // هل بدأت مزامنة البيانات؟ تبدأ مرة واحدة فقط وبعد ثبوت حساب حقيقي — لا قراءة قبل ذلك
     let dataSyncStarted = false;
+    let profileSetupDone = false;   // مهام ما بعد معرفة الصلاحيات (للمدير العام: الأقسام الافتراضية والتحقق من النقل)
 
     // حساب حقيقي = دخل ببريد وكلمة مرور (وليس مجهولاً). القاعدة على الخادم تفرض الشرط نفسه.
     function isRealAuth(u) {
@@ -5107,9 +5129,20 @@ Ferritin"></textarea>
         const isStaff = email === STAFF_EMAIL;
         const key = isStaff ? '' : emailToKey(email);
 
+        // البيانات لا تحتاج الصلاحيات لتُقرأ: نبدأ الاستماع لها الآن بالتوازي مع قراءة الصلاحيات،
+        // ونعرض آخر نسخة محفوظة على هذا الجهاز لهذا الحساب فوراً حتى تصل البيانات الحية
+        if (!dataSyncStarted) {
+            dataSyncStarted = true;
+            firebaseReady = true;
+            initFirebaseSync();
+            applyDataCache(isStaff ? 'staff' : key);
+            loadingFallback = setTimeout(() => { document.body.classList.remove('data-loading'); }, 10000);
+            renderSiteGateState();
+        }
         const profileP = key ? db.ref('users/' + key).once('value').then(s => s.val()) : Promise.resolve(null);
         profileP.then(profile => {
             if (profile && profile.active === false) {
+                clearDataCache();
                 showToast(profile.deleted ? 'هذا الحساب محذوف — تواصل مع المدير' : 'هذا الحساب موقوف', 'warning');
                 setTimeout(staffSignOut, 1500);
                 return;
@@ -5117,7 +5150,7 @@ Ferritin"></textarea>
             currentUserProfile = profile ? { ...profile, key } : null;
             adminUnlocked = !!profile;
             if (profile) db.ref('users/' + key + '/lastLogin').set(Date.now()).catch(() => {});
-            if (!dataSyncStarted) { dataSyncStarted = true; uploadInitialData(); }
+            if (!profileSetupDone) { profileSetupDone = true; uploadInitialData(); }
             renderSiteGateState();
             renderDepartmentsHome();
             if (profile && profile.role === 'superadmin') purgeLegacySecrets();
@@ -5352,6 +5385,7 @@ Ferritin"></textarea>
         const src = obj || (copyRef ? objFor(copyRef) : null);
         const isNew = !obj;
         if (isNew && !canItem(kind, 'add')) { showToast('ليست لديك صلاحية الإضافة في هذا القسم', 'warning'); return; }
+        if ((isNew || canItem(kind, 'edit')) && !requireLive()) return;
         const editable = isNew || canItem(kind, 'edit');
         cardCtx = { kindKey, obj, returnToGeneric: false };
         const dis = editable ? '' : 'disabled';
@@ -5481,6 +5515,7 @@ Ferritin"></textarea>
         const kind = getKind(kindKey), obj = objFor(ref);
         if (!kind || !obj || !kind.all().includes(obj)) return;
         if (!canItem(kind, 'toggle')) { showToast('ليست لديك صلاحية الإيقاف/التفعيل', 'warning'); return; }
+        if (!requireLive()) return;
         const activate = obj.active === false;
         obj.active = activate;
         obj.updatedAt = Date.now(); obj.updatedBy = actorName();
@@ -5497,6 +5532,7 @@ Ferritin"></textarea>
         const kind = getKind(kindKey), obj = objFor(ref);
         if (!kind || !obj || !kind.all().includes(obj)) return;
         if (!canItem(kind, 'delete')) { showToast('ليست لديك صلاحية الحذف', 'warning'); return; }
+        if (!requireLive()) return;
         const links = linkedRecords(kind, obj);
         const title = kind.title(obj);
         if (links.length) {
@@ -6076,6 +6112,7 @@ Ferritin"></textarea>
 
     // يرجع المكان فقط إن كان تابعاً للقسم المفتوح حالياً — يمنع حفظ تصنيف قسم داخل قسم آخر
     function scopedCatSection(section) {
+        if (!requireLive()) return null;
         const cfg = catCfg(section);
         if (!cfg || cfg.dept !== adminScope) { showToast('هذا المكان لا يتبع القسم الحالي', 'warning'); return null; }
         return cfg;
@@ -7784,12 +7821,13 @@ Ferritin"></textarea>
 
         // قائمة النوع
         const visCo = visibleCompanies();   // الشركات غير النشطة لا تظهر للمستخدمين
-        const types = [...new Set(visCo.map(c => c.type))];
-        const typeSel = document.getElementById('coTypeSelect');
-        typeSel.innerHTML =
-            `<option value="all">كل الأنواع (${visCo.length})</option>` +
-            types.map(t => `<option value="${t}">${t} (${visCo.filter(c => c.type === t).length})</option>`).join('');
-        typeSel.value = currentCompanyType;
+        const types = [...new Set(visCo.map(c => c.type).filter(Boolean))];
+        if (currentCompanyType !== 'all' && !types.includes(currentCompanyType)) currentCompanyType = 'all';
+        const chipsEl = document.getElementById('coTypeChips');
+        chipsEl.innerHTML =
+            `<button class="individual-cat-btn ${currentCompanyType === 'all' ? 'active' : ''}" data-type="all">الكل (${visCo.length})</button>` +
+            types.map(t => `<button class="individual-cat-btn ${currentCompanyType === t ? 'active' : ''}" data-type="${escapeHtml(t)}">${escapeHtml(t)} (${visCo.filter(c => c.type === t).length})</button>`).join('');
+        chipsEl.querySelectorAll('[data-type]').forEach(b => b.onclick = () => filterCompanyType(b.dataset.type));
 
         // قائمة الفرع
         const branchSel = document.getElementById('coBranchSelect');
@@ -7799,10 +7837,7 @@ Ferritin"></textarea>
         branchSel.value = currentCompanyBranch;
 
         // إبراز الفلاتر النشطة + زر الإلغاء
-        document.getElementById('coTypeWrap').classList.toggle('on', currentCompanyType !== 'all');
         document.getElementById('coBranchWrap').classList.toggle('on', currentCompanyBranch !== 'all');
-        const anyActive = currentCompanyType !== 'all' || currentCompanyBranch !== 'all' || !!(searchQuery && searchQuery.trim());
-        document.getElementById('coResetBtn').style.display = anyActive ? '' : 'none';
 
         let filtered = visCo.filter(c =>
             (currentCompanyType === 'all' || c.type === currentCompanyType) &&
@@ -8070,6 +8105,73 @@ Ferritin"></textarea>
     function canWriteDept(deptId) { return ['add', 'edit', 'toggle', 'delete', 'offers'].some(a => hasPerm(deptId, a)); }
 
     // ============================================
+    // سرعة الدخول: آخر بيانات محفوظة على الجهاز تُعرض فوراً، ثم تُستبدل بالبيانات الحية من Firebase
+    // - الذاكرة مرتبطة بحساب الموظف، وتُمسح عند الخروج أو إيقاف/حذف الحساب
+    // - التعديل والحفظ مقفولان حتى تصل البيانات الحية (لا حفظ فوق نسخة قديمة)
+    // ============================================
+    const LIVE_PATHS = ['packages', 'individualTests', 'services', 'companies', 'genericServices'];
+    const liveLoaded = new Set();
+    let applyingCache = false, cacheShown = false, cacheKey = '', cacheTimer = 0, loadingFallback = 0;
+    function dataIsLive() { return LIVE_PATHS.every(p => liveLoaded.has(p)); }
+    function requireLive() {
+        if (dataIsLive()) return true;
+        showToast('لحظة — جاري تحديث البيانات من الخادم، أعد المحاولة بعد ثوانٍ', 'warning');
+        return false;
+    }
+    function markLive(path) {
+        if (applyingCache) return;
+        liveLoaded.add(path);
+        updateSyncUI();
+        scheduleCacheSave();
+    }
+    function updateSyncUI() {
+        const pill = document.getElementById('syncPill');
+        if (dataIsLive()) {
+            document.body.classList.remove('data-loading');
+            if (pill) pill.style.display = 'none';
+            clearTimeout(loadingFallback);
+            return;
+        }
+        if (cacheShown) { document.body.classList.remove('data-loading'); if (pill) pill.style.display = ''; }
+        else document.body.classList.add('data-loading');
+    }
+    function clearDataCache() {
+        try { Object.keys(localStorage).filter(k => k.startsWith('slc:')).forEach(k => localStorage.removeItem(k)); } catch (e) {}
+    }
+    function scheduleCacheSave() {
+        if (!cacheKey || !dataIsLive()) return;
+        clearTimeout(cacheTimer);
+        cacheTimer = setTimeout(() => {
+            try {
+                const depts = {};
+                departments.forEach(d => { const { id, ...rest } = d; depts[id] = rest; });
+                localStorage.setItem(cacheKey, JSON.stringify({ at: Date.now(), packages, individualTests, services, companies, genericServices: genericServicesByDept, departments: depts }));
+            } catch (e) { /* مساحة الجهاز ممتلئة أو التخزين معطّل: نكمل بدون ذاكرة مؤقتة */ }
+        }, 1200);
+    }
+    // لقطة وهمية بنفس واجهة Firebase لتمرير البيانات المحفوظة على نفس دوال العرض
+    function cacheSnap(v) {
+        return { val: () => v === undefined ? null : v,
+                 forEach: cb => { if (v && typeof v === 'object') Object.keys(v).forEach(k => cb({ key: k, val: () => v[k], forEach: f => cacheSnap(v[k]).forEach(f) })); return false; } };
+    }
+    function applyDataCache(key) {
+        cacheKey = 'slc:v1:' + (key || 'staff');
+        let data = null;
+        try { data = JSON.parse(localStorage.getItem(cacheKey) || 'null'); } catch (e) { data = null; }
+        if (!data) { updateSyncUI(); return; }
+        applyingCache = true;
+        try {
+            if (data.departments && pathAppliers.departments) pathAppliers.departments(cacheSnap(data.departments));
+            ['packages', 'individualTests', 'services', 'companies', 'genericServices'].forEach(p => {
+                if (!liveLoaded.has(p) && pathAppliers[p] && data[p]) pathAppliers[p](cacheSnap(data[p]));
+            });
+            cacheShown = true;
+        } catch (e) { /* ذاكرة تالفة: نتجاهلها وننتظر البيانات الحية */ }
+        applyingCache = false;
+        updateSyncUI();
+    }
+
+    // ============================================
     // التخزين لكل عنصر على حدة — يسمح للخادم بفرض كل صلاحية منفصلة:
     // إضافة عنصر جديد ← "إضافة"، حذف عنصر ← "حذف"، تعديل ← "تعديل"، تغيير الحالة فقط ← "إيقاف/تفعيل"
     // (العناصر القديمة تحتفظ بمفاتيحها الحالية 0،1،2… فلا حاجة لنقل أي بيانات)
@@ -8094,15 +8196,18 @@ Ferritin"></textarea>
         const list = [], map = new Map();
         snap.forEach(ch => {
             const v = ch.val();
-            if (v && typeof v === 'object') { keyOf.set(v, ch.key); list.push(v); map.set(ch.key, canon(v)); }
+            if (v && typeof v === 'object') { if (!applyingCache) keyOf.set(v, ch.key); list.push(v); if (!applyingCache) map.set(ch.key, canon(v)); }
         });
+        if (applyingCache) return list;
         serverItems[path] = map;
         rememberBaseline(path, list);
+        if (path.indexOf('/') < 0) markLive(path);
         return list;
     }
     // حفظ قائمة: يُرسل فقط العناصر التي تغيّرت/أضيفت/حذفت — كل عنصر في مساره، في عملية واحدة
     function saveList(path, list) {
         if (!firebaseReady) { showToast('تعذّر الحفظ — لم يكتمل الاتصال بقاعدة البيانات بعد', 'warning'); return Promise.resolve(false); }
+        if (!liveLoaded.has(path.split('/')[0])) { requireLive(); return Promise.resolve(false); }
         const base = serverItems[path] || new Map();
         const updates = {}, changed = [], seen = new Set();
         (list || []).forEach(o => {
@@ -8181,7 +8286,7 @@ Ferritin"></textarea>
             if (document.getElementById('companiesGrid')?.innerHTML) filterCompanies();
             refreshOpenLists();
         };
-        db.ref('companies').on('value', pathAppliers.companies);
+        db.ref('companies').on('value', pathAppliers.companies, () => markLive('companies'));
 
         pathAppliers.packages = (snap) => {
             replaceArr(packages, listFromSnap('packages', snap));
@@ -8191,7 +8296,7 @@ Ferritin"></textarea>
             if (document.getElementById('adminPackageList')?.innerHTML) renderAdminPackages();
             refreshOpenLists();
         };
-        db.ref('packages').on('value', pathAppliers.packages);
+        db.ref('packages').on('value', pathAppliers.packages, () => markLive('packages'));
 
         pathAppliers.individualTests = (snap) => {
             replaceArr(individualTests, listFromSnap('individualTests', snap));
@@ -8205,7 +8310,7 @@ Ferritin"></textarea>
             renderOffersPage();
             refreshOpenLists();
         };
-        db.ref('individualTests').on('value', pathAppliers.individualTests);
+        db.ref('individualTests').on('value', pathAppliers.individualTests, () => markLive('individualTests'));
 
         pathAppliers.services = (snap) => {
             replaceArr(services, listFromSnap('services', snap));
@@ -8213,12 +8318,12 @@ Ferritin"></textarea>
             renderOffersPage();
             refreshOpenLists();
         };
-        db.ref('services').on('value', pathAppliers.services);
+        db.ref('services').on('value', pathAppliers.services, () => markLive('services'));
 
         // الأقسام الديناميكية
         pathAppliers.departments = (snap) => {
             const data = snap.val();
-            rememberBaseline('departments', data);
+            if (!applyingCache) { rememberBaseline('departments', data); scheduleCacheSave(); }
             if (data) {
                 const ord = d => DEPT_ORDER_OVERRIDE.hasOwnProperty(d.id) ? DEPT_ORDER_OVERRIDE[d.id] : (100 + (d.order || 0));
                 departments = Object.keys(data).map(id => ({ id, ...data[id] }))
@@ -8232,14 +8337,15 @@ Ferritin"></textarea>
         // الخدمات العامة لكل قسم من النوع generic (الأسنان، الجلدية، وأي قسم جديد)
         pathAppliers.genericServices = (snap) => {
             genericServicesByDept = {};
-            departments.forEach(d => { serverItems['genericServices/' + d.id] = new Map(); rememberBaseline('genericServices/' + d.id, []); });
+            if (!applyingCache) departments.forEach(d => { serverItems['genericServices/' + d.id] = new Map(); rememberBaseline('genericServices/' + d.id, []); });
             snap.forEach(ds => { genericServicesByDept[ds.key] = listFromSnap('genericServices/' + ds.key, ds); });
+            markLive('genericServices');
             if (currentDeptId && document.getElementById('genericServicesGrid')) renderGenericServices(currentDeptId);
             if (document.getElementById('adminGenericSvcList')) renderAdminGenericServices();
             renderOffersPage();
             refreshOpenLists();
         };
-        db.ref('genericServices').on('value', pathAppliers.genericServices);
+        db.ref('genericServices').on('value', pathAppliers.genericServices, () => markLive('genericServices'));
 
         if (canManageUsers()) startAdminListeners();
     }
@@ -8278,7 +8384,7 @@ Ferritin"></textarea>
     function uploadInitialData() {
         seedEmptyPaths();
         firebaseReady = true;
-        initFirebaseSync();
+        if (canManageUsers()) startAdminListeners();
         if (canManageDepartments()) ensureDataInFirebase();
     }
 
