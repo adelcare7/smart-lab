@@ -2805,6 +2805,20 @@
         .sync-pill i { color: var(--primary-fg); margin-left: 4px; }
         @media (max-width: 768px) { .sync-pill { bottom: 78px; } }
 
+        /* ---------- تبويب العروض (مستقل ومميز) + ترتيب الأقسام ---------- */
+        .page-tab-sep { width: 1px; align-self: stretch; margin: 6px 4px; background: var(--border-strong); }
+        .page-tab.offers-tab { background: var(--gold-soft); color: var(--gold-text); border: 1px solid var(--gold-border); }
+        .page-tab.offers-tab i { color: var(--gold-text); }
+        .page-tab.offers-tab:hover { background: var(--gold); color: var(--primary-deep); border-color: var(--gold); }
+        .page-tab.offers-tab:hover i { color: var(--primary-deep); }
+        .page-tab.offers-tab.active { background: var(--gold); color: #3d2b00; border-color: var(--gold); box-shadow: var(--shadow-sm); }
+        .page-tab.offers-tab.active i { color: #3d2b00; }
+        .mobile-nav-item.offers-nav, .mobile-nav-item.offers-nav i { color: var(--gold-text); }
+        .mobile-nav-item.offers-nav.active { color: var(--gold-text); }
+        .dept-move { background: var(--primary-soft); color: var(--primary-fg); border: 1px solid var(--primary-border); border-radius: 6px; padding: 5px 9px; font-size: 11px; cursor: pointer; font-family: inherit; }
+        .dept-move:hover:not(:disabled) { background: var(--primary); color: #fff; }
+        .dept-move:disabled { opacity: .35; cursor: not-allowed; }
+
         /* ---------- الجوال ---------- */
         @media (max-width: 768px) {
             .header-content { height: 61px; padding: 0 14px; }
@@ -3238,11 +3252,11 @@ Ferritin"></textarea>
                 <i class="fas fa-house-medical"></i>
                 <span>الزيارات</span>
             </button>
-            <button class="mobile-nav-item" data-nav="__offers" onclick="mobileNav('__offers')">
+            <button class="mobile-nav-item offers-nav" style="order:900;" data-nav="__offers" onclick="mobileNav('__offers')">
                 <i class="fas fa-tags"></i>
                 <span>العروض</span>
             </button>
-            <button class="mobile-nav-item" data-nav="settings" data-admin-entry style="display:none;" onclick="mobileNav('settings')">
+            <button class="mobile-nav-item" data-nav="settings" data-admin-entry style="display:none;order:901;" onclick="mobileNav('settings')">
                 <i class="fas fa-cog"></i>
                 <span>الإعدادات</span>
             </button>
@@ -5654,7 +5668,7 @@ Ferritin"></textarea>
         const el = document.getElementById('adminDeptList');
         if (!el) return;
         if (!canManageDepartments()) { el.innerHTML = '<p style="color:var(--text-light);font-size:13px;">هذه الصفحة متاحة للمدير العام فقط.</p>'; return; }
-        el.innerHTML = departments.map(d => {
+        el.innerHTML = departments.map((d, i) => {
             const count = d.type === 'lab' ? (packages.length + individualTests.length)
                         : d.type === 'visits' ? services.length
                         : d.type === 'companies' ? companies.length
@@ -5671,14 +5685,29 @@ Ferritin"></textarea>
                         </div>
                     </div>
                     <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                        <button class="dept-move" title="تحريك للأعلى" onclick="moveDepartment('${d.id}',-1)" ${i === 0 ? 'disabled' : ''}><i class="fas fa-arrow-up"></i></button>
+                        <button class="dept-move" title="تحريك للأسفل" onclick="moveDepartment('${d.id}',1)" ${i === departments.length - 1 ? 'disabled' : ''}><i class="fas fa-arrow-down"></i></button>
                         <button onclick="toggleDepartmentActive('${d.id}')" style="background:${d.active !== false ? 'var(--success)' : 'var(--neutral)'};color:white;border:none;border-radius:6px;padding:5px 10px;font-size:11px;cursor:pointer;font-family:inherit;"><i class="fas fa-power-off"></i> ${d.active !== false ? 'فعّال' : 'معطّل'}</button>
                         <button onclick="openEditDepartmentModal('${d.id}')" style="background:var(--primary);color:white;border:none;border-radius:6px;padding:5px 10px;font-size:11px;cursor:pointer;font-family:inherit;"><i class="fas fa-edit"></i></button>
-                        ${d.type === 'generic' ? `<button onclick="openManageGenericServicesModal('${d.id}')" style="background:var(--accent);color:white;border:none;border-radius:6px;padding:5px 10px;font-size:11px;cursor:pointer;font-family:inherit;"><i class="fas fa-list"></i> الخدمات</button>` : ''}
                         <button onclick="deleteDepartmentConfirm('${d.id}')" ${canDelete ? '' : 'disabled title="لا يمكن الحذف: قسم أساسي أو يحتوي على بيانات — عطّله بدلاً من ذلك"'} style="background:var(--danger);color:white;border:none;border-radius:6px;padding:5px 10px;font-size:11px;cursor:${canDelete ? 'pointer' : 'not-allowed'};opacity:${canDelete ? '1' : '.4'};font-family:inherit;"><i class="fas fa-trash"></i></button>
                     </div>
                 </div>
             </div>`;
         }).join('');
+    }
+
+    // ترتيب الأقسام يدوياً (المدير العام): يُحفظ في departments/{id}/sortIndex ويُطبّق على التبويبات وشريط الجوال لكل الأجهزة
+    function moveDepartment(deptId, dir) {
+        if (!canManageDepartments()) { showToast('صلاحية المدير العام فقط', 'warning'); return; }
+        if (typeof requireLive === 'function' && !requireLive()) return;
+        const i = departments.findIndex(x => x.id === deptId), j = i + dir;
+        if (i < 0 || j < 0 || j >= departments.length) return;
+        [departments[i], departments[j]] = [departments[j], departments[i]];
+        departments.forEach((d, k) => { d.sortIndex = k; });
+        saveDepartments();
+        renderAdminDepartments();
+        renderDepartmentsHome();
+        addToLog('edit', 'department', 'ترتيب الأقسام');
     }
 
     function openAddDepartmentModal() {
@@ -5708,6 +5737,7 @@ Ferritin"></textarea>
             icon: document.getElementById('newDeptIcon').value.trim() || 'fa-star',
             type: 'generic', active: true, builtin: false, createdAt: Date.now()
         });
+        if (departments.some(x => typeof x.sortIndex === 'number')) departments.forEach((d, k) => { d.sortIndex = k; });
         saveDepartments();
         renderAdminDepartments();
         renderDepartmentsHome();
@@ -7267,7 +7297,8 @@ Ferritin"></textarea>
                 <button class="page-tab" data-dept-id="${d.id}" onclick="openDepartment('${d.id}')">
                     <i class="fas ${d.icon || 'fa-star'}"></i> ${d.name}
                 </button>`).join('') + `
-                <button class="page-tab" data-dept-id="__offers" onclick="openOffersPage()">
+                <span class="page-tab-sep" aria-hidden="true"></span>
+                <button class="page-tab offers-tab" data-dept-id="__offers" onclick="openOffersPage()">
                     <i class="fas fa-tags"></i> العروض
                 </button>`;
             if (activeDeptId) {
@@ -7284,6 +7315,12 @@ Ferritin"></textarea>
                     <span>${d.name}</span>
                 </button>`).join('');
         }
+        // شريط الجوال يتبع ترتيب الأقسام (CSS order فقط — لا تغيير في الأزرار نفسها)
+        const navFor = { lab: ['individual', 'packages'], companies: ['companies'], visits: ['visits'] };
+        departments.forEach((d, i) => (navFor[d.type] || [d.id]).forEach((nav, k) => {
+            const b = document.querySelector(`.mobile-nav-item[data-nav="${nav}"]`);
+            if (b) b.style.order = i * 10 + k;
+        }));
         // ارتفاع الشريط العلوي يتغيّر بعد تحميل الأقسام (قد يلتف لسطرين) — يجب إعادة حساب
         // موضع الشريط اللاصق الداخلي (.lab-tabs) وإلا يتراكب مع المحتوى ويمنع الضغط على الأزرار تحته
         fixStickyTops();
@@ -8325,7 +8362,9 @@ Ferritin"></textarea>
             const data = snap.val();
             if (!applyingCache) { rememberBaseline('departments', data); scheduleCacheSave(); }
             if (data) {
-                const ord = d => DEPT_ORDER_OVERRIDE.hasOwnProperty(d.id) ? DEPT_ORDER_OVERRIDE[d.id] : (100 + (d.order || 0));
+                const manual = Object.values(data).some(x => x && typeof x.sortIndex === 'number');
+                const ord = d => manual ? (typeof d.sortIndex === 'number' ? d.sortIndex : 1000 + (d.order || 0))
+                    : DEPT_ORDER_OVERRIDE.hasOwnProperty(d.id) ? DEPT_ORDER_OVERRIDE[d.id] : (100 + (d.order || 0));
                 departments = Object.keys(data).map(id => ({ id, ...data[id] }))
                     .sort((a, b) => ord(a) - ord(b) || (a.createdAt || 0) - (b.createdAt || 0));
             }
