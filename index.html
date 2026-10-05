@@ -2856,7 +2856,23 @@
         .ic-note { font-size: 11.5px; color: var(--text-light); flex: 1 1 100%; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .ic-offer { display: inline-flex; align-items: center; gap: 3px; background: var(--gold); color: var(--primary-deep); border-radius: 8px; padding: 1px 7px; font-size: 10px; font-weight: 700; margin-left: 5px; vertical-align: 2px; }
         .ic-meta .badge-fasting { font-size: 10px; padding: 1px 7px; }
-        .ic-meta .test-add-btn { margin-right: auto; padding: 3px 10px; }
+        .ic-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; margin-top: auto; min-width: 0; }
+        .ic-foot:empty { display: none; }
+        .svc-ic .ic-name { display: block; -webkit-line-clamp: unset; overflow: visible; overflow-wrap: anywhere; }
+        .svc-ic .ic-sub { white-space: normal; overflow-wrap: anywhere; }
+        .svc-desc { font-size: 11.5px; color: var(--text-light); line-height: 1.55; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .svc-bottom { margin-top: auto; padding-top: 6px; border-top: 1px solid var(--border); display: flex; align-items: center; flex-wrap: wrap; gap: 6px; min-width: 0; }
+        .svc-bottom .test-add-btn, .svc-bottom .ic-cmp { margin-right: auto; flex-shrink: 0; padding: 3px 12px; }
+        .svc-bottom .bps, .svc-bottom .bps-note { margin: 0; padding: 0; }
+        .svc-bottom .oc-uni { margin: 0; font-size: 10.5px; }
+        .ic-code { display: inline-flex; align-items: center; gap: 4px; font-size: 10.5px; font-weight: 700; color: var(--text-light); background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 0 6px; direction: ltr; white-space: nowrap; line-height: 1.7; }
+        .ic-code i { font-size: 9.5px; }
+        .ic-foot .service-card-cat { margin: 0; font-size: 10.5px; padding: 1px 8px; }
+        .ic-foot .bps, .ic-foot .bps-note { margin: 0; padding: 0; min-width: 0; }
+        .ic-foot .test-add-btn { margin-right: auto; padding: 3px 12px; flex-shrink: 0; }
+        .ic-foot .ic-cmp { flex-shrink: 0; }
+        .ic .ic-price { display: flex; flex-direction: column; align-items: center; }
+        .ic .ic-price .price-val { display: flex; flex-direction: column; align-items: center; }
         .ic .bp-strip { margin-top: auto; padding-top: 8px; }
         .ic .bp-cell { min-height: 34px; padding: 3px 2px; }
         .ic .bp-val { font-size: 13px; }
@@ -2882,7 +2898,12 @@
         @media (max-width: 520px) { .branch-pick-text { display: none; } }
 
         /* بطاقات العروض (مدمجة) */
-        #offersGrid { grid-template-columns: repeat(auto-fill, minmax(min(230px, 100%), 1fr)); gap: 10px; }
+        #offersGrid { grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr)); gap: 10px; }
+        .oc2 .ic-name { display: block; -webkit-line-clamp: unset; overflow: visible; overflow-wrap: anywhere; }
+        .oc2 .ic-sub { white-space: normal; overflow-wrap: anywhere; }
+        .oc2 .ic-foot .oc-uni { margin-right: 0; }
+        .oc2 .ic-foot .oc-end { margin-right: auto; }
+        @media (max-width: 600px) { #offersGrid { grid-template-columns: minmax(0, 1fr); gap: 8px; } }
         .oc { background: var(--card-bg); border: 1px solid var(--gold-border); border-inline-start: 4px solid var(--gold); border-radius: 12px; padding: 10px 12px; display: flex; flex-direction: column; gap: 4px; cursor: pointer; height: 100%; min-width: 0; transition: box-shadow .2s, border-color .2s; content-visibility: auto; contain-intrinsic-size: auto 96px; }
         .oc:hover { border-color: var(--gold); box-shadow: var(--shadow-sm); }
         .oc-top { display: flex; align-items: center; gap: 6px; min-width: 0; }
@@ -4551,7 +4572,7 @@ Ferritin"></textarea>
         document.getElementById('browseGrid').innerHTML = filtered.length === 0
             ? '<div style="text-align:center;padding:40px;color:var(--text-light);"><i class="fas fa-inbox" style="font-size:32px;margin-bottom:12px;display:block;"></i>لا توجد باقات بهذا السعر</div>'
             : filtered.map(pkg => { const tat = getPackageTat(pkg); const n = (pkg.tests || []).length; return `
-            <div class="package-card ic ic-pkg ${compareList.includes(pkg.id) ? 'compared' : ''}" id="card-${pkg.id}" onclick="if(!event.target.closest('button,a,input,select'))showDetails(${pkg.id})" title="عرض التفاصيل">
+            <div class="package-card ic svc-ic ic-pkg ${compareList.includes(pkg.id) ? 'compared' : ''}" id="card-${pkg.id}" onclick="if(!event.target.closest('button,a,input,select'))showDetails(${pkg.id})" title="عرض التفاصيل">
                 <div class="ic-head">
                     <div class="ic-titles">
                         <div class="card-title ic-name">${escapeHtml(pkg.name)}</div>
@@ -4563,14 +4584,14 @@ Ferritin"></textarea>
                     </div>
                 </div>
                 <div class="ic-meta">
+                    ${pkg.code ? `<span class="ic-code"><i class="fas fa-barcode"></i> ${escapeHtml(pkg.code)}</span>` : ''}
                     ${pkg.category ? `<span class="service-card-cat">${escapeHtml(pkg.category)}</span>` : ''}
                     <span class="ic-chip"><i class="fas fa-vial"></i> ${n} ${pkg.individualTest ? 'تحاليل متاحة' : 'تحليل'}</span>
                     ${tat ? `<span class="ic-chip" style="color:var(--gold-text);"><i class="fas fa-clock"></i> ${formatTat(tat)}</span>` : ''}
                     ${pkg.fasting ? '<span class="badge-fasting requires"><i class="fas fa-moon"></i> صيام</span>' : ''}
                     ${pkg.homeVisit ? '<span class="ic-chip"><i class="fas fa-home"></i> منزلية</span>' : ''}
-                    <button class="ic-cmp ${compareList.includes(pkg.id) ? 'active' : ''}" onclick="event.stopPropagation();toggleCompare(${pkg.id})" title="إضافة للمقارنة"><i class="fas fa-columns"></i> ${compareList.includes(pkg.id) ? 'في المقارنة' : 'مقارنة'}</button>
                 </div>
-                ${branchSummary(pkg)}
+                ${priceBottomHtml(pkg, `<button class="ic-cmp ${compareList.includes(pkg.id) ? 'active' : ''}" onclick="event.stopPropagation();toggleCompare(${pkg.id})" title="إضافة للمقارنة"><i class="fas fa-columns"></i> ${compareList.includes(pkg.id) ? 'في المقارنة' : 'مقارنة'}</button>`)}
             </div>`; }).join('');
     }
 
@@ -4830,7 +4851,6 @@ Ferritin"></textarea>
                         <i class="fas fa-copy" style="font-size:16px;"></i> نسخ البيانات
                     </button>
                     ${canItem(KINDS.package, 'edit') ? `<button onclick="openItemCard('package','${refFor(found)}')" style="background:var(--primary);color:white;border:none;padding:10px 20px;border-radius:10px;font-size:14px;font-family:inherit;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:8px;"><i class="fas fa-edit"></i> تعديل الباقة</button>` : ''}
-                    ${canItem(KINDS.package, 'add') ? `<button onclick="openItemCard('package', null, '${refFor(found)}')" style="background:var(--accent);color:white;border:none;padding:10px 20px;border-radius:10px;font-size:14px;font-family:inherit;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:8px;"><i class="fas fa-clone"></i> نسخ كباقة جديدة</button>` : ''}
                 </div>
             </div>`;
         document.getElementById('modalOverlay').classList.add('show');
@@ -7482,18 +7502,26 @@ Ferritin"></textarea>
                 : `<span class="oc-end"><i class="far fa-calendar"></i> حتى ${escapeHtml(o.endDate)}</span>`;
         }
         return `
-            <div class="oc" onclick="showItemDetails('${o.kk}','${refFor(o.obj)}')" title="${escapeHtml(o.name)} — اضغط لعرض التفاصيل">
-                <div class="oc-top">
-                    <span class="oc-dept"><i class="fas ${escapeHtml(o.dept.icon || 'fa-star')}"></i> ${escapeHtml(o.dept.name)}${o.tag ? ' · ' + escapeHtml(o.tag) : ''}</span>
-                    ${end}
+            <div class="service-card ic ic-is-offer oc2" onclick="showItemDetails('${o.kk}','${refFor(o.obj)}')" title="عرض التفاصيل">
+                <div class="ic-head">
+                    <div class="ic-titles">
+                        <div class="service-card-name ic-name">${escapeHtml(o.name)}</div>
+                        ${o.sub ? `<div class="ic-sub" style="direction:ltr;text-align:right;">${escapeHtml(o.sub)}</div>` : ''}
+                    </div>
+                    <div class="service-card-price ic-price">
+                        ${disc ? `<s class="ic-orig">${escapeHtml(o.orig)}</s>` : ''}
+                        <div class="price-val" style="color:var(--warning-fg);">${escapeHtml(o.price)}</div>
+                        <div class="price-cur">ريال</div>
+                    </div>
                 </div>
-                <div class="oc-name">${escapeHtml(o.name)}</div>
-                ${o.sub ? `<div class="oc-en">${escapeHtml(o.sub)}</div>` : ''}
-                ${o.tat ? `<div class="oc-tat"><i class="fas fa-clock"></i> النتيجة: ${escapeHtml(formatTat(o.tat))}</div>` : ''}
-                <div class="oc-price">
-                    <span class="oc-val">${escapeHtml(o.price)}</span><span class="oc-cur">ريال</span>
-                    ${disc ? `<s class="oc-orig">${escapeHtml(o.orig)}</s><span class="oc-pct">خصم ${disc}%</span>` : ''}
+                ${o.tat ? `<div class="ic-note"><i class="fas fa-clock"></i> النتيجة: ${escapeHtml(formatTat(o.tat))}</div>` : ''}
+                <div class="ic-foot">
+                    ${o.code ? `<span class="ic-code"><i class="fas fa-barcode"></i> ${escapeHtml(o.code)}</span>` : ''}
+                    <span class="service-card-cat"><i class="fas ${escapeHtml(o.dept.icon || 'fa-star')}"></i> ${escapeHtml(o.dept.name)}${o.tag ? ' · ' + escapeHtml(o.tag) : ''}</span>
+                    ${o.cat && o.cat !== 'عروض' ? `<span class="service-card-cat">${escapeHtml(o.cat)}</span>` : ''}
+                    ${disc ? `<span class="oc-pct">خصم ${disc}%</span>` : ''}
                     <span class="oc-uni" title="سعر موحّد لجميع الفروع"><i class="fas fa-store"></i> موحّد</span>
+                    ${end}
                 </div>
             </div>`;
     }
@@ -7670,7 +7698,20 @@ Ferritin"></textarea>
 
         const canEdit = hasPerm(deptId, 'edit'), canDelete = hasPerm(deptId, 'delete');
         grid.innerHTML = list.map(s => { const kk = (s.isOffer ? 'go:' : 'g:') + deptId; return `
-            <div class="service-card ic ${s.isOffer ? 'ic-is-offer' : ''}" onclick="showItemDetails('${kk}','${refFor(s)}')" title="عرض التفاصيل">
+            ${serviceCardHtml(s, kk, s.description)}`; }).join('');
+    }
+
+    // بطاقة الخدمة الموحّدة (الأسنان، الجلدية، العلاج الطبيعي، الزيارات المنزلية، وأي قسم جديد):
+    // الاسم كاملاً + السعر، ثم الكود والتصنيف، ثم الوصف إن وُجد، وأسعار الفروع أسفل البطاقة — التفاصيل الكاملة بالضغط
+    // سطر أسعار الفروع أسفل البطاقة — مكوّن واحد للخدمات والتحاليل والباقات (extra = زر إضافي في نفس السطر)
+    function priceBottomHtml(o, extra) {
+        const inner = hasBranchPrices(o) ? branchSummary(o)
+            : `<div class="bps"><span class="${o.isOffer ? 'oc-uni' : 'bps-same'}"><i class="fas fa-store"></i> سعر موحّد لجميع الفروع</span></div>`;
+        return `<div class="svc-bottom">${inner}${extra || ''}</div>`;
+    }
+    function serviceCardHtml(s, kk, desc) {
+        return `
+            <div class="service-card ic svc-ic ${s.isOffer ? 'ic-is-offer' : ''}" onclick="showItemDetails('${kk}','${refFor(s)}')" title="عرض التفاصيل">
                 <div class="ic-head">
                     <div class="ic-titles">
                         <div class="service-card-name ic-name">${s.isOffer ? '<span class="ic-offer"><i class="fas fa-tag"></i> عرض</span>' : ''}${escapeHtml(s.name)}</div>
@@ -7682,12 +7723,13 @@ Ferritin"></textarea>
                         <div class="price-cur">ريال</div>
                     </div>
                 </div>
-                <div class="ic-meta">
+                ${s.code || s.cat ? `<div class="ic-meta">
+                    ${s.code ? `<span class="ic-code"><i class="fas fa-barcode"></i> ${escapeHtml(s.code)}</span>` : ''}
                     ${s.cat ? `<span class="service-card-cat">${escapeHtml(s.cat)}</span>` : ''}
-                    ${s.description ? `<span class="ic-note"><i class="fas fa-info-circle"></i> ${escapeHtml(s.description)}</span>` : ''}
-                </div>
-                ${branchSummary(s)}
-            </div>`; }).join('');
+                </div>` : ''}
+                ${desc ? `<div class="svc-desc"><i class="fas fa-info-circle"></i> ${escapeHtml(desc)}</div>` : ''}
+                ${priceBottomHtml(s)}
+            </div>`;
     }
 
     let currentGenericCat = 'all';
@@ -7927,7 +7969,7 @@ Ferritin"></textarea>
             const inCart = testCart.some(c => c.idx === realIdx);
             const orig = t.isOffer ? (individualTests.find(x => !x.isOffer && x.name === t.name) || {}).price : '';
             return `
-            <div class="test-card ic ${t.isOffer ? 'ic-is-offer' : ''}" onclick="showItemDetails('${kk}','${refFor(t)}')" title="عرض التفاصيل">
+            <div class="test-card ic svc-ic ${t.isOffer ? 'ic-is-offer' : ''}" onclick="showItemDetails('${kk}','${refFor(t)}')" title="عرض التفاصيل">
                 <div class="ic-head">
                     <div class="ic-titles">
                         <div class="test-card-name ic-name">${escapeHtml(t.name)}</div>
@@ -7940,15 +7982,13 @@ Ferritin"></textarea>
                     </div>
                 </div>
                 <div class="ic-meta">
+                    ${t.code ? `<span class="ic-code"><i class="fas fa-barcode"></i> ${escapeHtml(t.code)}</span>` : ''}
                     ${t.isOffer ? `<span class="ic-offer"><i class="fas fa-${t.offerType === 'فروع' ? 'store' : 'home'}"></i> ${t.offerType === 'فروع' ? 'عرض فروع' : 'عرض زيارات منزلية'}</span>` : ''}
                     ${t.tat ? `<span class="ic-chip"><i class="fas fa-clock"></i> ${formatTat(t.tat)}</span>` : ''}
                     ${t.cat ? `<span class="ic-chip"><i class="fas fa-tag"></i> ${escapeHtml(t.cat)}</span>` : ''}
                     ${t.fasting ? '<span class="badge-fasting requires"><i class="fas fa-moon"></i> صيام</span>' : ''}
-                    <button class="test-add-btn ${inCart ? 'added' : ''}" onclick="event.stopPropagation();toggleTestCart(${realIdx})">
-                        ${inCart ? '<i class="fas fa-check"></i> مضاف' : '<i class="fas fa-plus"></i> أضف'}
-                    </button>
                 </div>
-                ${branchSummary(t)}
+                ${priceBottomHtml(t, `<button class="test-add-btn ${inCart ? 'added' : ''}" onclick="event.stopPropagation();toggleTestCart(${realIdx})">${inCart ? '<i class="fas fa-check"></i> مضاف' : '<i class="fas fa-plus"></i> أضف'}</button>`)}
             </div>`;
         }).join('');
     }
@@ -8149,23 +8189,7 @@ Ferritin"></textarea>
         document.getElementById('servicesGrid').innerHTML = filtered.map(s => {
             const kk = s.isOffer ? 'serviceOffer' : 'service';
             return `
-            <div class="service-card ic ${s.isOffer ? 'ic-is-offer' : ''}" onclick="showItemDetails('${kk}','${refFor(s)}')" title="عرض التفاصيل">
-                <div class="ic-head">
-                    <div class="ic-titles">
-                        <div class="service-card-name ic-name">${s.isOffer ? '<span class="ic-offer"><i class="fas fa-tag"></i> عرض</span>' : ''}${escapeHtml(s.name)}</div>
-                    </div>
-                    <div class="service-card-price ic-price">
-                        ${s.isOffer && s.origPrice ? `<s class="ic-orig">${escapeHtml(s.origPrice)}</s>` : ''}
-                        <div class="price-val" ${s.isOffer ? 'style="color:var(--warning-fg);"' : ''}>${cardPriceHtml(s)}</div>
-                        <div class="price-cur">ريال</div>
-                    </div>
-                </div>
-                <div class="ic-meta">
-                    ${s.cat ? `<span class="service-card-cat">${escapeHtml(s.cat)}</span>` : ''}
-                    ${s.note ? `<span class="ic-note"><i class="fas fa-info-circle"></i> ${escapeHtml(s.note)}</span>` : ''}
-                </div>
-                ${branchSummary(s)}
-            </div>`;
+            ${serviceCardHtml(s, kk, s.note)}`;
         }).join('');
     }
 
