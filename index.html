@@ -2878,6 +2878,12 @@
         .svc-bottom .oc-uni { margin: 0; font-size: 10.5px; }
         .ic-code { display: inline-flex; align-items: center; gap: 4px; font-size: 10.5px; font-weight: 700; color: var(--text-light); background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 0 6px; direction: ltr; white-space: nowrap; line-height: 1.7; }
         .ic-code i { font-size: 9.5px; }
+        .code-copy { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 16px; margin-left: -3px; margin-right: 1px; padding: 0; border: none; border-radius: 4px; background: none; color: var(--primary-fg); cursor: pointer; font-family: inherit; }
+        .code-copy::after { content: ''; position: absolute; inset: -9px -7px; }
+        .code-copy:hover { background: var(--primary-soft); }
+        .code-copy.done { color: var(--success-fg); }
+        .code-copy i { font-size: 10.5px; }
+        @media (hover: none) { .code-copy { width: 22px; } .code-copy i { font-size: 12px; } }
         .ic-foot .service-card-cat { margin: 0; font-size: 10.5px; padding: 1px 8px; }
         .ic-foot .bps, .ic-foot .bps-note { margin: 0; padding: 0; min-width: 0; }
         .ic-foot .test-add-btn { margin-right: auto; padding: 3px 12px; flex-shrink: 0; }
@@ -4595,7 +4601,7 @@ Ferritin"></textarea>
                     </div>
                 </div>
                 <div class="ic-meta">
-                    ${pkg.code ? `<span class="ic-code"><i class="fas fa-barcode"></i> ${escapeHtml(pkg.code)}</span>` : ''}
+                    ${codeChip(pkg.code)}
                     ${pkg.category ? `<span class="service-card-cat">${escapeHtml(pkg.category)}</span>` : ''}
                     <span class="ic-chip"><i class="fas fa-vial"></i> ${n} ${pkg.individualTest ? 'تحاليل متاحة' : 'تحليل'}</span>
                     ${tat ? `<span class="ic-chip" style="color:var(--gold-text);"><i class="fas fa-clock"></i> ${formatTat(tat)}</span>` : ''}
@@ -4901,6 +4907,25 @@ Ferritin"></textarea>
     })();
 
     // Robust clipboard copy that works on desktop and mobile (incl. iOS Safari)
+    // شارة الكود مع زر نسخ صغير — النسخ مباشرة بدون فتح التفاصيل (لا تظهر إن لم يكن للعنصر كود)
+    function codeChip(code) {
+        if (code === undefined || code === null || String(code).trim() === '') return '';
+        const c = escapeHtml(String(code).trim());
+        return `<span class="ic-code"><i class="fas fa-barcode"></i> ${c}<button type="button" class="code-copy" data-code="${c}" title="نسخ الكود" aria-label="نسخ الكود ${c}" onclick="event.stopPropagation();copyCode(this)"><i class="far fa-copy"></i></button></span>`;
+    }
+    function copyCode(btn) {
+        const code = btn && btn.dataset ? btn.dataset.code : '';
+        if (!code) return;
+        copyToClipboard(code).then(ok => {
+            if (!ok) { showToast('تعذّر النسخ، حاول مرة أخرى', 'warning'); return; }
+            btn.classList.add('done');
+            btn.innerHTML = '<i class="fas fa-check"></i>';
+            clearTimeout(btn._t);
+            btn._t = setTimeout(() => { btn.classList.remove('done'); btn.innerHTML = '<i class="far fa-copy"></i>'; }, 1500);
+            showToast('تم نسخ الكود: ' + code, 'success');
+        });
+    }
+
     function copyToClipboard(text) {
         if (navigator.clipboard && window.isSecureContext) {
             return navigator.clipboard.writeText(text)
@@ -7527,7 +7552,7 @@ Ferritin"></textarea>
                 </div>
                 ${o.tat ? `<div class="ic-note"><i class="fas fa-clock"></i> النتيجة: ${escapeHtml(formatTat(o.tat))}</div>` : ''}
                 <div class="ic-foot">
-                    ${o.code ? `<span class="ic-code"><i class="fas fa-barcode"></i> ${escapeHtml(o.code)}</span>` : ''}
+                    ${codeChip(o.code)}
                     <span class="service-card-cat"><i class="fas ${escapeHtml(o.dept.icon || 'fa-star')}"></i> ${escapeHtml(o.dept.name)}${o.tag ? ' · ' + escapeHtml(o.tag) : ''}</span>
                     ${o.cat && o.cat !== 'عروض' ? `<span class="service-card-cat">${escapeHtml(o.cat)}</span>` : ''}
                     ${disc ? `<span class="oc-pct">خصم ${disc}%</span>` : ''}
@@ -7735,7 +7760,7 @@ Ferritin"></textarea>
                     </div>
                 </div>
                 ${s.code || s.cat ? `<div class="ic-meta">
-                    ${s.code ? `<span class="ic-code"><i class="fas fa-barcode"></i> ${escapeHtml(s.code)}</span>` : ''}
+                    ${codeChip(s.code)}
                     ${s.cat ? `<span class="service-card-cat">${escapeHtml(s.cat)}</span>` : ''}
                 </div>` : ''}
                 ${desc ? `<div class="svc-desc"><i class="fas fa-info-circle"></i> ${escapeHtml(desc)}</div>` : ''}
@@ -7993,7 +8018,7 @@ Ferritin"></textarea>
                     </div>
                 </div>
                 <div class="ic-meta">
-                    ${t.code ? `<span class="ic-code"><i class="fas fa-barcode"></i> ${escapeHtml(t.code)}</span>` : ''}
+                    ${codeChip(t.code)}
                     ${t.isOffer ? `<span class="ic-offer"><i class="fas fa-${t.offerType === 'فروع' ? 'store' : 'home'}"></i> ${t.offerType === 'فروع' ? 'عرض فروع' : 'عرض زيارات منزلية'}</span>` : ''}
                     ${t.tat ? `<span class="ic-chip"><i class="fas fa-clock"></i> ${formatTat(t.tat)}</span>` : ''}
                     ${t.cat ? `<span class="ic-chip"><i class="fas fa-tag"></i> ${escapeHtml(t.cat)}</span>` : ''}
