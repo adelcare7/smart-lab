@@ -2905,7 +2905,8 @@
         .bps-note { margin-top: auto; padding-top: 4px; font-size: 10.5px; font-weight: 600; color: var(--warning-fg); }
         .bp-pkg .bps, .bp-pkg .bps-note { margin: 0 0 10px; }
         .bp-na-big { font-size: 12px; color: var(--text-light); font-weight: 700; }
-        .price-val:has(.bp-na-big) + .price-cur { display: none; }
+        .price-val:has(.bp-na-big) + .price-cur, .price-val:has(.bp-cur) + .price-cur { display: none; }
+        .bp-cur { display: block; font-size: 11px; font-weight: 700; color: var(--text-light); line-height: 1.2; }
         .bp-cell.mine { background: var(--primary); border-radius: 6px; }
         .bp-cell.mine .bp-name, .bp-cell.mine .bp-val { color: #fff !important; }
         .branch-pick { position: relative; cursor: pointer; }
@@ -5530,8 +5531,9 @@ Ferritin"></textarea>
             return v === null ? `<span class="bp-from">${escapeHtml(myBranch)}</span><span class="bp-na-big">غير متوفرة</span>` : `<span class="bp-from">${escapeHtml(myBranch)}</span>${escapeHtml(v)}`;
         }
         const info = branchInfo(o);
-        if (info.allSame || info.commonCount >= 2) return escapeHtml(info.common);
-        return info.min === null ? escapeHtml(o.price) : `<span class="bp-from">يبدأ من</span>${info.min}`;
+        if (info.allSame) return escapeHtml(info.common);
+        // أسعار الفروع مختلفة: أقل سعر متاح بصيغة "يبدأ من 48 ر.س" (التفاصيل تعرض كل الفروع)
+        return info.min === null ? escapeHtml(o.price) : `<span class="bp-from">يبدأ من</span>${info.min}<span class="bp-cur">ر.س</span>`;
     }
     // السعر الفعلي لهذا الجهاز (قائمة التحاليل المضافة): سعر فرعي إن اختير ومتوفر، وإلا السعر العام
     function effectivePrice(o) {
