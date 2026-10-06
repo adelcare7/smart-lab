@@ -5296,7 +5296,7 @@ Ferritin"></textarea>
             errEl.style.display = 'block'; return;
         }
         auth.signInWithEmailAndPassword(email, pass).then(() => {
-            logLogin(email);
+            // تسجيل الدخول لم يعد يُكتب في سجل العمليات (السجل للعمليات الإدارية التي تغيّر البيانات فقط)
             try { localStorage.setItem('lastUsername', raw); } catch (e) {}
             document.getElementById('adminPassInput').value = '';
         }).catch(err => {
@@ -5543,6 +5543,10 @@ Ferritin"></textarea>
             return `<div class="bps-note"><i class="fas fa-circle-info"></i> ${mineV === null ? 'غير متوفرة في فرعك' : 'السعر يختلف في فروع أخرى'} — اضغط للتفاصيل</div>`;
         }
         if (info.allSame) return `<div class="bps"><span class="bps-same"><i class="fas fa-check"></i> نفس السعر في الفروع الخمسة</span></div>`;
+        // متوفرة في فرع واحد فقط → شارة واحدة بدل شارات "غير متوفرة" للفروع الأخرى
+        const availB = info.list.filter(x => x.v !== null && x.v !== undefined && x.v !== '' && !isNaN(Number(x.v)));
+        if (availB.length === 1) return `<div class="bps"><span class="bps-diff"><i class="fas fa-location-dot"></i> متوفرة في ${availB[0].b.n} فقط</span></div>`;
+        if (!availB.length) return `<div class="bps"><span class="bps-na">غير متوفرة في كل الفروع</span></div>`;
         const groupRest = info.commonCount >= 2;
         const chips = info.list.filter(x => !groupRest || x.v === null || Number(x.v) !== info.common).map(x => x.v === null
             ? `<span class="bps-na">${x.b.n} غير متوفرة</span>`
@@ -5861,6 +5865,9 @@ Ferritin"></textarea>
         if (titleChanged) {
             const sim = findSimilar(kind, data, obj);
             if (sim.length && !confirm('تنبيه: يوجد ' + kind.label + ' بنفس الاسم:\n• ' + sim.slice(0, 3).map(kind.title).join('\n• ') + '\n\nهل تريد الحفظ رغم ذلك؟')) return;
+        }
+        if (!isNew && Object.keys(data).every(k => JSON.stringify(data[k] === null ? undefined : data[k]) === JSON.stringify(obj[k] === null ? undefined : obj[k]))) {
+            showToast('لا توجد تغييرات للحفظ'); closeItemCard(); return;
         }
         const now = Date.now(), by = actorName();
         let target;
@@ -7335,7 +7342,7 @@ Ferritin"></textarea>
         }
         const list = auditEntries.filter(e =>
             (!dept || (dept === '-' ? !e.dept : e.dept === dept)) &&
-            (!act || e.action === act) &&
+            (act ? e.action === act : e.action !== 'login') &&
             (!q || normalizeArabic(`${e.byName || ''} ${e.by || ''} ${e.name || ''} ${auditDeptName(e.dept)}`).includes(q))
         );
         const countEl = document.getElementById('auditCount');
@@ -7391,7 +7398,7 @@ Ferritin"></textarea>
         a.click();
         setTimeout(() => URL.revokeObjectURL(url), 1000);
         const n = data.packages.length + data.individualTests.length + data.services.length + data.companies.length + Object.values(generic).reduce((a, l) => a + l.length, 0);
-        addToLog('add', 'settings', 'تنزيل نسخة احتياطية كاملة', '');
+        // تنزيل نسخة احتياطية لا يغيّر أي بيانات — لا يُسجَّل في سجل العمليات
         showToast('تم تنزيل نسخة احتياطية كاملة (' + n + ' عنصر)');
     }
 
@@ -8165,7 +8172,7 @@ Ferritin"></textarea>
                     <div class="form-group of-season"><label class="req-label">تاريخ النهاية</label><input type="date" class="admin-input" id="of_end" value="${escapeHtml(v('endDate'))}" ${dis}></div>
                     <div class="form-group"><label>أولوية الظهور (1 = أولاً، اختياري)</label><input type="number" min="1" class="admin-input" id="of_priority" value="${escapeHtml(v('priority'))}" ${dis}></div>
                     <div class="form-group of-lab"><label>مدة النتيجة</label><input type="text" class="admin-input" id="of_tat" value="${escapeHtml(v('tat'))}" ${dis}></div>
-                    <div class="form-group of-lab"><label>مكان العرض</label><select class="admin-input" id="of_type" ${dis}><option value="فروع" ${v('offerType') === 'فروع' ? 'selected' : ''}>فروع</option><option value="منزلية" ${v('offerType') === 'منزلية' ? 'selected' : ''}>زيارات منزلية</option></select></div>
+                    <div class="form-group of-lab"><label>مكان العرض</label><select class="admin-input" id="of_type" ${dis}><option value="">— غير محدد —</option><option value="فروع" ${v('offerType') === 'فروع' ? 'selected' : ''}>فروع</option><option value="منزلية" ${v('offerType') === 'منزلية' ? 'selected' : ''}>زيارات منزلية</option></select></div>
                     <div class="form-group of-lab"><label style="display:flex;align-items:center;gap:6px;cursor:pointer;"><input type="checkbox" id="of_fasting" ${v('fasting') ? 'checked' : ''} ${dis}> يتطلب صيام</label></div>
                     <div class="form-group" style="grid-column:1/-1;"><label>الوصف / التفاصيل</label><textarea class="admin-input" id="of_desc" rows="2" ${dis}>${escapeHtml(desc)}</textarea></div>
                 </div>
@@ -8235,9 +8242,15 @@ Ferritin"></textarea>
         const desc = g('of_desc').value.trim() || null, code = g('of_code').value.trim() || null;
         // الحقول حسب القسم (نفس أسماء الحقول المستخدمة في القسم نفسه)
         const data = { price, origPrice: orig, code, cat, offerKind: kindV, startDate: start, endDate: end, priority: prio };
-        if (d.type === 'lab') Object.assign(data, { nameAr: name, name: nameEn.toUpperCase(), tat: g('of_tat').value.trim() || null, offerType: g('of_type').value, fasting: g('of_fasting').checked, desc });
+        if (d.type === 'lab') Object.assign(data, { nameAr: name, name: nameEn.toUpperCase(), tat: g('of_tat').value.trim() || null, offerType: g('of_type').value || null, fasting: g('of_fasting').checked, desc });
         else if (d.type === 'visits') Object.assign(data, { name, nameEn: nameEn || null, details: desc });
         else Object.assign(data, { name, nameEn: nameEn || null, description: desc });
+        // لا تغيير فعلي = لا حفظ ولا تسجيل (القيم الفارغة/false/النوع المستنتج للعروض القديمة تُعامل كما هي)
+        const norm = (k, v, isObj) => { if (v === null || v === '' || v === false) return undefined; return v; };
+        const sameVal = k => k === 'offerKind' ? data[k] === offerKindOf(obj) : JSON.stringify(norm(k, data[k])) === JSON.stringify(norm(k, obj[k]));
+        if (!isNew && !moving && Object.keys(data).every(sameVal)) {
+            showToast('لا توجد تغييرات للحفظ'); closeOfferCard(); return;
+        }
         const now = Date.now(), by = actorName();
         let target;
         if (isNew || moving) {
@@ -9359,7 +9372,7 @@ Ferritin"></textarea>
                         <input type="text" id="auditSearch" class="admin-input" placeholder="🔍 ابحث باسم المستخدم أو العنصر..." oninput="renderChangeLog()" style="flex:1;min-width:180px;">
                         <select id="auditDeptFilter" class="admin-input" onchange="renderChangeLog()" style="max-width:160px;"><option value="">كل الأقسام</option></select>
                         <select id="auditActionFilter" class="admin-input" onchange="renderChangeLog()" style="max-width:150px;">
-                            <option value="">كل العمليات</option><option value="login">تسجيل دخول</option><option value="add">إضافة</option>
+                            <option value="">كل العمليات</option><option value="login">تسجيل دخول (قديم)</option><option value="add">إضافة</option>
                             <option value="edit">تعديل</option><option value="delete">حذف</option><option value="disable">تعطيل</option><option value="enable">تفعيل</option>
                         </select>
                     </div>
