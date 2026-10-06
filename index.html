@@ -2537,7 +2537,7 @@
         [data-theme="dark"] .logo, [data-theme="dark"] .logo h1 { color: var(--text); }
 
         /* ---------- تبويبات الأقسام ---------- */
-        .page-tabs { background: var(--card-bg); border-bottom: 1px solid var(--border); padding: 8px 16px; gap: 6px; }
+        .page-tabs { background: var(--card-bg); border-bottom: 1px solid var(--border); padding: 8px 16px; gap: 6px; min-height: 56px; align-content: center; }
         .page-tab { font-size: 14.5px; font-weight: 600; color: var(--text-light); border-radius: 10px; padding: 8px 18px; }
         .page-tab:hover { background: var(--primary-soft); color: var(--primary-fg); }
         .page-tab.active { background: var(--primary); color: #fff; box-shadow: var(--shadow-sm); }
@@ -2921,6 +2921,23 @@
         .oc2 .ic-sub { white-space: normal; overflow-wrap: anywhere; }
         .oc2 .ic-foot .oc-uni { margin-right: 0; }
         .oc2 .ic-foot .oc-end { margin-right: auto; }
+        /* فلتر نوع العرض: نفس شكل وحجم فلاتر الأقسام */
+        .offer-kind-seg { margin-bottom: 6px; gap: 5px; }
+        .individual-cat-btn.kind-chip { padding: 2px 10px; font-size: 11.5px; line-height: 1.6; min-height: 0; font-weight: 600; }
+        .kind-chip i { font-size: 9.5px; margin-left: 2px; }
+        .kind-chip.seasonal.active { background: var(--gold); border-color: var(--gold); color: #3d2b00; }
+        .oc-kind { font-size: 10.5px; font-weight: 700; border-radius: 999px; padding: 1px 8px; color: var(--primary-fg); background: var(--primary-soft); border: 1px solid var(--primary-border); white-space: nowrap; }
+        .oc-kind.seasonal { color: var(--warning-fg); background: var(--gold-soft); border-color: var(--gold-border); }
+        #mktOffersList .il-toolbar .admin-input { width: auto; flex: 1 1 150px; min-width: 0; }
+        #mktOffersList .il-toolbar #mktQ { flex: 2 1 220px; }
+        .mkt-hint { font-size: 11.5px; color: var(--text-light); margin: 8px 0; }
+        .mkt-order { display: flex; flex-direction: column; gap: 2px; }
+        .mkt-order .il-btn { min-height: 22px; min-width: 26px; padding: 0; }
+        .mkt-order .il-btn:disabled { opacity: .3; cursor: not-allowed; }
+        .mkt-num { min-width: 26px; text-align: center; font-size: 12px; font-weight: 700; color: var(--text-light); }
+        .mkt-dept { color: var(--accent-fg); font-weight: 600; }
+        .mkt-kind { font-weight: 600; color: var(--primary-fg); }
+        .mkt-kind.seasonal { color: var(--warning-fg); }
         @media (max-width: 600px) { #offersGrid { grid-template-columns: minmax(0, 1fr); gap: 8px; } }
         .oc { background: var(--card-bg); border: 1px solid var(--gold-border); border-inline-start: 4px solid var(--gold); border-radius: 12px; padding: 10px 12px; display: flex; flex-direction: column; gap: 4px; cursor: pointer; height: 100%; min-width: 0; transition: box-shadow .2s, border-color .2s; content-visibility: auto; contain-intrinsic-size: auto 96px; }
         .oc:hover { border-color: var(--gold); box-shadow: var(--shadow-sm); }
@@ -3084,13 +3101,13 @@
     </header>
 
     <!-- Main Page Tabs -->
-    <!-- أول دخول على جهاز جديد: مؤشر تحميل بدل صفحة فارغة -->
-    <div class="data-loading-box" id="dataLoadingBox"><i class="fas fa-spinner fa-spin"></i> جاري تحميل البيانات…</div>
     <!-- عند عرض آخر بيانات محفوظة على الجهاز: تنبيه صغير حتى تصل البيانات الحية -->
     <div class="sync-pill" id="syncPill" style="display:none;"><i class="fas fa-sync-alt fa-spin"></i> <span>جاري تحديث البيانات…</span></div>
     <div class="page-tabs" id="pageTabs">
         <span id="pageTabsDepts" style="display:contents;"></span>
     </div>
+    <!-- أول دخول على جهاز جديد: مؤشر تحميل بدل صفحة فارغة — تحت شريط الأقسام حتى لا يغيّر مكانه -->
+    <div class="data-loading-box" id="dataLoadingBox"><i class="fas fa-spinner fa-spin"></i> جاري تحميل البيانات…</div>
 
     <!-- GENERIC DEPARTMENT PAGE (لأي قسم عام كالأسنان والجلدية) -->
     <div id="genericDeptPage" style="display:none;">
@@ -3339,10 +3356,12 @@
                 <h2><i class="fas fa-tags"></i> العروض</h2>
                 <p style="color:var(--text-light);font-size:13px;">كل العروض السارية في جميع الأقسام — اضغط على العرض لعرض تفاصيله</p>
             </div>
+            <div class="dept-settings-bar" style="padding:0;margin:6px 0;"><button class="dept-settings-btn" data-offers-settings style="display:none;" onclick="openOffersSettings()"><i class="fas fa-bullhorn"></i> إعدادات العروض</button></div>
             <div class="services-search-wrap">
                 <input type="text" class="individual-search" id="offersSearchInput" placeholder="ابحث عن عرض..." oninput="renderOffersPage()">
                 <i class="fas fa-search individual-search-icon"></i>
             </div>
+            <div class="individual-cats offer-kind-seg" id="offersKindFilter" role="tablist" aria-label="نوع العرض"></div>
             <div class="individual-cats" id="offersDeptFilter"></div>
             <div class="individual-stats" id="offersStats"></div>
             <div class="services-grid" id="offersGrid"></div>
@@ -3512,6 +3531,10 @@ Ferritin"></textarea>
     function canManageDepartments() {
         return !!currentUserProfile && currentUserProfile.role === 'superadmin';
     }
+    // قسم التسويق: صلاحيات "إدارة العروض" مخزّنة كقسم افتراضي باسم offers داخل صلاحيات المستخدم
+    // (users/{u}/departments/offers/{add,edit,toggle,delete}) — تشمل العروض فقط في كل الأقسام، ولا تشمل الخدمات أو الأسعار
+    const MKT = 'offers';
+    function canManageOffers() { return ['add', 'edit', 'toggle', 'delete'].some(a => hasPerm(MKT, a)); }
     function canManageUsers() {
         return !!currentUserProfile && currentUserProfile.role === 'superadmin';
     }
@@ -3692,6 +3715,7 @@ Ferritin"></textarea>
     // أي قسم جديد يُضاف لاحقاً من لوحة التحكم لا يظهر هنا فيُرتَّب حسب تاريخ إنشائه بعدها
     const DEPT_ORDER_OVERRIDE = { lab: 0, teeth: 1, skin: 2, companies: 3, visits: 4 };
     let departments = [...DEFAULT_DEPARTMENTS];
+    let departmentsLoaded = false;   // true بعد وصول قائمة الأقسام الفعلية (من الجهاز أو Firebase) — قبلها لا يُرسم الشريط بالقائمة الافتراضية
     let genericServicesByDept = {}; // { [deptId]: [ {id,name,description,price,active,createdAt} ] } — للأقسام العامة فقط
     let currentDeptId = 'lab';       // القسم المفتوح حالياً في الواجهة (المختبر والباقات هو القسم الافتراضي عند فتح الموقع)
 
@@ -5078,6 +5102,7 @@ Ferritin"></textarea>
     function isDeptScope(scope) { return !!SCOPE_OPTIONS[scope] || isGenericScope(scope); }
 
     function tabAllowed(tab, scope) {
+        if (scope === '__offers') return tab === 'mkt' && canManageOffers();
         if (scope === 'system') return canManageDepartments() && ['overview', 'users', 'departments', 'audit', 'settings'].includes(tab);
         if (scope === 'companies') return tab === 'companies' && ['add', 'edit', 'toggle', 'delete'].some(a => canItem(KINDS.company, a));
         if (isGenericScope(scope)) {
@@ -5114,7 +5139,7 @@ Ferritin"></textarea>
         adminScope = scope;
         const tabs = [...document.querySelectorAll('.admin-tab-btn')];
         tabs.forEach(b => { b.style.display = tabAllowed(b.dataset.tab, scope) ? '' : 'none'; });
-        const preferred = { lab: 'tests', visits: 'svcs', companies: 'companies', system: 'overview' }[scope] || (isGenericScope(scope) ? 'gsvcs' : null);
+        const preferred = { lab: 'tests', visits: 'svcs', companies: 'companies', system: 'overview', __offers: 'mkt' }[scope] || (isGenericScope(scope) ? 'gsvcs' : null);
         const firstTab = tabs.find(b => b.dataset.tab === preferred && b.style.display !== 'none') || tabs.find(b => b.style.display !== 'none');
         if (!firstTab) { showToast('ليست لديك صلاحيات إدارية على هذا القسم', 'warning'); return; }
         const addTabBtn = document.querySelector('.admin-tab-btn[data-tab="add"]');
@@ -5131,6 +5156,7 @@ Ferritin"></textarea>
         const dept = departments.find(d => d.id === scope);
         document.getElementById('adminPanelTitle').innerHTML = scope === 'system'
             ? '<i class="fas fa-cog" style="color:var(--primary-fg)"></i> الإعدادات الأساسية'
+            : scope === '__offers' ? '<i class="fas fa-bullhorn" style="color:var(--gold-text)"></i> إعدادات العروض'
             : `<i class="fas ${escapeHtml(dept?.icon || 'fa-sliders-h')}" style="color:var(--primary-fg)"></i> إعدادات قسم: ${escapeHtml(dept?.name || scope)}`;
         const panel = document.getElementById('adminPanel');
         panel.classList.add('show');
@@ -5180,6 +5206,7 @@ Ferritin"></textarea>
     // يُظهر أزرار الإدارة لمن له سجل صلاحيات فقط، ويعيد رسم القوائم لتظهر/تختفي أزرار التعديل
     function applyPermissionUI() {
         document.querySelectorAll('[data-admin-entry]').forEach(el => { el.style.display = canManageDepartments() ? '' : 'none'; });
+        document.querySelectorAll('[data-offers-settings]').forEach(el => { el.style.display = canManageOffers() ? '' : 'none'; });
         document.querySelectorAll('[data-dept-settings]').forEach(el => {
             const d = el.dataset.deptSettings;
             el.style.display = d && canWriteDept(d) ? '' : 'none';
@@ -5530,10 +5557,15 @@ Ferritin"></textarea>
             const v = branchPrice(o, BRANCH_PRICES.find(b => b.n === myBranch));
             return v === null ? `<span class="bp-from">${escapeHtml(myBranch)}</span><span class="bp-na-big">غير متوفرة</span>` : `<span class="bp-from">${escapeHtml(myBranch)}</span>${escapeHtml(v)}`;
         }
+        // الحساب على الفروع المتوفرة فعلياً فقط (غير المتوفرة لا تُحسب ولا تُعامل كصفر):
+        // سعر واحد بين الفروع المتوفرة (فرع واحد، أو عدة فروع بنفس السعر) → السعر مباشرة
+        // أسعار مختلفة بين الفروع المتوفرة → "يبدأ من [أقل سعر] ر.س"
         const info = branchInfo(o);
-        if (info.allSame) return escapeHtml(info.common);
-        // أسعار الفروع مختلفة: أقل سعر متاح بصيغة "يبدأ من 48 ر.س" (التفاصيل تعرض كل الفروع)
-        return info.min === null ? escapeHtml(o.price) : `<span class="bp-from">يبدأ من</span>${info.min}<span class="bp-cur">ر.س</span>`;
+        const avail = info.list.filter(x => x.v !== null && x.v !== undefined && x.v !== '' && !isNaN(Number(x.v))).map(x => Number(x.v));
+        const distinct = [...new Set(avail)];
+        if (!distinct.length) return `<span class="bp-na-big">غير متوفرة</span>`;   // غير متوفرة في كل الفروع
+        if (distinct.length === 1) return escapeHtml(distinct[0]);
+        return `<span class="bp-from">يبدأ من</span>${Math.min(...distinct)}<span class="bp-cur">ر.س</span>`;
     }
     // السعر الفعلي لهذا الجهاز (قائمة التحاليل المضافة): سعر فرعي إن اختير ومتوفر، وإلا السعر العام
     function effectivePrice(o) {
@@ -5681,6 +5713,7 @@ Ferritin"></textarea>
     // الباقات والعروض تتطلب صلاحية "الباقات والعروض" على القسم، إضافة إلى صلاحية العملية نفسها
     function canItem(kind, action) {
         if (!kind) return false;
+        if (kind.offers && kind.key !== 'package' && hasPerm(MKT, action)) return true;   // قسم التسويق: العروض فقط
         if (kind.offers && !hasPerm(kind.dept, 'offers')) return false;
         return hasPerm(kind.dept, action);
     }
@@ -5709,6 +5742,7 @@ Ferritin"></textarea>
     function openItemCard(kindKey, ref, copyRef) {
         const kind = getKind(kindKey);
         if (!kind) return;
+        if (kind.offers && kind.key !== 'package') return openOfferCard(ref, kind.dept, copyRef);   // العروض: نموذج موحّد (القسم + النوع + التواريخ)
         const obj = ref ? objFor(ref) : null;
         const src = obj || (copyRef ? objFor(copyRef) : null);
         const isNew = !obj;
@@ -5993,6 +6027,8 @@ Ferritin"></textarea>
         return !tab || tab.style.display !== 'none';
     }
     function refreshOpenLists() {
+        const mk = document.getElementById('mktOffersList');
+        if (mk && adminTabShown(mk)) renderMktOffers();
         Object.keys(listState).forEach(id => {
             const el = document.getElementById(id);
             if (adminTabShown(el)) renderItemRows(id);
@@ -6194,7 +6230,7 @@ Ferritin"></textarea>
         const rows = Object.entries(usersDirectory).filter(([, u]) => u && !u.deleted).map(([key, u]) => {
             const deptNames = Object.entries(u.departments || {})
                 .filter(([, p]) => p && PERM_ACTIONS.some(a => p[a.k]))
-                .map(([id]) => departments.find(d => d.id === id)?.name || id).join('، ') || 'مشاهدة فقط';
+                .map(([id]) => id === MKT ? 'إدارة العروض' : (departments.find(d => d.id === id)?.name || id)).join('، ') || 'مشاهدة فقط';
             const lastLogin = u.lastLogin ? new Date(u.lastLogin).toLocaleString('ar-SA') : '—';
             const isPrimary = u.isPrimarySuperAdmin === true;
             return `
@@ -6239,9 +6275,10 @@ Ferritin"></textarea>
         { k: 'toggle', label: 'إيقاف/تفعيل' }, { k: 'delete', label: 'حذف' },
         { k: 'offers', label: 'الباقات والعروض', only: d => d.type === 'lab' || d.type === 'visits' || d.type === 'generic', labelFor: d => d.type === 'lab' ? 'إدارة الباقات والعروض' : 'إدارة العروض' }
     ];
+    const MKT_DEPT = { id: 'offers', name: 'إدارة العروض (قسم التسويق) — العروض فقط في كل الأقسام', icon: 'fa-bullhorn', type: 'mkt' };
     function deptPermCheckboxesHtml(prefix, existingDepts) {
         existingDepts = existingDepts || {};
-        return departments.map(d => {
+        return [...departments, MKT_DEPT].map(d => {
             const p = existingDepts[d.id] || {};
             return `
             <div style="border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:8px;">
@@ -6249,7 +6286,7 @@ Ferritin"></textarea>
                     <i class="fas ${escapeHtml(d.icon || 'fa-star')}"></i> ${escapeHtml(d.name)}
                 </div>
                 <div style="display:flex;gap:14px;flex-wrap:wrap;">
-                    ${PERM_ACTIONS.filter(a => !a.only || a.only(d)).map(a => `<label style="font-size:12.5px;display:flex;align-items:center;gap:5px;cursor:pointer;"><input type="checkbox" class="${prefix}-perm-${d.id}-${a.k}" ${p[a.k] ? 'checked' : ''}> ${a.labelFor ? a.labelFor(d) : a.label}</label>`).join('')}
+                    ${PERM_ACTIONS.filter(a => d.type === 'mkt' ? a.k !== 'offers' : (!a.only || a.only(d))).map(a => `<label style="font-size:12.5px;display:flex;align-items:center;gap:5px;cursor:pointer;"><input type="checkbox" class="${prefix}-perm-${d.id}-${a.k}" ${p[a.k] ? 'checked' : ''}> ${a.labelFor ? a.labelFor(d) : a.label}</label>`).join('')}
                 </div>
             </div>`;
         }).join('');
@@ -6259,7 +6296,7 @@ Ferritin"></textarea>
     // وأي قسم جديد يُضاف لاحقاً يظهر تلقائياً هنا لأنه يُقرأ من departments[]
     function collectDeptPerms(prefix) {
         const out = {};
-        departments.forEach(d => {
+        [...departments, MKT_DEPT].forEach(d => {
             out[d.id] = { view: true };
             PERM_ACTIONS.forEach(a => { out[d.id][a.k] = document.querySelector('.' + prefix + '-perm-' + d.id + '-' + a.k)?.checked || false; });
         });
@@ -6438,6 +6475,7 @@ Ferritin"></textarea>
             renderItemList('list_gsvcs', 'g:' + adminScope);
         }
         if (tabName === 'goffers') renderItemList('list_goffers', 'go:' + adminScope);
+        if (tabName === 'mkt') renderMktOffers();
     }
 
     function renderManageContent() {
@@ -7475,24 +7513,25 @@ Ferritin"></textarea>
     // أي إضافة/تعديل/إيقاف/حذف في القسم الأصلي تنعكس هنا تلقائياً لأنها تُقرأ من نفس البيانات
     // ============================================
     let currentOffersDept = 'all';
+    let currentOffersKind = 'all';   // الكل | fixed | seasonal — يُجمع مع فلتر القسم
     function collectAllOffers() {
         const out = [];
         departments.filter(d => d.active !== false).forEach(d => {
             if (d.type === 'lab') {
                 individualTests.filter(t => t && t.isOffer && isActiveItem(t)).forEach(t => out.push({
-                    kk: 'labOffer', obj: t, dept: d, name: t.nameAr || t.name, sub: t.nameAr ? t.name : '', price: t.price,
+                    kk: 'labOffer', obj: t, dept: d, prio: offerPrio(t), okind: offerKindOf(t), name: t.nameAr || t.name, sub: t.nameAr ? t.name : '', price: t.price,
                     orig: (individualTests.find(x => x && !x.isOffer && x.name === t.name) || {}).price,
                     cat: t.cat, code: t.code, note: t.desc, incl: t.desc || (individualTests.find(x => x && !x.isOffer && x.name === t.name) || {}).desc, tat: t.tat || (individualTests.find(x => x && !x.isOffer && x.name === t.name) || {}).tat, endDate: t.endDate,
                     tag: t.offerType === 'فروع' ? 'عرض فروع' : (t.offerType ? 'عرض زيارات منزلية' : '')
                 }));
             } else if (d.type === 'visits') {
                 services.filter(x => x && x.isOffer && isActiveItem(x)).forEach(x => out.push({
-                    kk: 'serviceOffer', obj: x, dept: d, name: x.name, sub: '', price: x.price, orig: x.origPrice, cat: x.cat, code: x.code,
+                    kk: 'serviceOffer', obj: x, dept: d, prio: offerPrio(x), okind: offerKindOf(x), name: x.name, sub: '', price: x.price, orig: x.origPrice, cat: x.cat, code: x.code,
                     note: x.note || x.details, incl: x.details || x.note, endDate: x.endDate, tag: ''
                 }));
             } else if (d.type === 'generic') {
                 (genericServicesByDept[d.id] || []).filter(x => x && x.isOffer && isActiveItem(x)).forEach(x => out.push({
-                    kk: 'go:' + d.id, obj: x, dept: d, name: x.name, sub: x.nameEn || '', price: x.price, orig: x.origPrice, cat: x.cat, code: x.code,
+                    kk: 'go:' + d.id, obj: x, dept: d, prio: offerPrio(x), okind: offerKindOf(x), name: x.name, sub: x.nameEn || '', price: x.price, orig: x.origPrice, cat: x.cat, code: x.code,
                     note: x.description, incl: x.description, endDate: x.endDate, tag: ''
                 }));
             }
@@ -7508,18 +7547,29 @@ Ferritin"></textarea>
         // فلتر الأقسام: فقط الأقسام التي لديها عروض
         const depts = departments.filter(d => all.some(o => o.dept.id === d.id));
         if (currentOffersDept !== 'all' && !depts.some(d => d.id === currentOffersDept)) currentOffersDept = 'all';
+        // فلتر النوع (الكل/ثابتة/موسمية) + فلتر القسم — يعملان معاً، والأعداد تتبع الفلتر الآخر
+        const byKind = o => currentOffersKind === 'all' || o.okind === currentOffersKind;
+        const byDept = o => currentOffersDept === 'all' || o.dept.id === currentOffersDept;
+        const kindEl = document.getElementById('offersKindFilter');
+        if (kindEl) {
+            const inDept = all.filter(byDept);
+            kindEl.innerHTML = [['all', 'الكل', 'fa-layer-group'], ['fixed', 'ثابتة', 'fa-infinity'], ['seasonal', 'موسمية', 'fa-calendar-days']].map(([k, label, icon]) =>
+                `<button type="button" role="tab" aria-selected="${currentOffersKind === k}" class="individual-cat-btn kind-chip ${currentOffersKind === k ? 'active' : ''} ${k}" data-k="${k}"><i class="fas ${icon}"></i> ${label} (${k === 'all' ? inDept.length : inDept.filter(o => o.okind === k).length})</button>`).join('');
+            kindEl.querySelectorAll('[data-k]').forEach(b => b.onclick = () => { currentOffersKind = b.dataset.k; renderOffersPage(); });
+        }
         const filterEl = document.getElementById('offersDeptFilter');
-        filterEl.innerHTML = `<button class="individual-cat-btn ${currentOffersDept === 'all' ? 'active' : ''}" data-d="all">الكل (${all.length})</button>` +
-            depts.map(d => `<button class="individual-cat-btn ${currentOffersDept === d.id ? 'active' : ''}" data-d="${escapeHtml(d.id)}"><i class="fas ${escapeHtml(d.icon || 'fa-star')}"></i> ${escapeHtml(d.name)} (${all.filter(o => o.dept.id === d.id).length})</button>`).join('');
+        const inKind = all.filter(byKind);
+        filterEl.innerHTML = `<button class="individual-cat-btn ${currentOffersDept === 'all' ? 'active' : ''}" data-d="all">كل الأقسام (${inKind.length})</button>` +
+            depts.map(d => `<button class="individual-cat-btn ${currentOffersDept === d.id ? 'active' : ''}" data-d="${escapeHtml(d.id)}"><i class="fas ${escapeHtml(d.icon || 'fa-star')}"></i> ${escapeHtml(d.name)} (${inKind.filter(o => o.dept.id === d.id).length})</button>`).join('');
         filterEl.querySelectorAll('[data-d]').forEach(b => b.onclick = () => { currentOffersDept = b.dataset.d; renderOffersPage(); });
 
-        let list = currentOffersDept === 'all' ? all : all.filter(o => o.dept.id === currentOffersDept);
+        let list = all.filter(o => byKind(o) && byDept(o));
         const q = document.getElementById('offersSearchInput')?.value || '';
         if (q.trim()) {
             list = smartSearch(list, q, { name: [o => o.name, o => o.sub], cat: [o => o.cat, o => o.dept.name], extra: [o => o.code, o => o.note, o => o.tag] });
         } else {
             const order = d => departments.findIndex(x => x.id === d.id);
-            list = list.slice().sort((a, b) => order(a.dept) - order(b.dept) || String(a.name).localeCompare(String(b.name), 'ar'));
+            list = list.slice().sort((a, b) => a.prio - b.prio || order(a.dept) - order(b.dept) || String(a.name).localeCompare(String(b.name), 'ar'));
         }
         document.getElementById('offersStats').textContent = `عرض ${list.length} عرض`;
         if (!list.length) {
@@ -7559,6 +7609,7 @@ Ferritin"></textarea>
                     ${o.cat && o.cat !== 'عروض' ? `<span class="service-card-cat">${escapeHtml(o.cat)}</span>` : ''}
                     ${disc ? `<span class="oc-pct">خصم ${disc}%</span>` : ''}
                     <span class="oc-uni" title="سعر موحّد لجميع الفروع"><i class="fas fa-store"></i> موحّد</span>
+                    <span class="oc-kind ${o.okind === 'seasonal' ? 'seasonal' : ''}">${o.okind === 'seasonal' ? '<i class="fas fa-calendar-days"></i> موسمي' : '<i class="fas fa-infinity"></i> ثابت'}</span>
                     ${end}
                 </div>
             </div>`;
@@ -7651,11 +7702,33 @@ Ferritin"></textarea>
     // DEPARTMENTS HOME
     // ============================================
     // يرسم تبويبات القسم في الشريط العلوي بحيث تطابق بطاقات "الأقسام" تماماً — قسم واحد لكل تبويب
+    // قائمة الأقسام الظاهرة تُحفظ على الجهاز (أسماء وأيقونات فقط) حتى يُرسم الشريط كاملاً من أول لحظة
+    // عند الدخول أو التحديث، ثم يُستبدل بنفس الشكل عند وصول البيانات — بدون قفز أو تغيّر مكان
+    const TABS_CACHE_KEY = 'slc:tabs';
+    function pageTabsHtml(list) {
+        return list.map(d => `
+                <button class="page-tab" data-dept-id="${escapeHtml(d.id)}" onclick="openDepartment('${escapeHtml(d.id)}')">
+                    <i class="fas ${escapeHtml(d.icon || 'fa-star')}"></i> ${escapeHtml(d.name)}
+                </button>`).join('') + `
+                <span class="page-tab-sep" aria-hidden="true"></span>
+                <button class="page-tab offers-tab" data-dept-id="__offers" onclick="openOffersPage()">
+                    <i class="fas fa-tags"></i> العروض
+                </button>`;
+    }
+    (function renderPageTabsFromCache() {
+        try {
+            const el = document.getElementById('pageTabsDepts');
+            const list = JSON.parse(localStorage.getItem(TABS_CACHE_KEY) || 'null');
+            if (el && Array.isArray(list) && list.length && !el.children.length) el.innerHTML = pageTabsHtml(list);
+        } catch (e) {}
+    })();
     function renderPageTabs() {
         const el = document.getElementById('pageTabsDepts');
-        if (el) {
+        if (el && departmentsLoaded && departments.length) {
             const activeDeptId = currentDeptId;
-            el.innerHTML = departments.filter(d => d.active !== false).map(d => `
+            const shown = departments.filter(d => d.active !== false);
+            try { localStorage.setItem(TABS_CACHE_KEY, JSON.stringify(shown.map(d => ({ id: d.id, name: d.name, icon: d.icon || '' })))); } catch (e) {}
+            el.innerHTML = shown.map(d => `
                 <button class="page-tab" data-dept-id="${d.id}" onclick="openDepartment('${d.id}')">
                     <i class="fas ${d.icon || 'fa-star'}"></i> ${d.name}
                 </button>`).join('') + `
@@ -8031,6 +8104,248 @@ Ferritin"></textarea>
         }).join('');
     }
 
+    // ============================================
+    // العروض: سجل واحد لكل عرض داخل قسمه (individualTests / services / genericServices/{dept} بعلامة isOffer)
+    // نفس السجل يظهر في صفحة العروض وصفحة القسم وإعدادات العروض وإعدادات القسم — لا نسخ
+    // ============================================
+    const OFFER_DEPT_TYPES = ['lab', 'visits', 'generic'];
+    function offerDepts() { return departments.filter(d => OFFER_DEPT_TYPES.includes(d.type)); }
+    function offerKindKeyForDept(d) { return d.type === 'lab' ? 'labOffer' : d.type === 'visits' ? 'serviceOffer' : 'go:' + d.id; }
+    function offerSaveKey(d) { return d.type === 'generic' ? 'g:' + d.id : 'storage'; }
+    // موسمي (بتاريخ بداية ونهاية) أو ثابت (مستمر حتى الإيقاف) — العروض القديمة: بتاريخ نهاية = موسمي
+    function offerKindOf(o) { return o.offerKind === 'seasonal' || o.offerKind === 'fixed' ? o.offerKind : (o.endDate ? 'seasonal' : 'fixed'); }
+    function offerPrio(o) { const p = Number(o.priority); return o.priority === undefined || o.priority === null || o.priority === '' || isNaN(p) ? 1e9 : p; }
+    function allOffersFlat() {
+        const out = [];
+        offerDepts().forEach(d => { const kk = offerKindKeyForDept(d); getKind(kk).all().forEach(o => out.push({ o, d, kk })); });
+        const di = d => departments.findIndex(x => x.id === d.id);
+        return out.sort((a, b) => offerPrio(a.o) - offerPrio(b.o) || di(a.d) - di(b.d) || String(offerTitle(a.o, a.d)).localeCompare(String(offerTitle(b.o, b.d)), 'ar'));
+    }
+    function offerTitle(o, d) { return d.type === 'lab' ? (o.nameAr || o.name) : o.name; }
+    function offerDeptOf(o) { return offerDepts().find(d => getKind(offerKindKeyForDept(d)).all().includes(o)); }
+
+    // ---------- نموذج العرض الموحّد (إضافة / تعديل / نسخ) ----------
+    let offerCtx = null;
+    function openOfferCard(ref, presetDeptId, copyRef) {
+        const obj = ref ? objFor(ref) : null;
+        const src = obj || (copyRef ? objFor(copyRef) : null);
+        const isNew = !obj;
+        const curDept = obj ? offerDeptOf(obj) : null;
+        if (obj && !curDept) { showToast('تعذّر فتح العرض — حدّث الصفحة وحاول مجدداً', 'warning'); return; }
+        // الأقسام المسموح بها: قسم التسويق = كل الأقسام، مدير القسم = أقسامه فقط
+        const allowed = offerDepts().filter(d => canItem(getKind(offerKindKeyForDept(d)), isNew ? 'add' : 'edit') || (curDept && d.id === curDept.id && canItem(getKind(offerKindKeyForDept(d)), 'edit')));
+        const editable = isNew ? allowed.length > 0 : canItem(getKind(offerKindKeyForDept(curDept)), 'edit');
+        if (isNew && !editable) { showToast('ليست لديك صلاحية إضافة العروض', 'warning'); return; }
+        if (editable && !requireLive()) return;
+        const startDept = curDept || (copyRef && src ? offerDeptOf(src) : null) || offerDepts().find(d => d.id === presetDeptId) || null;
+        offerCtx = { obj, ref, curDept };
+        const sd = startDept;
+        const v = (k, dflt) => src && src[k] !== undefined && src[k] !== null ? src[k] : (dflt === undefined ? '' : dflt);
+        const ar = src ? (sd && sd.type === 'lab' ? (src.nameAr || '') : (src.name || '')) : '';
+        const en = src ? (sd && sd.type === 'lab' ? (src.name || '') : (src.nameEn || '')) : '';
+        const desc = src ? (sd && sd.type === 'lab' ? (src.desc || '') : sd && sd.type === 'visits' ? (src.details || '') : (src.description || '')) : '';
+        const kindV = src ? offerKindOf(src) : 'fixed';
+        const dis = editable ? '' : 'disabled';
+        const deptOpts = (editable ? allowed : (curDept ? [curDept] : [])).map(d => `<option value="${escapeHtml(d.id)}" ${sd && sd.id === d.id ? 'selected' : ''}>${escapeHtml(d.name)}</option>`).join('');
+        const st = obj ? itemStatusLabel(obj) : null;
+        const html = `
+            <div style="padding:20px;">
+                <h3 style="margin-bottom:10px;"><i class="fas fa-tags" style="color:var(--gold-text)"></i> ${obj ? (editable ? 'تعديل عرض' : 'عرض') : (copyRef ? 'نسخ عرض (عرض جديد)' : 'إضافة عرض')}${obj ? ': ' + escapeHtml(offerTitle(obj, curDept)) : ''}</h3>
+                ${obj ? `<div class="item-card-meta"><span class="item-status ${st.on ? 'on' : 'off'}">${escapeHtml(st.text)}</span>${obj.updatedAt ? `<span><i class="fas fa-pen"></i> آخر تعديل: ${fmtStamp(obj.updatedAt)}${obj.updatedBy ? ' — ' + escapeHtml(obj.updatedBy) : ''}</span>` : ''}</div>` : ''}
+                <div class="item-card-grid">
+                    <div class="form-group"><label class="req-label">القسم التابع له العرض</label><select class="admin-input" id="of_dept" ${dis} onchange="offerFormDeptChanged()"><option value="">— اختر القسم —</option>${deptOpts}</select></div>
+                    <div class="form-group"><label class="req-label">نوع العرض</label><select class="admin-input" id="of_kind" ${dis} onchange="offerFormKindChanged()"><option value="fixed" ${kindV === 'fixed' ? 'selected' : ''}>ثابت (مستمر حتى الإيقاف)</option><option value="seasonal" ${kindV === 'seasonal' ? 'selected' : ''}>موسمي (بتاريخ بداية ونهاية)</option></select></div>
+                    <div class="form-group"><label class="req-label">اسم العرض</label><input type="text" class="admin-input" id="of_name" value="${escapeHtml(copyRef && !obj && ar ? ar + ' (نسخة)' : ar)}" ${dis}></div>
+                    <div class="form-group"><label id="of_nameEn_lbl">الاسم بالإنجليزي</label><input type="text" class="admin-input" id="of_nameEn" style="direction:ltr;text-align:right;" value="${escapeHtml(en)}" ${dis}></div>
+                    <div class="form-group"><label class="req-label">سعر العرض (ريال) — موحّد لجميع الفروع</label><input type="number" min="0" class="admin-input" id="of_price" value="${escapeHtml(v('price'))}" ${dis}></div>
+                    <div class="form-group"><label>السعر قبل العرض (اختياري)</label><input type="number" min="0" class="admin-input" id="of_orig" value="${escapeHtml(v('origPrice'))}" ${dis}></div>
+                    <div class="form-group"><label>الكود</label><input type="text" class="admin-input" id="of_code" style="direction:ltr;text-align:right;" value="${escapeHtml(v('code'))}" ${dis}></div>
+                    <div class="form-group"><label>التصنيف (اختياري)</label><select class="admin-input" id="of_cat" ${dis} data-cur="${escapeHtml(v('cat'))}"></select></div>
+                    <div class="form-group of-season"><label class="req-label">تاريخ البداية</label><input type="date" class="admin-input" id="of_start" value="${escapeHtml(v('startDate', kindV === 'seasonal' ? todayStr() : ''))}" ${dis}></div>
+                    <div class="form-group of-season"><label class="req-label">تاريخ النهاية</label><input type="date" class="admin-input" id="of_end" value="${escapeHtml(v('endDate'))}" ${dis}></div>
+                    <div class="form-group"><label>أولوية الظهور (1 = أولاً، اختياري)</label><input type="number" min="1" class="admin-input" id="of_priority" value="${escapeHtml(v('priority'))}" ${dis}></div>
+                    <div class="form-group of-lab"><label>مدة النتيجة</label><input type="text" class="admin-input" id="of_tat" value="${escapeHtml(v('tat'))}" ${dis}></div>
+                    <div class="form-group of-lab"><label>مكان العرض</label><select class="admin-input" id="of_type" ${dis}><option value="فروع" ${v('offerType') === 'فروع' ? 'selected' : ''}>فروع</option><option value="منزلية" ${v('offerType') === 'منزلية' ? 'selected' : ''}>زيارات منزلية</option></select></div>
+                    <div class="form-group of-lab"><label style="display:flex;align-items:center;gap:6px;cursor:pointer;"><input type="checkbox" id="of_fasting" ${v('fasting') ? 'checked' : ''} ${dis}> يتطلب صيام</label></div>
+                    <div class="form-group" style="grid-column:1/-1;"><label>الوصف / التفاصيل</label><textarea class="admin-input" id="of_desc" rows="2" ${dis}>${escapeHtml(desc)}</textarea></div>
+                </div>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;">
+                    ${editable ? `<button class="btn-admin-submit" style="max-width:170px;margin:0;" onclick="saveOfferCard()"><i class="fas fa-save"></i> ${obj ? 'حفظ التعديلات' : 'حفظ'}</button>` : ''}
+                    ${obj && canManageOffersAdd() ? `<button class="btn-admin-submit" style="max-width:130px;margin:0;background:var(--accent);" onclick="openOfferCard(null, null, '${ref}')"><i class="fas fa-copy"></i> نسخ</button>` : ''}
+                    <button class="btn-admin-submit" style="max-width:110px;margin:0;background:var(--neutral);" onclick="closeOfferCard()"><i class="fas fa-times"></i> إغلاق</button>
+                </div>
+            </div>`;
+        document.getElementById('modalOverlay').innerHTML = `<div class="modal" style="max-width:680px;" onclick="event.stopPropagation()">${html}</div>`;
+        document.getElementById('modalOverlay').classList.add('show');
+        offerFormDeptChanged(true); offerFormKindChanged();
+    }
+    function canManageOffersAdd() { return offerDepts().some(d => canItem(getKind(offerKindKeyForDept(d)), 'add')); }
+    function closeOfferCard() { offerCtx = null; document.getElementById('modalOverlay').classList.remove('show'); }
+    function offerFormDeptChanged(initial) {
+        const d = departments.find(x => x.id === document.getElementById('of_dept')?.value);
+        const isLab = !!d && d.type === 'lab';
+        document.querySelectorAll('#modalOverlay .of-lab').forEach(el => { el.style.display = isLab ? '' : 'none'; });
+        const lbl = document.getElementById('of_nameEn_lbl');
+        if (lbl) { lbl.textContent = isLab ? 'اسم التحليل بالإنجليزي' : 'الاسم بالإنجليزي (اختياري)'; lbl.className = isLab ? 'req-label' : ''; }
+        const sel = document.getElementById('of_cat');
+        if (!sel) return;
+        const cur = initial ? sel.dataset.cur : sel.value;
+        const catField = d ? getKind(offerKindKeyForDept(d)).fields.find(f => f.k === 'cat') : null;
+        const cats = catField ? catField.cats() : [];
+        const legacy = cur && !cats.includes(cur);
+        sel.innerHTML = `<option value="">— بدون تصنيف —</option>` + (legacy ? `<option value="${escapeHtml(cur)}">${escapeHtml(cur)} (الحالي)</option>` : '') +
+            cats.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
+        sel.value = cur || '';
+    }
+    function offerFormKindChanged() {
+        const seasonal = document.getElementById('of_kind')?.value === 'seasonal';
+        document.querySelectorAll('#modalOverlay .of-season').forEach(el => { el.style.display = seasonal ? '' : 'none'; });
+        const st = document.getElementById('of_start');
+        if (seasonal && st && !st.value && !st.disabled) st.value = todayStr();
+    }
+    function saveOfferCard() {
+        if (!offerCtx) return;
+        const g = id => document.getElementById(id);
+        const obj = offerCtx.obj, isNew = !obj, oldDept = offerCtx.curDept;
+        const d = departments.find(x => x.id === g('of_dept').value);
+        if (!d) { showToast('اختر القسم التابع له العرض', 'warning'); g('of_dept').focus(); return; }
+        const kind = getKind(offerKindKeyForDept(d)), oldKind = oldDept ? getKind(offerKindKeyForDept(oldDept)) : null;
+        const moving = !isNew && oldDept.id !== d.id;
+        const okPerm = isNew ? canItem(kind, 'add') : moving ? (canItem(oldKind, 'delete') || canItem(oldKind, 'edit')) && canItem(kind, 'add') : canItem(kind, 'edit');
+        if (!okPerm) { showToast('ليست لديك صلاحية لهذا القسم', 'warning'); return; }
+        if (!isNew && !oldKind.all().includes(obj)) { showToast('تم تحديث البيانات من جهاز آخر أثناء فتح النافذة — أغلقها وأعد فتحها', 'warning'); return; }
+        const name = g('of_name').value.trim(), nameEn = g('of_nameEn').value.trim();
+        if (!name) { showToast('يرجى تعبئة: اسم العرض', 'warning'); g('of_name').focus(); return; }
+        if (d.type === 'lab' && !nameEn) { showToast('يرجى تعبئة: اسم التحليل بالإنجليزي', 'warning'); g('of_nameEn').focus(); return; }
+        const num = el => { const t = el.value.trim(); if (t === '') return null; const n = Number(t); return isNaN(n) || n < 0 ? NaN : n; };
+        const price = num(g('of_price')), orig = num(g('of_orig')), prio = num(g('of_priority'));
+        if (price === null || isNaN(price)) { showToast('يرجى إدخال سعر العرض بشكل صحيح', 'warning'); g('of_price').focus(); return; }
+        if (isNaN(orig) || isNaN(prio)) { showToast('قيمة غير صحيحة في السعر قبل العرض أو الأولوية', 'warning'); return; }
+        const kindV = g('of_kind').value === 'seasonal' ? 'seasonal' : 'fixed';
+        let start = null, end = null;
+        if (kindV === 'seasonal') {
+            start = g('of_start').value || null; end = g('of_end').value || null;
+            if (!start || !end) { showToast('العرض الموسمي يحتاج تاريخ بداية وتاريخ نهاية', 'warning'); return; }
+            if (end < start) { showToast('تاريخ النهاية يجب أن يكون بعد تاريخ البداية', 'warning'); return; }
+        }
+        const cat = g('of_cat').value || null;
+        const catField = kind.fields.find(f => f.k === 'cat');
+        const keepOld = !isNew && !moving && String(obj.cat || '') === String(cat || '');
+        if (cat && catField && !catField.cats().includes(cat) && !keepOld) { showToast('التصنيف غير مسجّل في هذا القسم — اختر من القائمة', 'warning'); return; }
+        const desc = g('of_desc').value.trim() || null, code = g('of_code').value.trim() || null;
+        // الحقول حسب القسم (نفس أسماء الحقول المستخدمة في القسم نفسه)
+        const data = { price, origPrice: orig, code, cat, offerKind: kindV, startDate: start, endDate: end, priority: prio };
+        if (d.type === 'lab') Object.assign(data, { nameAr: name, name: nameEn.toUpperCase(), tat: g('of_tat').value.trim() || null, offerType: g('of_type').value, fasting: g('of_fasting').checked, desc });
+        else if (d.type === 'visits') Object.assign(data, { name, nameEn: nameEn || null, details: desc });
+        else Object.assign(data, { name, nameEn: nameEn || null, description: desc });
+        const now = Date.now(), by = actorName();
+        let target;
+        if (isNew || moving) {
+            const base = moving ? JSON.parse(JSON.stringify(obj)) : {};
+            // عند النقل: حقول خاصة بالقسم القديم لا تنتقل (الاسم/الوصف يُعاد بناؤها)، وتبقى معلومات الإنشاء والسجل
+            ['name', 'nameAr', 'nameEn', 'desc', 'description', 'details', 'note', 'tat', 'offerType', 'fasting', 'id'].forEach(k => delete base[k]);
+            target = { ...base, ...data, isOffer: true, active: moving ? obj.active !== false : true, createdAt: moving ? (obj.createdAt || now) : now, createdBy: moving ? (obj.createdBy || by) : by, updatedAt: now, updatedBy: by };
+            Object.keys(target).forEach(k => { if (target[k] === null || target[k] === undefined) delete target[k]; });
+            if (moving) oldKind.remove(obj);
+            kind.insert(target);
+        } else {
+            target = obj;
+            if (obj.price !== undefined && Number(obj.price) !== Number(price)) target.priceHistory = [...(Array.isArray(obj.priceHistory) ? obj.priceHistory : []), { from: Number(obj.price), to: Number(price), at: now, by }].slice(-20);
+            Object.keys(data).forEach(k => { if (data[k] === null) delete target[k]; else target[k] = data[k]; });
+            target.updatedAt = now; target.updatedBy = by;
+        }
+        const saves = new Map();
+        saves.set(offerSaveKey(d), kind.save);
+        if (moving) saves.set(offerSaveKey(oldDept), oldKind.save);
+        [kind, oldKind].forEach(k => { if (k && k.refresh) k.refresh(); });
+        renderOffersPage(); refreshOpenLists();
+        const btn = document.querySelector('#modalOverlay .btn-admin-submit');
+        if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الحفظ...'; }
+        Promise.all([...saves.values()].map(f => Promise.resolve(f()))).then(res => {
+            closeOfferCard();
+            if (!res.every(Boolean)) { [kind, oldKind].forEach(k => { if (k && k.refresh) k.refresh(); }); renderOffersPage(); refreshOpenLists(); return; }
+            addToLog(isNew ? 'add' : 'edit', 'offer', offerTitle(target, d) + (moving ? ' (نُقل إلى ' + d.name + ')' : ''), d.id);
+            showToast(isNew ? 'تمت إضافة العرض: ' + offerTitle(target, d) : moving ? 'تم حفظ العرض ونقله إلى ' + d.name : 'تم حفظ التعديلات');
+        });
+    }
+
+    // ---------- إعدادات العروض (قسم التسويق) ----------
+    function openOffersSettings() {
+        if (!canManageOffers() && !offerDepts().some(d => canItem(getKind(offerKindKeyForDept(d)), 'edit'))) { showToast('ليست لديك صلاحية إدارة العروض', 'warning'); return; }
+        openAdminPanel('__offers');
+    }
+    const mktState = { q: '', dept: 'all', status: 'all', kind: 'all' };
+    function offerStatusKey(o) { if (o.active === false) return 'off'; const w = offerWindow(o); return w === 'expired' ? 'expired' : w === 'scheduled' ? 'scheduled' : 'live'; }
+    function renderMktOffers() {
+        const el = document.getElementById('mktOffersList');
+        if (!el) return;
+        if (!el.dataset.built) {
+            el.dataset.built = '1';
+            el.innerHTML = `
+                <div class="il-toolbar">
+                    <input type="text" class="admin-input" id="mktQ" placeholder="بحث باسم العرض أو الكود..." oninput="mktState.q=this.value;renderMktRows()">
+                    <select class="admin-input" id="mktDept" onchange="mktState.dept=this.value;renderMktRows()"></select>
+                    <select class="admin-input" id="mktStatus" onchange="mktState.status=this.value;renderMktRows()">
+                        <option value="all">كل الحالات</option><option value="live">فعّال</option><option value="scheduled">لم يبدأ</option><option value="expired">منتهي</option><option value="off">موقوف</option>
+                    </select>
+                    <select class="admin-input" id="mktKind" onchange="mktState.kind=this.value;renderMktRows()">
+                        <option value="all">كل الأنواع</option><option value="seasonal">موسمي</option><option value="fixed">ثابت</option>
+                    </select>
+                    ${canManageOffersAdd() ? `<button class="btn-admin-submit" style="max-width:150px;margin:0;" onclick="openOfferCard(null, mktState.dept !== 'all' ? mktState.dept : null)"><i class="fas fa-plus"></i> إضافة عرض</button>` : ''}
+                </div>
+                <div class="mkt-hint"><i class="fas fa-info-circle"></i> الترتيب هنا = ترتيب ظهور العروض في صفحة العروض. الأسهم تعمل عند عرض الكل بدون بحث أو تصفية.</div>
+                <div class="il-rows" id="mktRows"></div>`;
+        }
+        const dsel = document.getElementById('mktDept');
+        dsel.innerHTML = `<option value="all">كل الأقسام</option>` + offerDepts().map(d => `<option value="${escapeHtml(d.id)}">${escapeHtml(d.name)}</option>`).join('');
+        if (mktState.dept !== 'all' && !offerDepts().some(d => d.id === mktState.dept)) mktState.dept = 'all';
+        dsel.value = mktState.dept;
+        renderMktRows();
+    }
+    function renderMktRows() {
+        const box = document.getElementById('mktRows');
+        if (!box) return;
+        const all = allOffersFlat();
+        const filtered = !!(mktState.q.trim() || mktState.dept !== 'all' || mktState.status !== 'all' || mktState.kind !== 'all');
+        let rows = all.filter(x => (mktState.dept === 'all' || x.d.id === mktState.dept) && (mktState.status === 'all' || offerStatusKey(x.o) === mktState.status) && (mktState.kind === 'all' || offerKindOf(x.o) === mktState.kind));
+        if (mktState.q.trim()) rows = smartSearch(rows, mktState.q, { name: [x => offerTitle(x.o, x.d), x => x.o.nameEn || (x.d.type === 'lab' ? x.o.name : '')], cat: [x => x.o.cat, x => x.d.name], extra: [x => x.o.code] });
+        const canReorder = !filtered && all.every(x => canItem(getKind(x.kk), 'edit'));
+        box.innerHTML = rows.length ? rows.map((x, i) => {
+            const o = x.o, r = refFor(o), kind = getKind(x.kk), st = itemStatusLabel(o), on = isActiveItem(o), seasonal = offerKindOf(o) === 'seasonal';
+            const canT = canItem(kind, 'toggle'), canD = canItem(kind, 'delete');
+            return `
+            <div class="il-row ${on ? '' : 'off'}">
+                ${canReorder ? `<div class="mkt-order"><button class="il-btn" title="أعلى" onclick="moveOffer('${r}',-1)" ${i === 0 ? 'disabled' : ''}><i class="fas fa-arrow-up"></i></button><button class="il-btn" title="أسفل" onclick="moveOffer('${r}',1)" ${i === rows.length - 1 ? 'disabled' : ''}><i class="fas fa-arrow-down"></i></button></div>` : `<div class="mkt-num">${i + 1}</div>`}
+                <div class="il-main" onclick="openOfferCard('${r}')" title="فتح العرض">
+                    <div class="il-title">${escapeHtml(offerTitle(o, x.d))} <span class="item-status ${st.on ? 'on' : 'off'}">${escapeHtml(st.text)}</span></div>
+                    <div class="il-sub"><span class="mkt-dept"><i class="fas ${escapeHtml(x.d.icon || 'fa-star')}"></i> ${escapeHtml(x.d.name)}</span> · <span class="mkt-kind ${seasonal ? 'seasonal' : ''}">${seasonal ? 'موسمي' + (o.startDate || o.endDate ? ' من ' + escapeHtml(o.startDate || '—') + ' إلى ' + escapeHtml(o.endDate || '—') : '') : 'ثابت'}</span>${o.code ? ' · ' + escapeHtml(o.code) : ''}</div>
+                </div>
+                <div class="il-price">${escapeHtml(o.price)} <small>ريال</small></div>
+                <div class="il-actions">
+                    <button title="فتح العرض" onclick="openOfferCard('${r}')" class="il-btn"><i class="fas fa-id-card"></i></button>
+                    ${canT ? `<button title="${o.active === false ? 'تفعيل' : 'إيقاف'}" onclick="toggleItem('${x.kk}','${r}')" class="il-btn ${o.active === false ? 'ok' : 'warn'}"><i class="fas ${o.active === false ? 'fa-eye' : 'fa-eye-slash'}"></i></button>` : ''}
+                    ${canD ? `<button title="حذف" onclick="deleteItem('${x.kk}','${r}')" class="il-btn danger"><i class="fas fa-trash"></i></button>` : ''}
+                </div>
+            </div>`;
+        }).join('') : '<div style="padding:18px;text-align:center;color:var(--text-light);font-size:13px;">لا توجد عروض مطابقة</div>';
+    }
+    // ترتيب أولوية الظهور: تبديل مع المجاور ثم ترقيم الكل 1..n (يُحفظ في كل عرض داخل قسمه)
+    function moveOffer(ref, dir) {
+        if (!requireLive()) return;
+        const all = allOffersFlat();
+        if (!all.every(x => canItem(getKind(x.kk), 'edit'))) { showToast('ترتيب العروض يحتاج صلاحية تعديل العروض', 'warning'); return; }
+        const i = all.findIndex(x => refFor(x.o) === ref), j = i + dir;
+        if (i < 0 || j < 0 || j >= all.length) return;
+        [all[i], all[j]] = [all[j], all[i]];
+        const saves = new Map();
+        all.forEach((x, k) => { if (Number(x.o.priority) !== k + 1) { x.o.priority = k + 1; saves.set(offerSaveKey(x.d), getKind(x.kk).save); } });
+        renderMktRows(); renderOffersPage();
+        Promise.all([...saves.values()].map(f => Promise.resolve(f()))).then(res => {
+            if (!res.every(Boolean)) { renderMktRows(); renderOffersPage(); return; }
+            addToLog('edit', 'offer', 'ترتيب العروض', '');
+        });
+    }
+
     // نافذة تفاصيل العنصر: كل البيانات + أسعار الفروع، وزر التعديل هنا فقط (يفتح بطاقة التعديل الحالية)
     function showItemDetails(kindKey, ref, viewOnly) {
         const kind = getKind(kindKey), o = objFor(ref);
@@ -8076,7 +8391,8 @@ Ferritin"></textarea>
                     ${row('fa-info-circle', 'الوصف', o.desc || o.description || (isTest && o.isOffer ? (individualTests.find(x => x && !x.isOffer && x.name === o.name) || {}).desc : ''))}
                     ${row('fa-sticky-note', 'ملاحظة', o.note)}
                     ${row('fa-check-circle', 'تفاصيل إضافية', o.details)}
-                    ${row('fa-store', 'نوع العرض', o.offerType ? 'عرض ' + o.offerType : '')}
+                    ${o.isOffer ? row('fa-calendar-days', 'نوع العرض', offerKindOf(o) === 'seasonal' ? 'موسمي' : 'ثابت (مستمر حتى الإيقاف)') : ''}
+                    ${row('fa-store', 'مكان العرض', o.offerType ? 'عرض ' + o.offerType : '')}
                     ${row('fa-calendar-plus', 'بداية العرض', o.startDate)}
                     ${row('fa-calendar-xmark', 'نهاية العرض', o.endDate)}
                 </div>
@@ -8589,7 +8905,8 @@ Ferritin"></textarea>
         else document.body.classList.add('data-loading');
     }
     function clearDataCache() {
-        try { Object.keys(localStorage).filter(k => k.startsWith('slc:')).forEach(k => localStorage.removeItem(k)); } catch (e) {}
+        // أسماء الأقسام فقط (slc:tabs) تبقى لرسم الشريط ثابتاً عند الدخول التالي — بيانات الأسعار والخدمات تُمسح
+        try { Object.keys(localStorage).filter(k => k.startsWith('slc:') && k !== 'slc:tabs').forEach(k => localStorage.removeItem(k)); } catch (e) {}
     }
     function scheduleCacheSave() {
         if (!cacheKey || !dataIsLive()) return;
@@ -8701,8 +9018,8 @@ Ferritin"></textarea>
     function saveToStorage() {
         if (!firebaseReady) { showToast('تعذّر الحفظ — لم يكتمل الاتصال بقاعدة البيانات بعد', 'warning'); return Promise.resolve(false); }
         const writes = [];
-        if (canWriteDept('lab')) writes.push(saveList('packages', packages), saveList('individualTests', individualTests));
-        if (canWriteDept('visits')) writes.push(saveList('services', services));
+        if (canWriteDept('lab') || canManageOffers()) writes.push(saveList('packages', packages), saveList('individualTests', individualTests));
+        if (canWriteDept('visits') || canManageOffers()) writes.push(saveList('services', services));
         return Promise.all(writes).then(r => r.every(Boolean));
     }
 
@@ -8776,6 +9093,7 @@ Ferritin"></textarea>
         // الأقسام الديناميكية
         pathAppliers.departments = (snap) => {
             const data = snap.val();
+            departmentsLoaded = true;
             if (!applyingCache) { rememberBaseline('departments', data); scheduleCacheSave(); }
             if (data) {
                 const manual = Object.values(data).some(x => x && typeof x.sortIndex === 'number');
@@ -8916,12 +9234,21 @@ Ferritin"></textarea>
         document.body.classList.toggle('has-offline-banner', isOffline);
     }
 
+    // Firebase يُرسل "غير متصل" دائماً لحظة فتح الصفحة قبل أول اتصال (حالة "جاري الاتصال" وليست انقطاعاً).
+    // كان ذلك يُظهر شريط "لا يوجد اتصال" ويُنزل الهيدر وشريط الأقسام 42px ثم يُرجعهما عند الاتصال (قفزة في كل تحديث).
+    // الآن: الشريط يظهر فقط عند انقطاع فعلي — الجهاز بلا إنترنت، أو انقطع الاتصال بعد أن كان متصلاً.
+    let fbWasConnected = false, fbConnected = false;
+    function updateOfflineState() {
+        setOfflineBanner(navigator.onLine === false || (fbWasConnected && !fbConnected));
+    }
     db.ref('.info/connected').on('value', snap => {
-        setOfflineBanner(snap.val() === false);
+        fbConnected = snap.val() === true;
+        if (fbConnected) fbWasConnected = true;
+        updateOfflineState();
     });
-
-    window.addEventListener('offline', () => setOfflineBanner(true));
-    window.addEventListener('online', () => setOfflineBanner(false));
+    window.addEventListener('offline', updateOfflineState);
+    window.addEventListener('online', updateOfflineState);
+    updateOfflineState();
     </script>
 
     <!-- Admin Overlay Backdrop -->
@@ -8951,6 +9278,7 @@ Ferritin"></textarea>
                     <button class="admin-tab-btn" data-tab="companies" onclick="switchAdminTab('companies')"><i class="fas fa-building"></i> الشركات</button>
                     <button class="admin-tab-btn" data-tab="gsvcs" onclick="switchAdminTab('gsvcs')"><i class="fas fa-concierge-bell"></i> الخدمات</button>
                     <button class="admin-tab-btn" data-tab="goffers" onclick="switchAdminTab('goffers')"><i class="fas fa-tags"></i> العروض</button>
+                    <button class="admin-tab-btn" data-tab="mkt" onclick="switchAdminTab('mkt')"><i class="fas fa-bullhorn"></i> إدارة العروض</button>
                     <button class="admin-tab-btn" data-tab="add" onclick="switchAdminTab('add')"><i class="fas fa-plus-circle"></i> إضافة جديد</button>
                     <button class="admin-tab-btn" data-tab="users" onclick="switchAdminTab('users')"><i class="fas fa-users-cog"></i> المستخدمون والصلاحيات</button>
                     <button class="admin-tab-btn" data-tab="departments" onclick="switchAdminTab('departments')"><i class="fas fa-grip"></i> الأقسام</button>
@@ -8972,6 +9300,9 @@ Ferritin"></textarea>
                 </div>
                 <div class="admin-tab-content" data-tab-content="companies" style="display:none;">
                     <div class="admin-card"><h3><i class="fas fa-building" style="color:var(--accent-fg)"></i> الشركات</h3><div id="list_companies"></div></div>
+                </div>
+                <div class="admin-tab-content" data-tab-content="mkt" style="display:none;">
+                    <div class="admin-card"><div id="mktOffersList"></div></div>
                 </div>
                 <div class="admin-tab-content" data-tab-content="goffers" style="display:none;">
                     <div class="admin-card"><h3><i class="fas fa-tags" style="color:var(--warning-fg)"></i> العروض</h3><div id="list_goffers"></div></div>
