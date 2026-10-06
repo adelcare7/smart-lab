@@ -2930,6 +2930,8 @@
         .oc-kind.seasonal { color: var(--warning-fg); background: var(--gold-soft); border-color: var(--gold-border); }
         #mktOffersList .il-toolbar .admin-input { width: auto; flex: 1 1 150px; min-width: 0; }
         #mktOffersList .il-toolbar #mktQ { flex: 2 1 220px; }
+        .audit-changes { margin: 4px 0 2px; padding: 0 16px 0 0; font-size: 11.5px; color: var(--text); line-height: 1.7; }
+        .audit-changes li { list-style: disc; }
         .mkt-hint { font-size: 11.5px; color: var(--text-light); margin: 8px 0; }
         .mkt-order { display: flex; flex-direction: column; gap: 2px; }
         .mkt-order .il-btn { min-height: 22px; min-width: 26px; padding: 0; }
@@ -5871,6 +5873,7 @@ Ferritin"></textarea>
         }
         const now = Date.now(), by = actorName();
         let target;
+        const auditBefore = isNew ? null : JSON.parse(JSON.stringify(obj));
         if (isNew) {
             target = { ...data, active: true, createdAt: now, createdBy: by, updatedAt: now, updatedBy: by };
             kind.insert(target);
@@ -5905,7 +5908,8 @@ Ferritin"></textarea>
                 closeItemCard();
                 return;
             }
-            addToLog(isNew ? 'add' : 'edit', kind.audit, kind.title(target), kind.dept);
+            addToLog(isNew ? 'add' : 'edit', kind.audit, kind.title(target), kind.dept,
+                isNew ? auditItemSummary(kind, target) : auditItemDiff(kind, auditBefore, target));
             showToast(isNew ? 'تمت الإضافة: ' + kind.title(target) : 'تم حفظ التعديلات');
             closeItemCard();
         });
@@ -5924,7 +5928,7 @@ Ferritin"></textarea>
         refreshOpenLists();
         Promise.resolve(kind.save()).then(ok => {
             if (!ok) return;
-            addToLog(activate ? 'enable' : 'disable', kind.audit, kind.title(obj), kind.dept);
+            addToLog(activate ? 'enable' : 'disable', kind.audit, kind.title(obj), kind.dept, ['الحالة: من ' + (activate ? 'موقوف' : 'نشط') + ' إلى ' + (activate ? 'نشط' : 'موقوف')]);
             showToast(activate ? 'تم التفعيل: يظهر للمستخدمين الآن' : 'تم إيقاف الظهور — العنصر محفوظ ويمكن إعادته في أي وقت');
         });
     }
@@ -5944,12 +5948,13 @@ Ferritin"></textarea>
             return;
         }
         if (!confirm('حذف "' + title + '" نهائياً؟\n\nلا يمكن التراجع عن الحذف.\nإن كان العنصر لم يعد مستخدماً فقط، فالأفضل "إيقاف الظهور" بدلاً من الحذف.')) return;
+        const auditDel = auditItemSummary(kind, obj);
         kind.remove(obj);
         if (kind.refresh) kind.refresh();
         refreshOpenLists();
         Promise.resolve(kind.save()).then(ok => {
             if (!ok) return;
-            addToLog('delete', kind.audit, title, kind.dept);
+            addToLog('delete', kind.audit, title, kind.dept, auditDel);
             showToast('تم الحذف: ' + title);
         });
     }
@@ -6091,12 +6096,13 @@ Ferritin"></textarea>
         if (typeof requireLive === 'function' && !requireLive()) return;
         const i = departments.findIndex(x => x.id === deptId), j = i + dir;
         if (i < 0 || j < 0 || j >= departments.length) return;
+        const auditOrderBefore = departments.map(d => d.name).join('، ');
         [departments[i], departments[j]] = [departments[j], departments[i]];
         departments.forEach((d, k) => { d.sortIndex = k; });
         saveDepartments();
         renderAdminDepartments();
         renderDepartmentsHome();
-        addToLog('edit', 'department', 'ترتيب الأقسام');
+        addToLog('edit', 'department', 'ترتيب الأقسام', '', ['الترتيب: من ' + auditOrderBefore + ' إلى ' + departments.map(d => d.name).join('، ')]);
     }
 
     function openAddDepartmentModal() {
@@ -6131,7 +6137,7 @@ Ferritin"></textarea>
         renderAdminDepartments();
         renderDepartmentsHome();
         document.getElementById('modalOverlay').classList.remove('show');
-        addToLog('add', 'department', name);
+        addToLog('add', 'department', name, '', ['اسم القسم: ' + name]);
         showToast('تم إنشاء القسم: ' + name);
     }
 
@@ -6157,6 +6163,7 @@ Ferritin"></textarea>
         if (!canManageDepartments()) { showToast('صلاحية المدير العام فقط', 'warning'); return; }
         const d = departments.find(x => x.id === deptId);
         if (!d) return;
+        const auditDeptBefore = { name: d.name, description: d.description, icon: d.icon };
         d.name = document.getElementById('editDeptName').value.trim() || d.name;
         d.description = document.getElementById('editDeptDesc').value.trim();
         d.icon = document.getElementById('editDeptIcon').value.trim() || 'fa-star';
@@ -6164,7 +6171,7 @@ Ferritin"></textarea>
         renderAdminDepartments();
         renderDepartmentsHome();
         document.getElementById('modalOverlay').classList.remove('show');
-        addToLog('edit', 'department', d.name);
+        addToLog('edit', 'department', d.name, '', [audLine('name', 'اسم القسم', auditDeptBefore.name, d.name), audLine('description', 'الوصف', auditDeptBefore.description, d.description), audLine('icon', 'الأيقونة', auditDeptBefore.icon, d.icon)]);
         showToast('تم تعديل القسم: ' + d.name);
     }
 
@@ -6176,7 +6183,7 @@ Ferritin"></textarea>
         saveDepartments();
         renderAdminDepartments();
         renderDepartmentsHome();
-        addToLog(d.active ? 'enable' : 'disable', 'department', d.name);
+        addToLog(d.active ? 'enable' : 'disable', 'department', d.name, '', ['الحالة: من ' + (d.active ? 'معطّل' : 'فعّال') + ' إلى ' + (d.active ? 'فعّال' : 'معطّل')]);
         showToast(d.active ? 'تم تفعيل القسم' : 'تم تعطيل القسم');
     }
 
@@ -6193,7 +6200,7 @@ Ferritin"></textarea>
         db.ref('genericServices/' + deptId).remove();
         renderAdminDepartments();
         renderDepartmentsHome();
-        addToLog('delete', 'department', d.name);
+        addToLog('delete', 'department', d.name, '', ['اسم القسم: ' + d.name, 'كان فارغاً (بلا خدمات)']);
         showToast('تم حذف القسم');
     }
 
@@ -6352,6 +6359,25 @@ Ferritin"></textarea>
         return out;
     }
 
+    // وصف صلاحيات قسم: "إضافة، تعديل" أو "لا شيء"
+    function audPermText(p, id) {
+        const d = departments.find(x => x.id === id);
+        const a = PERM_ACTIONS.filter(x => p && p[x.k]).map(x => d && x.labelFor ? x.labelFor(d) : x.label);
+        return a.length ? a.join('، ') : 'لا شيء';
+    }
+    function audDeptName(id) { return id === MKT ? 'إدارة العروض (التسويق)' : ((departments.find(d => d.id === id) || {}).name || id); }
+    function auditPermsDiff(before, after) {
+        const out = [];
+        const b = before || {}, a = after || {};
+        if (!audSame(b.displayName, a.displayName) && a.displayName !== undefined) out.push('الاسم المعروض: من ' + audVal('', b.displayName) + ' إلى ' + audVal('', a.displayName));
+        if (a.role !== undefined && b.role !== a.role) out.push('الدور: من ' + (ROLE_LABELS[b.role] || b.role || '(لا يوجد)') + ' إلى ' + (ROLE_LABELS[a.role] || a.role));
+        if (a.departments && (a.role || b.role) !== 'superadmin') {
+            const ids = new Set([...Object.keys(b.departments || {}), ...Object.keys(a.departments || {})]);
+            ids.forEach(id => { const t1 = audPermText((b.departments || {})[id], id), t2 = audPermText(a.departments[id], id); if (t1 !== t2) out.push('صلاحيات ' + audDeptName(id) + ': من ' + t1 + ' إلى ' + t2); });
+        }
+        return out;
+    }
+
     function saveNewUser() {
         if (!canManageUsers()) { showToast('إدارة المستخدمين للمدير العام فقط', 'warning'); return; }
         const key = usernameToKey(document.getElementById('newUserEmail').value);
@@ -6368,7 +6394,8 @@ Ferritin"></textarea>
             active: true, createdAt: Date.now(), lastLogin: null
         }).then(() => {
             document.getElementById('modalOverlay').classList.remove('show');
-            addToLog('add', 'user', 'صلاحيات: ' + key);
+            const newDepts = role === 'superadmin' ? null : collectDeptPerms('newUser');
+            addToLog('add', 'user', 'صلاحيات: ' + key, '', ['الاسم المعروض: ' + name, 'الدور: ' + (ROLE_LABELS[role] || role)].concat(newDepts ? Object.keys(newDepts).filter(id => audPermText(newDepts[id], id) !== 'لا شيء').map(id => 'صلاحيات ' + audDeptName(id) + ': ' + audPermText(newDepts[id], id)) : ['كل الصلاحيات (مدير عام)']));
             showToast('تم حفظ صلاحيات ' + key);
         }).catch(() => { errEl.textContent = 'رُفض الحفظ من الخادم'; errEl.style.display = 'block'; });
     }
@@ -6416,9 +6443,10 @@ Ferritin"></textarea>
                 const role = document.getElementById('editUserRole').value;
                 return { displayName: name, role, departments: role === 'superadmin' ? fullDeptPermissions() : collectDeptPerms('editUser') };
             })();
+        const auditBeforeUser = JSON.parse(JSON.stringify(u));
         db.ref('users/' + key).update(update).then(() => {
             document.getElementById('modalOverlay').classList.remove('show');
-            addToLog('edit', 'user', 'صلاحيات: ' + key);
+            addToLog('edit', 'user', 'صلاحيات: ' + key, '', auditPermsDiff(auditBeforeUser, update));
             showToast('تم تحديث الصلاحيات');
             if (currentUserProfile && currentUserProfile.key === key) {
                 currentUserProfile = { ...currentUserProfile, ...update };
@@ -6440,7 +6468,7 @@ Ferritin"></textarea>
             displayName: u.displayName || key, deleted: true, active: false,
             deletedAt: firebase.database.ServerValue.TIMESTAMP, deletedBy: currentUserProfile?.key || ''
         }).then(() => {
-            addToLog('delete', 'user', 'حذف المستخدم: ' + key);
+            addToLog('delete', 'user', 'حذف المستخدم: ' + key, '', ['الاسم: ' + (u.displayName || key), 'الدور السابق: ' + (ROLE_LABELS[u.role] || u.role || '—'), 'تمت إزالة كل صلاحياته ومنع دخوله']);
             showToast('تم حذف المستخدم ' + key + ' — احذف حساب دخوله أيضاً من Firebase Console');
         }).catch(() => showToast('رُفض الحذف من الخادم', 'warning'));
     }
@@ -6452,7 +6480,7 @@ Ferritin"></textarea>
         if (u.isPrimarySuperAdmin === true) { showToast('لا يمكن تعطيل المدير العام الرئيسي', 'warning'); return; }
         const next = u.active === false;
         db.ref('users/' + key + '/active').set(next).then(() => {
-            addToLog('edit', 'user', (next ? 'تفعيل: ' : 'تعطيل: ') + key);
+            addToLog(next ? 'enable' : 'disable', 'user', (next ? 'تفعيل: ' : 'تعطيل: ') + key, '', ['حالة الحساب: من ' + (next ? 'معطّل' : 'فعّال') + ' إلى ' + (next ? 'فعّال' : 'معطّل')]);
             showToast(next ? 'تم تفعيل الحساب' : 'تم تعطيل الحساب');
         }).catch(() => showToast('رُفض الحفظ من الخادم', 'warning'));
     }
@@ -6639,7 +6667,7 @@ Ferritin"></textarea>
         Promise.resolve((cfg.save || saveToStorage)()).then(ok => {
             renderExistingCats();
             if (!ok) return;
-            addToLog('edit', 'category', `${oldName} ← ${newName}`, cfg.dept);
+            addToLog('edit', 'category', newName, cfg.dept, ['اسم التصنيف: من ' + oldName + ' إلى ' + newName]);
             showToast(`تم تغيير "${oldName}" إلى "${newName}"`);
         });
     }
@@ -6686,6 +6714,7 @@ Ferritin"></textarea>
         if (!cfg || !requirePerm(cfg.dept, 'delete')) return;
         const moveTo = document.getElementById('deleteCatMoveTo')?.value || '';
         const inCat = x => cfg.match(x) && x[cfg.key] === catName;
+        const auditCatCount = cfg.get().filter(x => inCat(x) && !x._placeholder).length;
 
         // النقل/الحذف يقتصر على عناصر هذا المكان فقط؛ عنصر الحجز الخاص بالتصنيف المحذوف يُزال ولا تُمس تصنيفات أخرى
         if (moveTo && getCategoriesFor(section).includes(moveTo)) {
@@ -6702,7 +6731,7 @@ Ferritin"></textarea>
         Promise.resolve((cfg.save || saveToStorage)()).then(ok => {
             renderExistingCats();
             if (!ok) return;
-            addToLog('delete', 'category', catName, cfg.dept);
+            addToLog('delete', 'category', catName, cfg.dept, ['اسم التصنيف: ' + catName, auditCatCount ? (moveTo ? 'نُقلت عناصره (' + auditCatCount + ') إلى: ' + moveTo : 'عناصره (' + auditCatCount + ') أصبحت بدون تصنيف') : 'كان فارغاً']);
             showToast('تم حذف القسم: ' + catName);
         });
     }
@@ -6739,7 +6768,7 @@ Ferritin"></textarea>
             renderExistingCats();
             if (!ok) return;
             document.getElementById('addCatName').value = '';
-            addToLog('add', 'category', name, cfg.dept);
+            addToLog('add', 'category', name, cfg.dept, ['اسم التصنيف: ' + name]);
             showToast(`تم إضافة التصنيف: ${name}`);
         });
     }
@@ -7302,15 +7331,77 @@ Ferritin"></textarea>
         return '';
     }
 
-    function addToLog(action, type, name, dept) {
+    // changes: قائمة أسطر "الحقل: من القديم إلى الجديد" — سجل تدقيق فعلي لما تغيّر
+    function addToLog(action, type, name, dept, changes) {
         if (!currentUserProfile || !firebaseReady) return;
-        db.ref('audit').push({
+        const entry = {
             by: currentUserProfile.key,
             byName: currentUserProfile.displayName || currentUserProfile.key,
             at: firebase.database.ServerValue.TIMESTAMP,
             action: String(action || ''), type: String(type || ''),
             name: String(name || '').slice(0, 200), dept: auditDeptFor(type, dept)
-        }).catch(() => {});
+        };
+        const lines = (changes || []).filter(Boolean);
+        if (lines.length) entry.changes = lines.join('\n').slice(0, 3000);
+        // إن كانت قواعد الخادم أقدم (لا تعرف حقل changes) يُحفظ السجل بدون التفاصيل بدل أن يضيع
+        db.ref('audit').push(entry).catch(() => { if (entry.changes) { delete entry.changes; db.ref('audit').push(entry).catch(() => {}); } });
+    }
+    // ---------- وصف التغييرات ----------
+    const AUD_LONG = ['desc', 'description', 'details', 'note', 'notes', 'agreement', 'exams'];
+    const AUD_MONEY = ['price', 'origPrice'];
+    function audLabel(f) { return String(f.label || f.k).replace(/\s*\([^)]*\)\s*/g, ' ').replace(/\s*—.*$/, '').trim(); }
+    function audEmpty(v) { return v === undefined || v === null || v === '' || (Array.isArray(v) && !v.length); }
+    function audVal(k, v) {
+        if (audEmpty(v)) return '(فارغ)';
+        if (v === true) return 'نعم';
+        if (v === false) return 'لا';
+        if (Array.isArray(v)) return v.join('، ');
+        if (AUD_MONEY.includes(k) && !isNaN(Number(v))) return v + ' ر.س';
+        return String(v).length > 60 ? String(v).slice(0, 60) + '…' : String(v);
+    }
+    function audSame(a, b) { const n = v => (audEmpty(v) || v === false) ? undefined : v; return JSON.stringify(n(a)) === JSON.stringify(n(b)); }
+    function audLine(k, label, a, b) {
+        if (audSame(a, b)) return null;
+        if (Array.isArray(a) || Array.isArray(b)) {
+            const A = new Set(a || []), B = new Set(b || []);
+            const added = [...B].filter(x => !A.has(x)), removed = [...A].filter(x => !B.has(x));
+            return label + ': ' + [added.length ? 'أُضيف ' + added.join('، ') : '', removed.length ? 'حُذف ' + removed.join('، ') : ''].filter(Boolean).join(' · ');
+        }
+        if (AUD_LONG.includes(k) && !audEmpty(a) && !audEmpty(b)) return label + ': تم تعديل ' + label;
+        return label + ': من ' + audVal(k, a) + ' إلى ' + audVal(k, b);
+    }
+    // سعر الفرع كما أدخله المستخدم: رقم / غير متوفر / يتبع السعر العام
+    function audBranch(v) { return v === BP_NA ? 'غير متوفر' : audEmpty(v) ? 'يتبع السعر العام' : v + ' ر.س'; }
+    function audDiscount(o) { const p = Number(o.price), q = Number(o.origPrice); return q > p && p >= 0 ? Math.round((q - p) / q * 100) + '%' : null; }
+    // مقارنة عنصر قبل/بعد حسب حقول نوعه (بطاقة العنصر)
+    function auditItemDiff(kind, before, after) {
+        const out = [];
+        kind.fields.forEach(f => {
+            if (f.type === 'branchprices') {
+                BRANCH_PRICES.forEach(b => { if (!audSame(before[b.k], after[b.k])) out.push('سعر فرع ' + b.n + ': من ' + audBranch(before[b.k]) + ' إلى ' + audBranch(after[b.k])); });
+                return;
+            }
+            const l = audLine(f.k, audLabel(f), before[f.k], after[f.k]);
+            if (l) out.push(l);
+        });
+        const d1 = audDiscount(before), d2 = audDiscount(after);
+        if (before.isOffer && d1 !== d2) out.push('نسبة الخصم: من ' + (d1 || '(لا يوجد)') + ' إلى ' + (d2 || '(لا يوجد)'));
+        return out;
+    }
+    // أهم بيانات عنصر (عند الإضافة والحذف)
+    function auditItemSummary(kind, o) {
+        const out = [];
+        const dn = (departments.find(d => d.id === kind.dept) || {}).name;
+        if (dn) out.push('القسم: ' + dn);
+        out.push('النوع: ' + kind.label);
+        kind.fields.forEach(f => {
+            if (f.type === 'branchprices') {
+                BRANCH_PRICES.forEach(b => { if (!audEmpty(o[b.k])) out.push('سعر فرع ' + b.n + ': ' + audBranch(o[b.k])); });
+                return;
+            }
+            if (['price', 'origPrice', 'code', 'cat', 'category', 'type', 'branch', 'startDate', 'endDate', 'offerType'].includes(f.k) && !audEmpty(o[f.k])) out.push(audLabel(f) + ': ' + audVal(f.k, o[f.k]));
+        });
+        return out;
     }
 
     // تسجيل الدخول يُسجَّل عند الدخول الفعلي فقط (وليس عند كل إعادة تحميل للصفحة)
@@ -7343,7 +7434,7 @@ Ferritin"></textarea>
         const list = auditEntries.filter(e =>
             (!dept || (dept === '-' ? !e.dept : e.dept === dept)) &&
             (act ? e.action === act : e.action !== 'login') &&
-            (!q || normalizeArabic(`${e.byName || ''} ${e.by || ''} ${e.name || ''} ${auditDeptName(e.dept)}`).includes(q))
+            (!q || normalizeArabic(`${e.byName || ''} ${e.by || ''} ${e.name || ''} ${e.changes || ''} ${auditDeptName(e.dept)}`).includes(q))
         );
         const countEl = document.getElementById('auditCount');
         if (countEl) countEl.textContent = list.length + ' من ' + auditEntries.length;
@@ -7358,6 +7449,7 @@ Ferritin"></textarea>
                     <div style="font-weight:600;font-size:12px;color:var(--text);">
                         ${escapeHtml(AUDIT_ACTIONS[e.action] || e.action)}${e.type && e.type !== 'session' ? ' ' + escapeHtml(AUDIT_TYPES[e.type] || e.type) : ''}${e.name ? ': ' + escapeHtml(e.name) : ''}
                     </div>
+                    ${e.changes ? `<ul class="audit-changes">${String(e.changes).split('\n').map(l => `<li>${escapeHtml(l)}</li>`).join('')}</ul>` : ''}
                     <div class="change-log-time">
                         <i class="fas fa-user"></i> ${escapeHtml(e.byName || e.by)}
                         &nbsp;·&nbsp; <i class="fas fa-layer-group"></i> ${escapeHtml(auditDeptName(e.dept))}
@@ -7431,7 +7523,7 @@ Ferritin"></textarea>
             Promise.all(saves).then(r => {
                 renderCategories(); renderBrowseAll(); renderIndividualTests(); renderServices(); filterCompanies(); updateStats();
                 if (!r.every(Boolean)) { showToast('لم تكتمل الاستعادة لكل الأقسام — راجع الرسائل وأعد المحاولة', 'warning'); return; }
-                addToLog('edit', 'settings', 'استعادة نسخة احتياطية ' + String(data.exportDate || '').slice(0, 10), '');
+                addToLog('edit', 'settings', 'استعادة نسخة احتياطية ' + String(data.exportDate || '').slice(0, 10), '', lines);
                 showToast('تمت استعادة البيانات بنجاح');
             });
         };
@@ -8199,10 +8291,11 @@ Ferritin"></textarea>
         const cur = initial ? sel.dataset.cur : sel.value;
         const catField = d ? getKind(offerKindKeyForDept(d)).fields.find(f => f.k === 'cat') : null;
         const cats = catField ? catField.cats() : [];
-        const legacy = cur && !cats.includes(cur);
+        // عند تغيير القسم: تصنيف القسم السابق لا ينتقل معه (يُختار من تصنيفات القسم الجديد)
+        const legacy = initial && cur && !cats.includes(cur);
         sel.innerHTML = `<option value="">— بدون تصنيف —</option>` + (legacy ? `<option value="${escapeHtml(cur)}">${escapeHtml(cur)} (الحالي)</option>` : '') +
             cats.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
-        sel.value = cur || '';
+        sel.value = (legacy || cats.includes(cur)) ? cur : '';
     }
     function offerFormKindChanged() {
         const seasonal = document.getElementById('of_kind')?.value === 'seasonal';
@@ -8253,6 +8346,10 @@ Ferritin"></textarea>
         }
         const now = Date.now(), by = actorName();
         let target;
+        const offerView = (o, dd) => ({ dept: dd.name, name: offerTitle(o, dd), nameEn: dd.type === 'lab' ? o.name : o.nameEn, offerKind: offerKindOf(o) === 'seasonal' ? 'موسمي' : 'ثابت',
+            price: o.price, origPrice: o.origPrice, discount: audDiscount(o), code: o.code, cat: o.cat, startDate: o.startDate, endDate: o.endDate, priority: o.priority,
+            tat: o.tat, offerType: o.offerType, fasting: o.fasting, desc: dd.type === 'lab' ? o.desc : dd.type === 'visits' ? o.details : o.description });
+        const auditBeforeView = isNew ? null : offerView(obj, oldDept);
         if (isNew || moving) {
             const base = moving ? JSON.parse(JSON.stringify(obj)) : {};
             // عند النقل: حقول خاصة بالقسم القديم لا تنتقل (الاسم/الوصف يُعاد بناؤها)، وتبقى معلومات الإنشاء والسجل
@@ -8277,7 +8374,13 @@ Ferritin"></textarea>
         Promise.all([...saves.values()].map(f => Promise.resolve(f()))).then(res => {
             closeOfferCard();
             if (!res.every(Boolean)) { [kind, oldKind].forEach(k => { if (k && k.refresh) k.refresh(); }); renderOffersPage(); refreshOpenLists(); return; }
-            addToLog(isNew ? 'add' : 'edit', 'offer', offerTitle(target, d) + (moving ? ' (نُقل إلى ' + d.name + ')' : ''), d.id);
+            const OL = { dept: 'القسم', name: 'اسم العرض', nameEn: 'الاسم بالإنجليزي', offerKind: 'نوع العرض', price: 'سعر العرض', origPrice: 'السعر قبل العرض', discount: 'نسبة الخصم', code: 'الكود', cat: 'التصنيف',
+                startDate: 'تاريخ البداية', endDate: 'تاريخ النهاية', priority: 'أولوية الظهور', tat: 'مدة النتيجة', offerType: 'مكان العرض', fasting: 'صيام', desc: 'الوصف' };
+            const after = offerView(target, d);
+            const lines = isNew
+                ? ['القسم: ' + d.name, 'نوع العرض: ' + after.offerKind, 'سعر العرض: ' + audVal('price', after.price) + ' (موحّد لجميع الفروع)', after.origPrice ? 'السعر قبل العرض: ' + audVal('origPrice', after.origPrice) : '', after.discount ? 'نسبة الخصم: ' + after.discount : '', after.startDate ? 'من ' + after.startDate + ' إلى ' + after.endDate : '', after.code ? 'الكود: ' + after.code : '']
+                : Object.keys(OL).map(k => audLine(k === 'desc' ? 'desc' : k, OL[k], auditBeforeView[k], after[k]));
+            addToLog(isNew ? 'add' : 'edit', 'offer', offerTitle(target, d) + (moving ? ' (نُقل إلى ' + d.name + ')' : ''), d.id, lines);
             showToast(isNew ? 'تمت إضافة العرض: ' + offerTitle(target, d) : moving ? 'تم حفظ العرض ونقله إلى ' + d.name : 'تم حفظ التعديلات');
         });
     }
@@ -8351,11 +8454,12 @@ Ferritin"></textarea>
         if (i < 0 || j < 0 || j >= all.length) return;
         [all[i], all[j]] = [all[j], all[i]];
         const saves = new Map();
+        const moved = all[j], movedTitle = offerTitle(moved.o, moved.d), fromPos = i + 1, toPos = j + 1;
         all.forEach((x, k) => { if (Number(x.o.priority) !== k + 1) { x.o.priority = k + 1; saves.set(offerSaveKey(x.d), getKind(x.kk).save); } });
         renderMktRows(); renderOffersPage();
         Promise.all([...saves.values()].map(f => Promise.resolve(f()))).then(res => {
             if (!res.every(Boolean)) { renderMktRows(); renderOffersPage(); return; }
-            addToLog('edit', 'offer', 'ترتيب العروض', '');
+            addToLog('edit', 'offer', 'ترتيب العروض', '', [movedTitle + ': من المركز ' + fromPos + ' إلى المركز ' + toPos]);
         });
     }
 
