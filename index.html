@@ -2932,6 +2932,59 @@
         #mktOffersList .il-toolbar #mktQ { flex: 2 1 220px; }
         .audit-changes { margin: 4px 0 2px; padding: 0 16px 0 0; font-size: 11.5px; color: var(--text); line-height: 1.7; }
         .audit-changes li { list-style: disc; }
+        .cat-toolbar { display: flex; align-items: flex-end; gap: 10px; flex-wrap: wrap; }
+        .cat-toolbar .cat-add-btn { max-width: 210px; margin: 0; background: var(--primary); }
+        .modal-actions { display: flex; gap: 8px; margin-top: 14px; }
+        .modal-actions .btn-admin-submit { flex: 1; }
+        .field-err { border-color: var(--danger) !important; box-shadow: 0 0 0 2px rgba(220, 38, 38, .12); }
+        .field-error-msg { color: var(--danger-fg); font-size: 12px; margin-top: 4px; }
+        .chip-field { display: flex; flex-wrap: wrap; gap: 6px; padding: 2px; border-radius: 10px; }
+        /* نموذج الشركة المضغوط */
+        .co-form > div { padding: 14px 16px !important; }
+        .co-form h3 { font-size: 16px; margin-bottom: 6px !important; }
+        .co-form .item-card-grid { gap: 6px 10px; }
+        .co-form .form-group { margin: 0; }
+        .co-form label { font-size: 12px; margin-bottom: 3px; }
+        .co-form .admin-input { padding: 7px 10px; font-size: 13px; min-height: 0; }
+        .co-form textarea.admin-input { min-height: 34px; height: 34px; }
+        .co-form .card-group-title { font-size: 11.5px; padding: 4px 0 2px; margin-top: 2px; }
+        .co-form .chip-field { gap: 4px; }
+        .co-form .chip-opt { min-height: 30px; padding: 3px 11px; font-size: 12px; }
+        .co-form .fk-type { grid-column: auto !important; }
+        .co-form .co-sub { font-size: 11.5px; margin: 6px 0 3px; }
+        .co-form .co-prices { gap: 4px; margin-top: 6px; grid-template-columns: repeat(auto-fill, minmax(min(170px, 100%), 1fr)); }
+        .co-form .co-price-row span { font-size: 11.5px; }
+        .co-form .co-price-row input { width: 64px !important; }
+        .co-form .co-price-row { padding: 3px 8px; }
+        .co-form .co-price-row input { width: 80px; padding: 4px 6px; }
+        .co-form .co-preview { margin-top: 6px; padding: 4px 8px; font-size: 11.5px; }
+        .co-form .co-link { margin-top: 4px; font-size: 11.5px; }
+        .co-form .btn-admin-submit { padding: 9px 14px; font-size: 14px; }
+        .co-form [style*="margin-top:14px"] { margin-top: 10px !important; }
+        @media (max-width: 600px) { .co-form .fk-type { grid-column: 1 / -1 !important; } }
+        .co-svc.field-err { box-shadow: 0 0 0 2px rgba(220, 38, 38, .35); border-radius: 10px; }
+        .co-sub { display: block; font-size: 12.5px; font-weight: 700; margin: 10px 0 4px; }
+        .co-hint { font-size: 12px; color: var(--text-light); margin: 2px 0 6px; }
+        .co-prices { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(210px, 100%), 1fr)); gap: 6px; margin-top: 8px; }
+        .co-price-row { display: flex; align-items: center; gap: 6px; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 5px 8px; }
+        .co-price-row span { flex: 1; font-size: 12.5px; font-weight: 700; min-width: 0; }
+        .co-price-row input { width: 92px; padding: 6px 8px; }
+        .co-price-row small { color: var(--text-light); font-size: 11px; }
+        .co-pct-other { width: 92px !important; min-height: 36px; padding: 6px 8px; }
+        .co-link { margin-top: 8px; background: none; border: none; color: var(--primary-fg); font-family: inherit; font-size: 12px; cursor: pointer; padding: 0; text-decoration: underline; }
+        .co-preview { margin-top: 8px; font-size: 12px; background: var(--bg); border: 1px dashed var(--border); border-radius: 8px; padding: 6px 10px; line-height: 1.7; }
+        .date-old { font-size: 11.5px; color: var(--text-light); margin-top: 4px; }
+        .chip-field.field-err { box-shadow: 0 0 0 2px rgba(220, 38, 38, .35); }
+        .chip-opt { min-height: 36px; padding: 6px 14px; border-radius: 999px; border: 1.5px solid var(--border-strong, var(--border)); background: var(--card-bg); color: var(--text); font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer; transition: background .15s, border-color .15s, color .15s; }
+        .chip-opt:hover { border-color: var(--primary); color: var(--primary-fg); }
+        .chip-opt.on { background: var(--primary); border-color: var(--primary); color: #fff; }
+        .chip-opt.all.on { background: var(--accent, var(--primary)); border-color: var(--accent, var(--primary)); }
+        .chip-opt i { font-size: 11px; }
+        .chip-opt:disabled { opacity: .6; cursor: default; }
+        .card-group-title { grid-column: 1 / -1; font-size: 12.5px; font-weight: 800; color: var(--primary-fg); border-bottom: 1px solid var(--border); padding: 6px 0 4px; margin-top: 4px; }
+        .card-group-title:first-child { margin-top: 0; }
+        .opt-tag { font-size: 10.5px; color: var(--text-light); font-weight: 500; }
+        .item-card-grid textarea.admin-input { resize: vertical; min-height: 54px; }
         .mkt-hint { font-size: 11.5px; color: var(--text-light); margin: 8px 0; }
         .mkt-order { display: flex; flex-direction: column; gap: 2px; }
         .mkt-order .il-btn { min-height: 22px; min-width: 26px; padding: 0; }
@@ -3237,6 +3290,11 @@
                     </select>
                 </div>
             </div>
+            <div style="display:flex;justify-content:flex-end;margin:0 0 10px;">
+                <button id="labAddPackageBtn" class="page-add-btn" style="display:none;background:var(--primary);color:white;border:none;border-radius:8px;padding:8px 16px;font-family:inherit;font-size:13px;cursor:pointer;" onclick="openItemCard('package', null)">
+                    <i class="fas fa-plus"></i> إضافة باقة
+                </button>
+            </div>
             <div class="packages-grid" id="browseGrid"></div>
         </div>
 
@@ -3308,7 +3366,12 @@
                 <i class="fas fa-search individual-search-icon"></i>
             </div>
             <div class="individual-cats" id="individualCats"></div>
-            <div class="individual-stats" id="individualStats"></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+                <div class="individual-stats" id="individualStats"></div>
+                <button id="labAddTestBtn" class="page-add-btn" style="display:none;background:var(--primary);color:white;border:none;border-radius:8px;padding:8px 16px;font-family:inherit;font-size:13px;cursor:pointer;" onclick="openItemCard('test', null)">
+                    <i class="fas fa-plus"></i> إضافة تحليل
+                </button>
+            </div>
             <div class="individual-grid" id="individualGrid"></div>
         </section>
     </div>
@@ -3346,7 +3409,12 @@
                 <i class="fas fa-search individual-search-icon"></i>
             </div>
             <div class="individual-cats" id="servicesCats"></div>
-            <div class="individual-stats" id="servicesStats"></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+                <div class="individual-stats" id="servicesStats"></div>
+                <button id="visitsAddServiceBtn" class="page-add-btn" style="display:none;background:var(--primary);color:white;border:none;border-radius:8px;padding:8px 16px;font-family:inherit;font-size:13px;cursor:pointer;" onclick="openItemCard('service', null)">
+                    <i class="fas fa-plus"></i> إضافة خدمة
+                </button>
+            </div>
             <div class="services-grid" id="servicesGrid"></div>
         </section>
     </div>
@@ -3365,7 +3433,12 @@
             </div>
             <div class="individual-cats offer-kind-seg" id="offersKindFilter" role="tablist" aria-label="نوع العرض"></div>
             <div class="individual-cats" id="offersDeptFilter"></div>
-            <div class="individual-stats" id="offersStats"></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+                <div class="individual-stats" id="offersStats"></div>
+                <button id="offersAddBtn" class="page-add-btn" style="display:none;background:var(--primary);color:white;border:none;border-radius:8px;padding:8px 16px;font-family:inherit;font-size:13px;cursor:pointer;" onclick="openOfferCard(null, currentOffersDept !== 'all' ? currentOffersDept : null)">
+                    <i class="fas fa-plus"></i> إضافة عرض
+                </button>
+            </div>
             <div class="services-grid" id="offersGrid"></div>
         </section>
     </div>
@@ -3396,7 +3469,12 @@
                     <select id="coBranchSelect" onchange="filterCompanyBranch(this.value)" aria-label="الفرع"></select>
                 </div>
             </div>
-            <div class="individual-stats" id="companiesStats"></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+                <div class="individual-stats" id="companiesStats"></div>
+                <button id="companiesAddBtn" class="page-add-btn" style="display:none;background:var(--primary);color:white;border:none;border-radius:8px;padding:8px 16px;font-family:inherit;font-size:13px;cursor:pointer;" onclick="openItemCard('company', null)">
+                    <i class="fas fa-plus"></i> إضافة شركة
+                </button>
+            </div>
             <div class="companies-grid" id="companiesGrid"></div>
         </section>
     </div>
@@ -5206,7 +5284,17 @@ Ferritin"></textarea>
     }
 
     // يُظهر أزرار الإدارة لمن له سجل صلاحيات فقط، ويعيد رسم القوائم لتظهر/تختفي أزرار التعديل
+    // أزرار الإضافة في واجهة الأقسام: تظهر فقط لمن لديه صلاحية الإضافة في ذلك القسم (والخادم يفرضها أيضاً)
+    function updateAddButtons() {
+        const show = (id, ok) => { const el = document.getElementById(id); if (el) el.style.display = ok ? '' : 'none'; };
+        show('labAddTestBtn', canItem(KINDS.test, 'add'));
+        show('labAddPackageBtn', canItem(KINDS.package, 'add'));
+        show('visitsAddServiceBtn', canItem(KINDS.service, 'add'));
+        show('companiesAddBtn', canItem(KINDS.company, 'add'));
+        show('offersAddBtn', typeof canManageOffersAdd === 'function' && canManageOffersAdd());
+    }
     function applyPermissionUI() {
+        updateAddButtons();
         document.querySelectorAll('[data-admin-entry]').forEach(el => { el.style.display = canManageDepartments() ? '' : 'none'; });
         document.querySelectorAll('[data-offers-settings]').forEach(el => { el.style.display = canManageOffers() ? '' : 'none'; });
         document.querySelectorAll('[data-dept-settings]').forEach(el => {
@@ -5671,12 +5759,17 @@ Ferritin"></textarea>
         refresh: () => { filterCompanies(); const c = document.getElementById('companiesCount'); if (c) c.textContent = visibleCompanies().length; },
         title: o => o.name, sub: o => [o.type, o.branch].filter(Boolean).join(' · '), price: () => '',
         // "بيانات الشركة" و"البريد" لا تظهر في البطاقة (حسب طلب سابق) لكنها تبقى محفوظة كما هي
-        fields: [{ k: 'name', label: 'اسم الشركة', req: true },
-            { k: 'type', label: 'نوع التعاقد', list: () => uniqueValues(companies, 'type') },
-            { k: 'branch', label: 'الفرع', list: () => uniqueValues(companies, 'branch') },
-            { k: 'exams', label: 'الفحوصات / الخدمة' }, { k: 'agreement', label: 'الأسعار المتفق عليها' },
-            { k: 'code', label: 'اسم الكود في النظام' }, { k: 'date', label: 'تاريخ الاتفاقية' },
-            { k: 'notes', label: 'ملاحظات' }]
+        saveLabel: 'حفظ الشركة',
+        // الكتابة اليدوية للاسم والكود فقط — باقي الحقول خيارات جاهزة (والقيم القديمة تبقى كما هي ما لم تُعدَّل)
+        fields: [
+            { k: 'name', label: 'اسم الشركة', req: true, group: 'بيانات الشركة', ph: 'مثال: شركة النخيل للمقاولات' },
+            { k: 'code', label: 'اسم الكود في النظام', opt: true, group: 'بيانات الشركة', ph: 'كما يظهر في نظام المختبر' },
+            { k: 'type', label: 'نوع التعاقد', reqNew: true, group: 'بيانات الشركة', type: 'chips', options: () => uniqueValues(companies, 'type'), onPick: 'coRender' },
+            { k: 'date', label: 'تاريخ الاتفاقية', opt: true, group: 'بيانات الشركة', type: 'datepick' },
+            { k: 'branch', label: 'الفرع', reqNew: true, group: 'بيانات الشركة', type: 'chips', multi: true, allLabel: 'جميع الفروع', options: () => BRANCH_LIST, hint: 'اختر "جميع الفروع" أو فرعاً أو أكثر' },
+            { k: 'exams', label: 'الفحوصات / الخدمات المشمولة', reqNew: true, group: 'الخدمات والأسعار', type: 'coservices' },
+            { k: 'agreement', label: 'الأسعار المتفق عليها', group: 'الخدمات والأسعار', type: 'hidden' },
+            { k: 'notes', label: 'ملاحظات', opt: true, group: 'معلومات إضافية', textarea: true }]
     };
 
     function getKind(key) {
@@ -5757,7 +5850,13 @@ Ferritin"></textarea>
         const editable = isNew || canItem(kind, 'edit');
         cardCtx = { kindKey, obj, returnToGeneric: false };
         const dis = editable ? '' : 'disabled';
+        let lastGroup = null;
         const fieldsHtml = kind.fields.map((f, i) => {
+            const groupHead = f.group && f.group !== lastGroup ? `<div class="card-group-title">${escapeHtml(f.group)}</div>` : '';
+            if (f.group) lastGroup = f.group;
+            return groupHead + cardFieldHtml(f, i);
+        }).join('');
+        function cardFieldHtml(f, i) {
             let v = src ? src[f.k] : (f.type === 'checkbox' ? false : '');
             if (copyRef && !obj && f.k === kind.titleKey && v) v = v + ' (نسخة)';
             const id = 'card_f' + i;
@@ -5773,6 +5872,35 @@ Ferritin"></textarea>
                         <label class="bp-edit-na"><input type="checkbox" id="${id}_${j}na" ${na ? 'checked' : ''} ${dis} onchange="document.getElementById('${id}_${j}').disabled=this.checked"> غير متوفرة</label>
                     </div>`;
                 }).join('')}</div></div>`;
+            if (f.type === 'hidden') return `<input type="hidden" id="${id}" value="${escapeHtml(v == null ? '' : v)}">`;
+            if (f.type === 'datepick') {
+                const cur = v == null ? '' : String(v), iso = /^\d{4}-\d{2}-\d{2}$/.test(cur);
+                return `<div class="form-group fk-${f.k}"><label>${f.label} <small class="opt-tag">اختياري</small></label>
+                    <input type="date" class="admin-input" value="${iso ? escapeHtml(cur) : ''}" ${dis} onchange="document.getElementById('${id}').value=this.value;const o=this.parentElement.querySelector('.date-old');if(o)o.style.display='none'">
+                    ${cur && !iso ? `<div class="date-old">المسجّل حالياً: ${escapeHtml(cur)} — يبقى كما هو ما لم تختر تاريخاً جديداً</div>` : ''}
+                    <input type="hidden" id="${id}" value="${escapeHtml(cur)}"></div>`;
+            }
+            if (f.type === 'coservices') {
+                const agI = kind.fields.findIndex(x => x.k === 'agreement'), tyI = kind.fields.findIndex(x => x.k === 'type');
+                return `<div class="form-group co-svc" style="grid-column:1/-1;" data-ex="${id}" data-ag="card_f${agI}" data-ty="card_f${tyI}">
+                    <input type="hidden" id="${id}" value="${escapeHtml(v == null ? '' : v)}">
+                    <div id="coEditor"></div></div>`;
+            }
+            if (f.type === 'chips') {
+                const opts = (typeof f.options === 'function' ? f.options() : f.options) || [];
+                const cur = v == null ? '' : String(v);
+                // القيمة الحالية تُفكّك لخيارات (يحافظ على أي قيمة قديمة غير موجودة في القائمة كخيار محدد)
+                const parts = f.multi ? cur.split(/[،,]|\s-\s/).map(x => x.trim()).filter(Boolean) : (cur ? [cur] : []);
+                const all = (f.allLabel ? [f.allLabel] : []).concat(opts);
+                parts.forEach(p => { if (!all.includes(p)) all.push(p); });
+                const isReq = f.req || (f.reqNew && !obj);
+                return `<div class="form-group fk-${f.k}" style="grid-column:1/-1;">
+                    <label class="${isReq ? 'req-label' : ''}">${f.label}${f.hint ? ' <small class="opt-tag">' + escapeHtml(f.hint) + '</small>' : ''}</label>
+                    <div class="chip-field" data-multi="${f.multi ? 1 : 0}" data-all="${escapeHtml(f.allLabel || '')}" data-onpick="${f.onPick || ''}" role="${f.multi ? 'group' : 'radiogroup'}">
+                        ${all.map(o => `<button type="button" class="chip-opt ${parts.includes(o) ? 'on' : ''} ${o === f.allLabel ? 'all' : ''}" data-v="${escapeHtml(o)}" aria-pressed="${parts.includes(o)}" ${dis} onclick="chipPick(this)">${parts.includes(o) ? '<i class="fas fa-check"></i> ' : ''}${escapeHtml(o)}</button>`).join('')}
+                        <input type="hidden" id="${id}" value="${escapeHtml(cur)}">
+                    </div></div>`;
+            }
             if (f.options) return `<div class="form-group"><label>${f.label}</label><select class="admin-input" id="${id}" ${dis}>${f.options.map(o => `<option value="${escapeHtml(o)}" ${o === v ? 'selected' : ''}>${escapeHtml(o)}</option>`).join('')}</select></div>`;
             if (f.type === 'catselect') {
                 const cats = f.cats();
@@ -5786,8 +5914,12 @@ Ferritin"></textarea>
             if (f.type === 'tests') return `<div class="form-group" style="grid-column:1/-1;"><label class="${f.req ? 'req-label' : ''}">${f.label}</label><textarea class="admin-input" id="${id}" rows="3" style="direction:ltr;text-align:left;" ${dis}>${escapeHtml(Array.isArray(v) ? v.join(', ') : (v || ''))}</textarea></div>`;
             const listAttr = f.list ? `list="${id}_dl"` : '';
             const dl = f.list ? `<datalist id="${id}_dl">${f.list().map(o => `<option value="${escapeHtml(o)}">`).join('')}</datalist>` : '';
-            return `<div class="form-group"><label class="${f.req ? 'req-label' : ''}">${f.label}</label><input type="${f.type === 'number' ? 'number' : 'text'}" class="admin-input" id="${id}" value="${escapeHtml(v == null ? '' : v)}" style="${style}" ${listAttr} ${dis}>${dl}</div>`;
-        }).join('');
+            const isReq = f.req || (f.reqNew && !obj);
+            const lbl = `<label class="${isReq ? 'req-label' : ''}">${f.label}${f.opt ? ' <small class="opt-tag">اختياري</small>' : ''}</label>`;
+            const ph = f.ph ? ` placeholder="${escapeHtml(f.ph)}"` : '';
+            if (f.textarea) return `<div class="form-group" style="grid-column:1/-1;">${lbl}<textarea class="admin-input" id="${id}" rows="2"${ph} ${dis}>${escapeHtml(v == null ? '' : v)}</textarea></div>`;
+            return `<div class="form-group">${lbl}<input type="${f.type === 'number' ? 'number' : 'text'}" class="admin-input" id="${id}" value="${escapeHtml(v == null ? '' : v)}" style="${style}"${ph} ${listAttr} ${dis}>${dl}</div>`;
+        }
         const meta = obj ? `
             <div class="item-card-meta">
                 ${(st2 => `<span class="item-status ${st2.on ? 'on' : 'off'}">${escapeHtml(st2.text)}</span>`)(itemStatusLabel(obj))}
@@ -5809,13 +5941,154 @@ Ferritin"></textarea>
                 ${meta}
                 <div class="item-card-grid">${fieldsHtml}</div>
                 <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;">
-                    ${editable ? `<button class="btn-admin-submit" style="max-width:170px;margin:0;" onclick="saveItemCard()"><i class="fas fa-save"></i> ${obj ? 'حفظ التعديلات' : 'حفظ'}</button>` : ''}
+                    ${editable ? `<button class="btn-admin-submit" style="max-width:170px;margin:0;" onclick="saveItemCard()"><i class="fas fa-save"></i> ${obj ? 'حفظ التعديلات' : (kind.saveLabel || 'حفظ')}</button>` : ''}
                     ${obj && canItem(kind, 'add') ? `<button class="btn-admin-submit" style="max-width:130px;margin:0;background:var(--accent);" onclick="openItemCard('${kindKey}', null, '${ref}')"><i class="fas fa-copy"></i> نسخ</button>` : ''}
-                    <button class="btn-admin-submit" style="max-width:110px;margin:0;background:var(--neutral);" onclick="closeItemCard()"><i class="fas fa-times"></i> إغلاق</button>
+                    <button class="btn-admin-submit" style="max-width:110px;margin:0;background:var(--neutral);" onclick="closeItemCard()"><i class="fas fa-times"></i> ${obj ? 'إغلاق' : 'إلغاء'}</button>
                 </div>
             </div>`;
-        document.getElementById('modalOverlay').innerHTML = `<div class="modal" style="max-width:640px;" onclick="event.stopPropagation()">${html}</div>`;
+        document.getElementById('modalOverlay').innerHTML = `<div class="modal ${kind.key === 'company' ? 'co-form' : ''}" style="max-width:${kind.key === 'company' ? 580 : 640}px;" onclick="event.stopPropagation()">${html}</div>`;
         document.getElementById('modalOverlay').classList.add('show');
+        if (document.getElementById('coEditor')) coInit(!editable);
+    }
+
+    // ============================================
+    // محرر "الخدمات والأسعار" للشركات — خيارات جاهزة تُولّد نفس صيغة النص الحالية
+    // (exams = وصف الفحوصات/الخصم، agreement = "البند (السعر)، ..." الذي تقرؤه بطاقة الشركة)
+    // القيم الموجودة لا تتغير إلا إذا عدّل المستخدم الخيارات أو النص فعلاً
+    // ============================================
+    const CO_SVCS = [
+        { k: 'health', ex: 'شهادة صحية', ag: 'الشهادة الصحية', ph: 130, re: /شهاد/ },
+        { k: 'iqama', ex: 'إقامة', ag: 'الإقامة', ph: 120, re: /اقام/ },
+        { k: 'license', ex: 'رخصة قيادة', ag: 'رخصة القيادة', ph: 80, re: /رخص/ },
+        { k: 'job', ex: 'كشف وظيفي', ag: 'الكشف الوظيفي', ph: 100, re: /وظيف|توظيف/ },
+        { k: 'delivery', ex: 'فحص مناديب توصيل', ag: 'مناديب التوصيل', ph: 130, re: /مناديب|مندوب/ },
+        { k: 'return', ex: 'فحص عودة من إجازة', ag: 'العودة من الإجازة', ph: 70, re: /عوده|عودة/ }
+    ];
+    const CO_PCTS = [5, 10, 15, 20, 25, 30, 35, 40, 50];
+    let coState = null;
+    function coEls() { const box = document.querySelector('#modalOverlay .co-svc'); return box ? { box, ex: document.getElementById(box.dataset.ex), ag: document.getElementById(box.dataset.ag), ty: document.getElementById(box.dataset.ty) } : null; }
+    function coType() { const e = coEls(); return e && e.ty ? e.ty.value : ''; }
+    // تحويل النص الحالي إلى خيارات — إن لم يمكن تحويله بالكامل يبقى بالنص اليدوي (لا يضيع شيء)
+    function coParseExam(exams, ag) {
+        const st = {}; CO_SVCS.forEach(x => st[x.k] = { on: false, price: '' });
+        const items = parseAgreement(ag || '');
+        for (const it of items) { const x = CO_SVCS.find(c => c.re.test(normalizeArabic(it.label))); if (!x) return null; st[x.k].on = true; st[x.k].price = it.price; }
+        const ne = normalizeArabic(exams || '');
+        CO_SVCS.forEach(x => { if (x.re.test(ne)) st[x.k].on = true; });
+        const left = ne.replace(/فحص|فحوصات|كشف|شهاده|صحيه|صحي|اقامه|اقامات|رخصه|رخص|قياده|السياقه|وظيفي|توظيف|مناديب|مندوب|توصيل|عوده|من|اجازه|و|،|,|\s|\.|-|\/|ال/g, '');
+        if (left.length || !CO_SVCS.some(x => st[x.k].on)) return (exams || ag) ? null : st;
+        return st;
+    }
+    function coParseDisc(exams) {
+        const t = String(exams || '').replace(/\s+/g, ' ').trim();
+        if (!t) return { scope: 'same', p1: '', p2: '', offers: 'excl' };
+        const offers = /غير شامل/.test(t) || /لا ?يشمل العروض/.test(t) ? 'excl' : /شامل[ةه]? العروض/.test(t) ? 'incl' : 'none';
+        const core = t.replace(/\(?\s*غير شامل[ةه]? العروض\s*\)?|\(?\s*شامل[ةه]? العروض\s*\)?|[\s()]+$/g, '').trim();
+        let m;
+        if ((m = core.match(/^\(?خصم ?(\d+) ?% ?(?:على ال|لل|ل ?ال)كشفيات و ?ال?خدمات$/))) return { scope: 'same', p1: m[1], p2: '', offers };
+        if ((m = core.match(/^\(?خصم ?(\d+) ?% ?(?:على|ل) ?جميع الخدمات$/))) return { scope: 'all', p1: m[1], p2: '', offers };
+        if ((m = core.match(/^\(?خصم ?(\d+)% ?على الكشفيات و ?(\d+)% ?(لل|ل|ال)?خدمات$/))) return { scope: 'diff', p1: m[1], p2: m[2], offers };
+        if ((m = core.match(/^\(?خصم على الكشفيات (\d+)% والخدمات (\d+)%$/))) return { scope: 'diff', p1: m[1], p2: m[2], offers };
+        return null;
+    }
+    function coInit(readOnly) {
+        const e = coEls(); if (!e) return;
+        const origEx = e.ex.value, origAg = e.ag.value;
+        coState = { readOnly, dirty: false, origEx, origAg, mode: 'struct', svc: null, disc: null };
+        coState.svc = coParseExam(coType() === 'خصومات' ? '' : origEx, coType() === 'خصومات' ? '' : origAg);
+        coState.disc = coParseDisc(coType() === 'خصومات' ? origEx : '');
+        if ((origEx || origAg) && ((coType() === 'خصومات' && !coState.disc) || (coType() !== 'خصومات' && coType() && !coState.svc))) coState.mode = 'custom';
+        if (!coState.svc) { coState.svc = {}; CO_SVCS.forEach(x => coState.svc[x.k] = { on: false, price: '' }); }
+        if (!coState.disc) coState.disc = { scope: 'same', p1: '', p2: '', offers: 'excl' };
+        coRender();
+    }
+    function coGenerate() {
+        const t = coType();
+        if (t === 'خصومات') {
+            const d = coState.disc; if (!d.p1 || (d.scope === 'diff' && !d.p2)) return { ex: '', ag: '' };
+            const tail = d.offers === 'excl' ? ' (غير شامل العروض)' : d.offers === 'incl' ? ' (شامل العروض)' : '';
+            const ex = d.scope === 'all' ? `خصم ${d.p1}% على جميع الخدمات` : d.scope === 'diff' ? `خصم ${d.p1}% على الكشفيات و ${d.p2}% للخدمات` : `خصم ${d.p1}% على الكشفيات والخدمات`;
+            return { ex: ex + tail, ag: '' };
+        }
+        const on = CO_SVCS.filter(x => coState.svc[x.k].on);
+        if (!on.length) return { ex: '', ag: '' };
+        return { ex: 'فحص ' + on.map(x => x.ex).join(' و'), ag: on.filter(x => String(coState.svc[x.k].price).trim() !== '').map(x => `${x.ag} (${coState.svc[x.k].price})`).join('، ') };
+    }
+    function coSync() {
+        const e = coEls(); if (!e || !coState) return;
+        if (coState.mode === 'custom') { e.ex.value = document.getElementById('coCustomEx')?.value.trim() ?? e.ex.value; e.ag.value = document.getElementById('coCustomAg')?.value.trim() ?? e.ag.value; }
+        else if (coState.dirty) { const g = coGenerate(); e.ex.value = g.ex; e.ag.value = g.ag; }
+        else { e.ex.value = coState.origEx; e.ag.value = coState.origAg; }
+        const pv = document.getElementById('coPreview');
+        if (pv) pv.innerHTML = e.ex.value ? `<b>سيُحفظ:</b> ${escapeHtml(e.ex.value)}${e.ag.value ? '<br><b>الأسعار:</b> ' + escapeHtml(e.ag.value) : ''}` : '<span style="color:var(--text-light)">اختر من الخيارات أعلاه</span>';
+        e.box.classList.remove('field-err');
+    }
+    function coTouch() { coState.dirty = true; coSync(); }
+    function coRender() {
+        const host = document.getElementById('coEditor'); if (!host || !coState) return;
+        const t = coType(), dis = coState.readOnly ? 'disabled' : '';
+        const isReq = !!document.querySelector('#modalOverlay .co-svc') && !cardCtx?.obj;
+        const head = (txt) => `<label class="${isReq ? 'req-label' : ''}">${txt}</label>`;
+        if (!t) { host.innerHTML = head('الفحوصات / الخدمات المشمولة') + '<div class="co-hint">اختر نوع التعاقد أولاً (فحوصات أو خصومات)</div>'; coSync(); return; }
+        if (coState.mode === 'custom') {
+            host.innerHTML = head(t === 'خصومات' ? 'تفاصيل الخصم' : 'الفحوصات / الخدمات المشمولة') + `
+                <div class="co-hint">هذه الشركة مسجّلة بنص خاص لا يطابق الخيارات الجاهزة — يبقى كما هو، ويمكنك تعديله هنا.</div>
+                <textarea class="admin-input" id="coCustomEx" rows="2" ${dis} oninput="coSync()">${escapeHtml(coEls().ex.value)}</textarea>
+                ${t !== 'خصومات' ? `<label style="margin-top:8px;">الأسعار المتفق عليها</label><textarea class="admin-input" id="coCustomAg" rows="2" ${dis} oninput="coSync()">${escapeHtml(coEls().ag.value)}</textarea>` : ''}
+                ${dis ? '' : `<button type="button" class="co-link" onclick="coState.mode='struct';coState.dirty=true;coRender()"><i class="fas fa-list-check"></i> استخدام الخيارات الجاهزة بدلاً من النص</button>`}
+                <div class="co-preview" id="coPreview"></div>`;
+            coSync(); return;
+        }
+        const chip = (on, label, onclick, extra) => `<button type="button" class="chip-opt ${on ? 'on' : ''} ${extra || ''}" ${dis} onclick="${onclick}">${on ? '<i class="fas fa-check"></i> ' : ''}${label}</button>`;
+        let body;
+        if (t === 'خصومات') {
+            const d = coState.disc;
+            const pcts = (key) => `<div class="chip-field">${CO_PCTS.map(p => chip(String(d[key]) === String(p), p + '%', `coState.disc.${key}='${p}';coTouch();coRender()`)).join('')}
+                <input type="number" min="1" max="100" class="admin-input co-pct-other" placeholder="أخرى %" value="${d[key] && !CO_PCTS.includes(Number(d[key])) ? escapeHtml(d[key]) : ''}" ${dis} oninput="coState.disc.${key}=this.value;coTouch()" onchange="coRender()"></div>`;
+            body = `${head('نطاق الخصم')}
+                <div class="chip-field">
+                    ${chip(d.scope === 'same', 'على الكشفيات والخدمات', "coState.disc.scope='same';coTouch();coRender()")}
+                    ${chip(d.scope === 'diff', 'نسبة للكشفيات وأخرى للخدمات', "coState.disc.scope='diff';coTouch();coRender()")}
+                    ${chip(d.scope === 'all', 'على جميع الخدمات', "coState.disc.scope='all';coTouch();coRender()")}
+                </div>
+                <label class="co-sub">${d.scope === 'diff' ? 'نسبة الخصم على الكشفيات' : 'نسبة الخصم'}</label>${pcts('p1')}
+                ${d.scope === 'diff' ? `<label class="co-sub">نسبة الخصم على الخدمات</label>${pcts('p2')}` : ''}
+                <label class="co-sub">العروض</label>
+                <div class="chip-field">
+                    ${chip(d.offers === 'excl', 'غير شامل العروض', "coState.disc.offers='excl';coTouch();coRender()")}
+                    ${chip(d.offers === 'incl', 'شامل العروض', "coState.disc.offers='incl';coTouch();coRender()")}
+                </div>`;
+        } else {
+            body = `${head('الفحوصات المشمولة وأسعارها')}
+                <div class="chip-field">${CO_SVCS.map(x => chip(coState.svc[x.k].on, x.ex, `coState.svc.${x.k}.on=!coState.svc.${x.k}.on;coTouch();coRender()`)).join('')}</div>
+                ${CO_SVCS.filter(x => coState.svc[x.k].on).length ? `<div class="co-prices">${CO_SVCS.filter(x => coState.svc[x.k].on).map(x => `
+                    <div class="co-price-row"><span>${x.ag}</span><input type="number" min="0" class="admin-input" placeholder="مثال: ${x.ph}" value="${escapeHtml(coState.svc[x.k].price)}" ${dis} oninput="coState.svc.${x.k}.price=this.value;coTouch()"><small>ريال</small></div>`).join('')}</div>` : ''}`;
+        }
+        host.innerHTML = body + `
+            ${dis ? '' : `<button type="button" class="co-link" onclick="coState.mode='custom';coRender()"><i class="fas fa-pen"></i> كتابة النص يدوياً (لحالة خاصة)</button>`}
+            <div class="co-preview" id="coPreview"></div>`;
+        coSync();
+    }
+
+    // أزرار الخيارات في النماذج: خيار واحد، أو متعدد مع خيار "الكل" (يلغي البقية ويُلغى عند اختيار فرع محدد)
+    function chipPick(btn) {
+        const box = btn.closest('.chip-field'); if (!box) return;
+        const multi = box.dataset.multi === '1', allV = box.dataset.all, v = btn.dataset.v;
+        const btns = [...box.querySelectorAll('.chip-opt')];
+        if (!multi) btns.forEach(b => b.classList.toggle('on', b === btn));
+        else if (v === allV) { const turnOn = !btn.classList.contains('on'); btns.forEach(b => b.classList.toggle('on', turnOn && b === btn)); }
+        else {
+            btn.classList.toggle('on');
+            btns.forEach(b => { if (b.dataset.v === allV) b.classList.remove('on'); });
+            // اختيار كل الفروع واحداً واحداً = "جميع الفروع"
+            const singles = btns.filter(b => b.dataset.v !== allV);
+            if (allV && singles.length && singles.every(b => b.classList.contains('on'))) { singles.forEach(b => b.classList.remove('on')); btns.find(b => b.dataset.v === allV)?.classList.add('on'); }
+        }
+        btns.forEach(b => { const on = b.classList.contains('on'); b.setAttribute('aria-pressed', on); b.innerHTML = (on ? '<i class="fas fa-check"></i> ' : '') + escapeHtml(b.dataset.v); });
+        const sel = btns.filter(b => b.classList.contains('on')).map(b => b.dataset.v);
+        box.querySelector('input[type="hidden"]').value = multi ? sel.join('، ') : (sel[0] || '');
+        box.classList.remove('field-err');
+        if (box.dataset.onpick && typeof window[box.dataset.onpick] === 'function') window[box.dataset.onpick]();
     }
 
     function closeItemCard() {
@@ -5831,7 +6104,8 @@ Ferritin"></textarea>
         const obj = cardCtx.obj, isNew = !obj;
         if (!canItem(kind, isNew ? 'add' : 'edit')) { showToast('ليست لديك صلاحية لهذه العملية', 'warning'); return; }
         if (!isNew && !kind.all().includes(obj)) { showToast('تم تحديث البيانات من جهاز آخر أثناء فتح البطاقة — أغلقها وأعد فتحها', 'warning'); return; }
-        const data = {};
+        const data = {}, missing = [];
+        document.querySelectorAll('#modalOverlay .field-err').forEach(e => e.classList.remove('field-err'));
         for (let i = 0; i < kind.fields.length; i++) {
             const f = kind.fields[i], el = document.getElementById('card_f' + i);
             let v;
@@ -5858,10 +6132,11 @@ Ferritin"></textarea>
             else if (f.type === 'number') { v = el.value.trim() === '' ? null : Number(el.value); if (v !== null && (isNaN(v) || v < 0)) { showToast('قيمة غير صحيحة في: ' + f.label, 'warning'); return; } }
             else { v = el.value.trim(); if (f.upper) v = v.toUpperCase(); }
             const empty = v === null || v === '' || (Array.isArray(v) && !v.length);
-            if (f.req && empty) { showToast('يرجى تعبئة: ' + f.label, 'warning'); el.focus(); return; }
+            if ((f.req || (f.reqNew && isNew)) && empty) { const mark = el.type === 'hidden' ? (el.closest('.co-svc') || el.parentElement) : el; missing.push({ f, el: mark }); mark.classList.add('field-err'); continue; }
             if (v === null) { if (!isNew) data[f.k] = null; continue; }   // لا نرسل undefined لـ Firebase
             data[f.k] = v;
         }
+        if (missing.length) { showToast('يرجى تعبئة الحقول الإلزامية: ' + missing.map(m => m.f.label).join('، '), 'warning'); (missing[0].el.querySelector?.('button') || missing[0].el).focus(); return; }
         if (data.startDate && data.endDate && data.endDate < data.startDate) { showToast('تاريخ نهاية العرض يجب أن يكون بعد تاريخ بدايته', 'warning'); return; }
         const titleChanged = isNew || normName(data[kind.titleKey]) !== normName(obj[kind.titleKey]) || normName(data.name) !== normName(obj.name);
         if (titleChanged) {
@@ -6736,14 +7011,42 @@ Ferritin"></textarea>
         });
     }
 
+    // نافذة "إضافة تصنيف جديد": اسم التصنيف + حفظ / إلغاء — نفس منطق الحفظ السابق تماماً (addNewCategory)
+    function openAddCategoryModal() {
+        const sel = document.getElementById('addCatSection');
+        const section = sel?.value;
+        const cfg = scopedCatSection(section);
+        if (!cfg || !requirePerm(cfg.dept, 'add')) return;
+        if (!requireLive()) return;
+        const where = sel.options[sel.selectedIndex]?.textContent || '';
+        const html = `
+            <div style="padding:20px;">
+                <h3 style="margin-bottom:4px;"><i class="fas fa-folder-plus" style="color:var(--primary-fg)"></i> إضافة تصنيف جديد</h3>
+                <p style="font-size:12.5px;color:var(--text-light);margin:0 0 14px;">في: ${escapeHtml(where)}</p>
+                <div class="form-group"><label class="req-label">اسم التصنيف</label>
+                    <input type="text" id="addCatName" class="admin-input" placeholder="مثال: أشعة، تجميل، فحوصات دورية..." maxlength="60" onkeydown="if(event.key==='Enter'){event.preventDefault();addNewCategory();}">
+                    <div id="addCatError" class="field-error-msg" style="display:none;"></div>
+                </div>
+                <div class="modal-actions">
+                    <button class="btn-admin-submit" style="margin:0;" onclick="addNewCategory()"><i class="fas fa-save"></i> حفظ</button>
+                    <button class="btn-admin-submit" style="margin:0;background:var(--neutral);" onclick="document.getElementById('modalOverlay').classList.remove('show')"><i class="fas fa-times"></i> إلغاء</button>
+                </div>
+            </div>`;
+        document.getElementById('modalOverlay').innerHTML = `<div class="modal" style="max-width:420px;" onclick="event.stopPropagation()">${html}</div>`;
+        document.getElementById('modalOverlay').classList.add('show');
+        setTimeout(() => document.getElementById('addCatName')?.focus(), 50);
+    }
     function addNewCategory() {
         const section = document.getElementById('addCatSection').value;
         const cfg = scopedCatSection(section);
         if (!cfg || !requirePerm(cfg.dept, 'add')) return;
-        const name = document.getElementById('addCatName').value.trim();
-        if (!name) { showToast('يرجى كتابة اسم القسم'); return; }
+        const input = document.getElementById('addCatName'), err = document.getElementById('addCatError');
+        const fail = msg => { if (err) { err.textContent = msg; err.style.display = 'block'; input?.classList.add('field-err'); input?.focus(); } else showToast(msg, 'warning'); };
+        const name = (input?.value || '').trim();
+        if (!name) { fail('يرجى كتابة اسم التصنيف'); return; }
         const cats = getCategoriesFor(section);
-        if (cats.includes(name)) { showToast('هذا القسم موجود بالفعل'); return; }
+        if (cats.includes(name)) { fail('هذا التصنيف موجود بالفعل'); return; }
+        document.getElementById('modalOverlay').classList.remove('show');
 
         // التصنيف الجديد يُنشأ فارغاً (عنصر حجز مخفي يُبقي التصنيف موجوداً) — بلا نقل أي عناصر إليه
         if (section === 'packages') {
@@ -6767,7 +7070,6 @@ Ferritin"></textarea>
         Promise.resolve((cfg.save || saveToStorage)()).then(ok => {
             renderExistingCats();
             if (!ok) return;
-            document.getElementById('addCatName').value = '';
             addToLog('add', 'category', name, cfg.dept, ['اسم التصنيف: ' + name]);
             showToast(`تم إضافة التصنيف: ${name}`);
         });
@@ -9668,25 +9970,17 @@ Ferritin"></textarea>
 
                     <!-- Category Form -->
                     <div id="addFormCategory" style="display:none;">
-                        <div class="admin-form">
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label>مكان القسم</label>
-                                    <select id="addCatSection" class="admin-input" onchange="renderExistingCats()"></select>
-                                </div>
-                                <div class="form-group">
-                                    <label class="req-label">اسم القسم الجديد</label>
-                                    <input type="text" id="addCatName" class="admin-input" placeholder="مثال: أشعة، عيون، باطنية...">
-                                </div>
+                        <div class="cat-toolbar">
+                            <div class="form-group" style="margin:0;flex:1 1 200px;">
+                                <label>التصنيفات الخاصة بـ</label>
+                                <select id="addCatSection" class="admin-input" onchange="renderExistingCats()"></select>
                             </div>
-                            <div style="margin-top:8px;">
-                                <p style="font-size:12px;color:var(--text-light);margin-bottom:8px;"><i class="fas fa-info-circle"></i> الأقسام الحالية (اضغط للتعديل أو الحذف):</p>
-                                <div id="existingCatsList" style="display:flex;flex-direction:column;gap:4px;margin-bottom:12px;"></div>
-                            </div>
-                            <button class="btn-admin-submit" style="background:var(--primary);margin-top:12px;" onclick="addNewCategory()">
-                                <i class="fas fa-plus"></i> إضافة القسم
+                            <button class="btn-admin-submit cat-add-btn" onclick="openAddCategoryModal()">
+                                <i class="fas fa-plus"></i> إضافة تصنيف جديد
                             </button>
                         </div>
+                        <p style="font-size:12px;color:var(--text-light);margin:10px 0 8px;"><i class="fas fa-info-circle"></i> التصنيفات الحالية (الرقم = عدد العناصر — يمكنك التعديل أو الحذف):</p>
+                        <div id="existingCatsList" style="display:flex;flex-direction:column;gap:4px;margin-bottom:12px;"></div>
                     </div>
                 </div>
                 </div><!-- /add tab -->
