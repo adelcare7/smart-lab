@@ -2878,6 +2878,32 @@
         .svc-bottom .oc-uni { margin: 0; font-size: 10.5px; }
         .ic-code { display: inline-flex; align-items: center; gap: 4px; font-size: 10.5px; font-weight: 700; color: var(--text-light); background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 0 6px; direction: ltr; white-space: nowrap; line-height: 1.7; }
         .ic-code i { font-size: 9.5px; }
+        .bp-code { display: block; margin-top: 3px; }
+        .uni-code { display: inline-flex; align-items: center; gap: 0; border: 1px solid var(--success-border); border-radius: 6px; overflow: hidden; max-width: 100%; }
+        .uni-tag { font-size: 10px; font-weight: 700; color: var(--success-fg); background: var(--success-soft); padding: 0 6px; line-height: 1.8; white-space: nowrap; }
+        .uni-tag i { font-size: 9px; }
+        .uni-code .ic-code { border: none; border-radius: 0; }
+        .bp-code .ic-code { font-size: 10px; padding: 0 4px; max-width: 100%; overflow: hidden; }
+        .bp-code-one { display: flex; align-items: center; gap: 6px; margin-top: 6px; font-size: 12px; color: var(--text-light); }
+        .bp-code-one.bps { padding-top: 0; }
+        .bp-code-one.bps + .bp-strip { margin-top: 6px; }
+        .bp-strip.one { grid-template-columns: minmax(0, 220px); justify-content: start; }
+        .bp-tbl { display: grid; grid-template-columns: 44px repeat(5, minmax(0, 1fr)); gap: 3px 5px; align-items: center; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 5px 8px; }
+        .bp-th { display: flex; align-items: center; justify-content: center; gap: 4px; font-size: 11.5px; font-weight: 700; color: var(--text); cursor: pointer; margin: 0 !important; min-height: 0 !important; line-height: 1.4; }
+        .bp-th input { width: 13px; height: 13px; margin: 0; cursor: pointer; }
+        .bp-th.off span { text-decoration: line-through; color: var(--text-light); }
+        .bp-rl { font-size: 11.5px; font-weight: 600; color: var(--text-light); }
+        .bp-tbl .admin-input { min-height: 26px !important; height: 26px; padding: 2px 6px !important; font-size: 12.5px !important; text-align: center; min-width: 0; width: 100%; border-radius: 7px; }
+        .bp-tbl .admin-input:disabled { opacity: .4; }
+        .bp-na-cell { display: flex; justify-content: center; cursor: pointer; margin: 0 !important; min-height: 0 !important; }
+        .bp-na-cell input { width: 16px; height: 16px; cursor: pointer; }
+        @media (max-width: 600px) {
+            .bp-tbl { grid-template-columns: 44px repeat(5, minmax(0, 1fr)); gap: 3px; padding: 6px; }
+            .bp-th { font-size: 10.5px; }
+            .bp-rl { font-size: 10px; }
+            .bp-tbl .admin-input { font-size: 11.5px !important; padding: 2px 3px !important; }
+        }
+        .bp-code-in { min-height: 30px !important; padding: 4px 8px !important; font-size: 12px !important; direction: ltr; text-align: right; }
         .code-copy { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 16px; margin-left: -3px; margin-right: 1px; padding: 0; border: none; border-radius: 4px; background: none; color: var(--primary-fg); cursor: pointer; font-family: inherit; }
         .code-copy::after { content: ''; position: absolute; inset: -9px -7px; }
         .code-copy:hover { background: var(--primary-soft); }
@@ -2915,6 +2941,85 @@
         .branch-pick.on { background: var(--primary); border-color: var(--primary); color: #fff; }
         @media (max-width: 520px) { .branch-pick-text { display: none; } }
 
+        /* رأس الأقسام مضغوط: العنوان والوصف يميناً وزر الإعدادات يساراً في سطر واحد، ومسافات أقل */
+        .services-section, .individual-section { padding: 12px 16px 16px; }
+        .services-header, .individual-header { position: relative; text-align: center; margin-bottom: 10px; padding: 0 170px; min-height: 34px; }
+        .services-header h2, .individual-header h2 { font-size: 18px; margin: 0; }
+        .services-header p, .individual-header p { font-size: 12px !important; margin: 1px 0 0; }
+        .services-header .dept-settings-bar { position: absolute; left: 0; top: 0; margin: 0 !important; padding: 0 !important; }
+        .services-header .dept-settings-btn { padding: 5px 12px; font-size: 12.5px; }
+        .services-header .services-note { margin-top: 6px; padding: 5px 12px; font-size: 12px; border-radius: 8px; }
+        .services-search-wrap, .individual-search-wrap { max-width: 720px; margin-bottom: 10px; }
+        .individual-search { padding: 9px 16px 9px 40px; font-size: 14px; border-width: 1.5px; border-radius: 10px; }
+        .individual-cats { gap: 5px; margin-bottom: 10px; }
+        .individual-cat-btn { padding: 4px 12px; font-size: 12.5px; }
+        .individual-stats { margin-bottom: 8px; font-size: 12.5px; }
+        .page-add-btn, #genericAddServiceBtn { padding: 6px 14px !important; font-size: 12.5px !important; }
+        @media (max-width: 600px) {
+            .services-header h2, .individual-header h2 { font-size: 16px; }
+            .services-header p, .individual-header p { display: none; }
+            .services-header, .individual-header { padding: 0; }
+            .services-header .dept-settings-bar { position: static; justify-content: center; margin-top: 6px !important; }
+        }
+
+        .lab-tabs .lab-settings-btn { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); padding: 5px 12px; font-size: 12.5px; }
+        /* الجوال: شريط التحاليل/الباقات مخفي (موجود في الشريط السفلي) — يظهر فقط زر الإعدادات لمن له صلاحية */
+        @media (max-width: 768px) {
+            .lab-tabs:has(.lab-settings-btn:not([style*="none"])) { display: flex !important; justify-content: flex-start; padding: 6px 12px; position: static; }
+            .lab-tabs .lab-tab { display: none; }
+            .lab-tabs .lab-settings-btn { position: static; transform: none; padding: 4px 10px; font-size: 12px; }
+        }
+
+        /* تفاصيل الباقة (مختصرة) */
+        .pd-head { padding: 12px 18px !important; align-items: flex-start; }
+        .pd-head .modal-title { font-size: 17px; }
+        .pd-en { font-size: 12px; color: var(--text-light); direction: ltr; text-align: right; margin-top: 1px; }
+        .pd-body { padding: 12px 18px 16px !important; }
+        .pd-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
+        .pd-chips { display: flex; flex-wrap: wrap; gap: 5px; min-width: 0; }
+        .pd-chip { display: inline-flex; align-items: center; gap: 4px; font-size: 11.5px; font-weight: 600; padding: 2px 9px; border-radius: 999px; background: var(--bg); border: 1px solid var(--border); color: var(--text); white-space: nowrap; }
+        .pd-chip i { font-size: 10px; color: var(--text-light); }
+        .pd-chip.gold { background: var(--gold-soft); border-color: var(--gold-border); color: var(--gold-text); }
+        .pd-chip.gold i { color: var(--gold-text); }
+        .pd-chip.teal { background: var(--accent-soft); border-color: var(--accent-soft); color: var(--accent-fg); }
+        .pd-chip.teal i { color: var(--accent-fg); }
+        .pd-price { flex-shrink: 0; font-size: 26px; font-weight: 800; color: var(--primary-fg); line-height: 1; white-space: nowrap; }
+        .pd-price small { font-size: 12px; color: var(--text-light); font-weight: 600; }
+        .pd-branches { margin-bottom: 10px; }
+        .pd-desc { font-size: 12.5px; color: var(--text-light); margin: 0 0 8px; line-height: 1.6; }
+        .pd-save { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; background: var(--success-soft); border: 1px solid var(--success-border); border-radius: 10px; padding: 6px 12px; font-size: 12.5px; color: var(--success-text, var(--success-fg)); margin-bottom: 10px; }
+        .pd-save i, .pd-save b { color: var(--success-fg); }
+        .pd-save span { font-size: 11.5px; opacity: .85; }
+        .pd-tests-head { font-size: 13px; font-weight: 800; color: var(--text); margin: 4px 0 6px; }
+        .pd-tests-head i { color: var(--primary-fg); }
+        .pd-tests { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(200px, 100%), 1fr)); gap: 4px; }
+        .pd-test { display: flex; align-items: baseline; gap: 6px; padding: 4px 8px; border: 1px solid var(--border); border-radius: 8px; background: var(--card-bg); font-size: 12px; min-width: 0; }
+        .pd-test b { font-weight: 800; color: var(--text); direction: ltr; white-space: nowrap; }
+        .pd-test span { flex: 1; min-width: 0; color: var(--text-light); font-size: 11.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .pd-test em { font-style: normal; font-weight: 700; color: var(--primary-fg); font-size: 11.5px; white-space: nowrap; }
+        .pd-actions { display: flex; justify-content: center; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+        .pd-btn { background: var(--primary); color: #fff; border: none; padding: 8px 18px; border-radius: 10px; font-size: 13.5px; font-family: inherit; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 7px; }
+        .pd-btn.alt { background: var(--accent); }
+        @media (max-width: 600px) { .pd-top { flex-direction: column-reverse; align-items: flex-start; } }
+
+        /* واجهة البحث عن الباقات: مدمجة (الشكل فقط — منطق البحث لم يتغير) */
+        .hero { padding: 14px 16px 16px; }
+        .hero h2 { font-size: 19px; margin-bottom: 2px; }
+        .hero p { font-size: 12.5px; margin-bottom: 10px; }
+        .hero .search-container { max-width: 940px; }
+        .hero .search-box { padding: 4px; gap: 4px; border-radius: 12px; }
+        .hero .search-input { padding: 8px 12px; font-size: 14px; }
+        .hero .search-btn { padding: 7px 14px; font-size: 13px; }
+        .hero .search-tags { gap: 5px; margin-top: 10px; }
+        .hero .search-tag { flex-direction: row; gap: 5px; padding: 3px 10px; font-size: 12px; border-radius: 999px; line-height: 1.5; }
+        .hero .search-tag small { font-size: 10.5px; }
+        @media (max-width: 768px) {
+            .hero { padding: 10px 12px 12px; }
+            .hero h2 { font-size: 17px; }
+            .hero p { display: none; }
+            .hero .search-tag small { display: none; }
+        }
+
         /* بطاقات العروض (مدمجة) */
         #offersGrid { grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr)); gap: 10px; }
         .oc2 .ic-name { display: block; -webkit-line-clamp: unset; overflow: visible; overflow-wrap: anywhere; }
@@ -2939,6 +3044,34 @@
         .field-err { border-color: var(--danger) !important; box-shadow: 0 0 0 2px rgba(220, 38, 38, .12); }
         .field-error-msg { color: var(--danger-fg); font-size: 12px; margin-top: 4px; }
         .chip-field { display: flex; flex-wrap: wrap; gap: 6px; padding: 2px; border-radius: 10px; }
+        /* نماذج الإضافة/التعديل (التحاليل والباقات والخدمات والعروض) — مضغوطة ومرتبة؛ الشركات لها تنسيقها الخاص */
+        .ic-form > div { padding: 16px 18px !important; }
+        .ic-form h3 { font-size: 16px; margin-bottom: 8px !important; }
+        .ic-form .item-card-meta { margin-bottom: 8px; font-size: 11.5px; gap: 6px 12px; }
+        .ic-form .price-history { margin-bottom: 8px; }
+        .ic-form .item-card-grid { grid-template-columns: repeat(auto-fill, minmax(min(190px, 100%), 1fr)); gap: 8px 10px; }
+        .ic-form .form-group { margin: 0; }
+        .ic-form .form-group > label { font-size: 12px; margin-bottom: 3px; }
+        .ic-form .admin-input { padding: 7px 10px; font-size: 13.5px; min-height: 36px; border-radius: 8px; }
+        .ic-form textarea.admin-input { min-height: 54px; }
+        .ic-form textarea.desc-area { min-height: 76px; resize: vertical; line-height: 1.6; }
+        .ic-form .form-group > label:has(input[type="checkbox"]) { min-height: 36px; margin-top: 0; font-size: 13px; }
+        .ic-form .item-card-grid { align-items: end; }
+        .ic-form .bp-edit-grid { gap: 6px; }
+        .ic-form .bp-edit-cell { padding: 6px; gap: 3px; }
+        .ic-form .bp-edit-cell .admin-input { min-height: 32px; padding: 5px 8px; }
+        .ic-form .bp-edit-name { font-size: 11.5px; }
+        .ic-form .bp-edit-na { font-size: 10.5px; }
+        .ic-form .btn-admin-submit { padding: 9px 16px; font-size: 14px; min-height: 40px; }
+        .ic-form [style*="margin-top:14px"] { margin-top: 12px !important; }
+        @media (max-width: 600px) {
+            .ic-form > div { padding: 14px !important; }
+            .ic-form .item-card-grid { grid-template-columns: 1fr 1fr; }
+            .ic-form .item-card-grid > .form-group[style*="grid-column:1/-1"] { grid-column: 1 / -1; }
+            .ic-form .form-group > label:has(input[type="checkbox"]) { margin-top: 0; }
+        }
+        @media (max-width: 380px) { .ic-form .item-card-grid { grid-template-columns: 1fr; } }
+
         /* نموذج الشركة المضغوط */
         .co-form > div { padding: 14px 16px !important; }
         .co-form h3 { font-size: 16px; margin-bottom: 6px !important; }
@@ -3033,6 +3166,7 @@
         .modal .bp-name { font-size: 11px; }
         .modal .bp-val { font-size: 15px; }
         .modal .bp-cell.na .bp-val { font-size: 11px; }
+        .bp-strip.codes .bp-cell { justify-content: flex-start; }   /* الاسم والسعر على نفس الخط حتى لو فرع واحد له كود */
         /* نافذة التفاصيل */
         .idt-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
         .idt-title { margin: 0; font-size: 18px; line-height: 1.45; }
@@ -3192,7 +3326,6 @@
     <!-- LAB PAGE (القسم الافتراضي عند فتح الموقع) -->
     <div id="labPage">
 
-    <div class="dept-settings-bar"><button class="dept-settings-btn" data-dept-settings="lab" style="display:none;" onclick="openDeptSettings('lab')"><i class="fas fa-sliders-h"></i> إعدادات المختبر</button></div>
 
     <!-- Lab Sub-tabs -->
     <div class="lab-tabs">
@@ -3203,6 +3336,8 @@
         <button class="lab-tab" onclick="switchLabTab('packages', this)">
             <i class="fas fa-boxes"></i> الباقات
         </button>
+        <!-- إعدادات المختبر في نفس صف التحاليل الفردية/الباقات -->
+        <button class="dept-settings-btn lab-settings-btn" data-dept-settings="lab" style="display:none;" onclick="openDeptSettings('lab')"><i class="fas fa-sliders-h"></i> إعدادات المختبر</button>
     </div>
 
     <!-- PACKAGES SUB-PAGE -->
@@ -3210,7 +3345,6 @@
 
     <!-- Hero -->
     <section class="hero" id="heroSection">
-        <br>
         <h2>ابحث عن أفضل باقة مختبر لعميلك</h2>
         <p>اكتب التحاليل المطلوبة وسنجد لك الباقة الأنسب بأفضل سعر</p>
         <div class="search-container">
@@ -3425,8 +3559,8 @@
             <div class="services-header">
                 <h2><i class="fas fa-tags"></i> العروض</h2>
                 <p style="color:var(--text-light);font-size:13px;">كل العروض السارية في جميع الأقسام — اضغط على العرض لعرض تفاصيله</p>
+                <div class="dept-settings-bar" style="padding:0;margin:6px 0;"><button class="dept-settings-btn" data-offers-settings style="display:none;" onclick="openOffersSettings()"><i class="fas fa-bullhorn"></i> إعدادات العروض</button></div>
             </div>
-            <div class="dept-settings-bar" style="padding:0;margin:6px 0;"><button class="dept-settings-btn" data-offers-settings style="display:none;" onclick="openOffersSettings()"><i class="fas fa-bullhorn"></i> إعدادات العروض</button></div>
             <div class="services-search-wrap">
                 <input type="text" class="individual-search" id="offersSearchInput" placeholder="ابحث عن عرض..." oninput="renderOffersPage()">
                 <i class="fas fa-search individual-search-icon"></i>
@@ -4706,7 +4840,6 @@ Ferritin"></textarea>
                     </div>
                 </div>
                 <div class="ic-meta">
-                    ${codeChip(pkg.code)}
                     ${pkg.category ? `<span class="service-card-cat">${escapeHtml(pkg.category)}</span>` : ''}
                     <span class="ic-chip"><i class="fas fa-vial"></i> ${n} ${pkg.individualTest ? 'تحاليل متاحة' : 'تحليل'}</span>
                     ${tat ? `<span class="ic-chip" style="color:var(--gold-text);"><i class="fas fa-clock"></i> ${formatTat(tat)}</span>` : ''}
@@ -4893,86 +5026,46 @@ Ferritin"></textarea>
             const saved = individualTotal - pkg.price;
             if (individualTotal > 0 && saved > 0) {
                 const percent = Math.round((saved / individualTotal) * 100);
-                savingsHtml = `
-                <div style="background:var(--success-soft);border:1px solid var(--success-border);border-radius:12px;padding:14px 18px;margin-bottom:16px;">
-                    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
-                        <div style="display:flex;align-items:center;gap:8px;">
-                            <i class="fas fa-piggy-bank" style="font-size:20px;color:var(--success-fg);"></i>
-                            <div>
-                                <div style="font-size:13px;color:var(--success-text);font-weight:600;">توفير بالباقة مقارنة بالتحاليل الفردية</div>
-                                <div style="font-size:11px;color:var(--success-text);opacity:0.8;">سعر التحاليل فردياً: ${individualTotal} ريال</div>
-                            </div>
-                        </div>
-                        <div style="text-align:center;">
-                            <div style="font-size:22px;font-weight:800;color:var(--success-fg);">وفّر ${saved} ريال</div>
-                            <div style="font-size:12px;color:var(--success-text);">(${percent}% خصم)</div>
-                        </div>
-                    </div>
-                </div>`;
+                savingsHtml = `<div class="pd-save"><i class="fas fa-piggy-bank"></i> <b>وفّر ${saved} ريال (${percent}%)</b> <span>مقارنة بسعر التحاليل فردياً ${individualTotal} ريال</span></div>`;
             }
         }
 
+        // تفاصيل الباقة (مختصرة): السعر وأهم البيانات في سطر، ثم التوفير، ثم التحاليل كقائمة مضغوطة
         const modal = detailsModalBox();
+        const chip = (icon, txt, cls) => txt ? `<span class="pd-chip ${cls || ''}"><i class="fas ${icon}"></i> ${escapeHtml(txt)}</span>` : '';
         modal.innerHTML = `
-            <div class="modal-header">
-                <h3 class="modal-title">${escapeHtml(dash(pkg.name))}</h3>
+            <div class="modal-header pd-head">
+                <div style="min-width:0;">
+                    <h3 class="modal-title">${escapeHtml(dash(pkg.name))}</h3>
+                    ${pkg.nameEn ? `<div class="pd-en">${escapeHtml(pkg.nameEn)}</div>` : ''}
+                </div>
                 <button class="modal-close" onclick="closeModal()">×</button>
             </div>
-            <div class="modal-body">
-                <div style="display:flex;gap:20px;flex-wrap:wrap;margin-bottom:20px;">
-                    <div style="flex:1;min-width:200px;">
-                        <div style="font-size:13px;color:var(--text-light);margin-bottom:4px;">الاسم بالإنجليزية</div>
-                        <div style="font-size:15px;font-weight:600;">${escapeHtml(dash(pkg.nameEn))}</div>
+            <div class="modal-body pd-body">
+                <div class="pd-top">
+                    <div class="pd-chips">
+                        ${chip('fa-layer-group', pkg.category)}
+                        ${chip('fa-hospital', pkg.lab)}
+                        ${pkgTat ? chip('fa-clock', pkgTat, 'gold') : ''}
+                        ${pkg.fasting ? chip('fa-moon', 'يتطلب صيام (10-14 ساعة)', 'gold') : chip('fa-utensils', 'لا يتطلب صيام')}
+                        ${pkg.homeVisit ? chip('fa-home', 'زيارة منزلية', 'teal') : ''}
+                        ${pkg.individualTest ? chip('fa-hand-pointer', 'اختر تحليلاً واحداً') : ''}
                     </div>
-                    <div>
-                        <div style="font-size:13px;color:var(--text-light);margin-bottom:4px;">الكود</div>
-                        <div style="font-size:15px;font-weight:600;">${escapeHtml(dash(pkg.code))}</div>
-                    </div>
-                    <div>
-                        <div style="font-size:13px;color:var(--text-light);margin-bottom:4px;">السعر</div>
-                        <div style="font-size:24px;font-weight:800;color:var(--primary-fg);">${pkg.price} <small style="font-size:13px;">ريال${pkg.individualTest ? '/تحليل' : ''}</small></div>
-                    </div>
-                    <div style="flex-basis:100%;">
-                        <div style="font-size:13px;color:var(--text-light);margin-bottom:4px;">أسعار الفروع</div>
-                        ${branchStrip(pkg)}
-                    </div>
-                    <div>
-                        <div style="font-size:13px;color:var(--text-light);margin-bottom:4px;">المختبر</div>
-                        <div style="font-size:15px;font-weight:600;">${escapeHtml(dash(pkg.lab))}</div>
-                    </div>
-                    <div>
-                        <div style="font-size:13px;color:var(--text-light);margin-bottom:4px;">الفئة</div>
-                        <div style="font-size:15px;font-weight:600;">${escapeHtml(dash(pkg.category))}</div>
-                    </div>
-                    ${pkgTat ? `<div>
-                        <div style="font-size:13px;color:var(--text-light);margin-bottom:4px;">مدة النتيجة</div>
-                        <div style="font-size:15px;font-weight:600;color:var(--gold-text);"><i class="fas fa-clock"></i> ${escapeHtml(pkgTat)}</div>
-                    </div>` : ''}
+                    <div class="pd-price">${pkg.price} <small>ريال${pkg.individualTest ? '/تحليل' : ''}</small></div>
                 </div>
-                ${pkg.desc || pkg.description ? `<p style="font-size:13px;color:var(--text-light);margin:-8px 0 16px;line-height:1.7;"><i class="fas fa-info-circle"></i> ${escapeHtml(pkg.desc || pkg.description)}</p>` : ''}
+                <div class="pd-branches">
+                    <div style="font-size:13px;color:var(--text-light);margin-bottom:4px;">${myBranch ? 'سعر فرع ' + escapeHtml(myBranch) : 'أسعار الفروع'}</div>
+                    ${branchStripWithCodes(pkg)}
+                </div>
+                ${pkg.desc || pkg.description ? `<p class="pd-desc"><i class="fas fa-info-circle"></i> ${escapeHtml(pkg.desc || pkg.description)}</p>` : ''}
                 ${savingsHtml}
-                <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;">
-                    ${pkg.individualTest
-                        ? '<span class="badge-individual" style="font-size:13px;padding:6px 14px;"><i class="fas fa-hand-pointer"></i> اختر تحليل واحد من القائمة</span>'
-                        : ''}
-                    ${pkg.fasting
-                        ? '<span class="badge-fasting requires" style="font-size:13px;padding:6px 14px;"><i class="fas fa-moon"></i> يتطلب صيام (10-14 ساعة)</span>'
-                        : '<span class="badge-fasting no-fasting" style="font-size:13px;padding:6px 14px;"><i class="fas fa-utensils"></i> لا يتطلب صيام</span>'}
-                    ${pkg.homeVisit
-                        ? '<span class="badge-home-visit" style="font-size:13px;padding:6px 14px;"><i class="fas fa-home"></i> زيارة منزلية - توصلك وين ما كنت</span>'
-                        : ''}
+                <div class="pd-tests-head"><i class="fas fa-vials"></i> ${pkg.individualTest ? 'التحاليل المتاحة (اختر واحد)' : 'التحاليل المشمولة'} (${pkg.tests.length})</div>
+                <div class="pd-tests">
+                    ${pkg.tests.map(t => { const ar = getTestNameAr(t); const tp = getTestPrice(t); return `<div class="pd-test" title="${escapeHtml(t + (ar ? ' — ' + ar : ''))}"><b>${escapeHtml(t)}</b>${ar ? `<span>${escapeHtml(ar)}</span>` : '<span></span>'}${tp > 0 ? `<em>${tp}</em>` : ''}</div>`; }).join('')}
                 </div>
-                <div class="detail-section">
-                    <h4><i class="fas fa-vials" style="color:var(--primary-fg)"></i> ${pkg.individualTest ? 'التحاليل المتاحة (اختر واحد)' : 'التحاليل'} (${pkg.tests.length})</h4>
-                    <div class="detail-tests-grid">
-                        ${pkg.tests.map(t => { const ar = getTestNameAr(t); const tp = getTestPrice(t); const tt = getTestTat(t); return `<div class="detail-test">${t}${ar ? `<div style="font-size:11px;color:var(--text-light);margin-top:2px;">${ar}</div>` : ''}<div style="display:flex;gap:8px;margin-top:2px;flex-wrap:wrap;">${tp > 0 ? `<span style="font-size:10px;color:var(--primary-fg);"><i class="fas fa-tag"></i> ${tp} ريال</span>` : ''}${tt ? `<span style="font-size:10px;color:var(--gold-text);"><i class="fas fa-clock"></i> ${formatTat(tt)}</span>` : ''}</div></div>`; }).join('')}
-                    </div>
-                </div>
-                <div style="text-align:center;margin-top:16px;">
-                    <button onclick="copyPackage(${pkg.id})" style="background:var(--primary);color:white;border:none;padding:10px 24px;border-radius:10px;font-size:14px;font-family:inherit;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:all 0.2s;">
-                        <i class="fas fa-copy" style="font-size:16px;"></i> نسخ البيانات
-                    </button>
-                    ${canItem(KINDS.package, 'edit') ? `<button onclick="openItemCard('package','${refFor(found)}')" style="background:var(--primary);color:white;border:none;padding:10px 20px;border-radius:10px;font-size:14px;font-family:inherit;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:8px;"><i class="fas fa-edit"></i> تعديل الباقة</button>` : ''}
+                <div class="pd-actions">
+                    <button onclick="copyPackage(${pkg.id})" class="pd-btn"><i class="fas fa-copy"></i> نسخ البيانات</button>
+                    ${canItem(KINDS.package, 'edit') ? `<button onclick="openItemCard('package','${refFor(found)}')" class="pd-btn alt"><i class="fas fa-edit"></i> تعديل الباقة</button>` : ''}
                 </div>
             </div>`;
         document.getElementById('modalOverlay').classList.add('show');
@@ -5570,8 +5663,8 @@ Ferritin"></textarea>
     //   رقم = سعر هذا الفرع · 'na' = غير متوفرة في الفرع · غير موجود = يتبع السعر العام (price)
     // العروض مستثناة: سعرها موحّد على كل الفروع.
     const BRANCH_PRICES = [
-        { k: 'priceZarqa', n: 'الزرقاء' }, { k: 'priceUfuq', n: 'الأفق' }, { k: 'priceShamal', n: 'الشمال' },
-        { k: 'priceIskan', n: 'الإسكان' }, { k: 'priceSharq', n: 'الشرق' }
+        { k: 'priceZarqa', ck: 'codeZarqa', n: 'الزرقاء' }, { k: 'priceUfuq', ck: 'codeUfuq', n: 'الأفق' }, { k: 'priceShamal', ck: 'codeShamal', n: 'الشمال' },
+        { k: 'priceIskan', ck: 'codeIskan', n: 'الإسكان' }, { k: 'priceSharq', ck: 'codeSharq', n: 'الشرق' }
     ];
     const BP_NA = 'na';
     function branchPrice(o, b) {
@@ -5595,6 +5688,33 @@ Ferritin"></textarea>
         return r.min === r.max ? r.min : r.min + '–' + r.max;
     }
     // جدول الفروع الخمسة كاملاً (نافذة التفاصيل وتفاصيل الباقة) — فرع الموظف المختار يُميَّز
+    // كود الفرع: كود خاص بالفرع إن وُجد، وإلا الكود العام — لا كود للفرع غير المتوفر
+    function branchCode(o, b) {
+        if (branchPrice(o, b) === null) return '';
+        const own = o[b.ck] == null ? '' : String(o[b.ck]).trim();
+        return own || (o.code == null ? '' : String(o.code).trim());
+    }
+    // تفاصيل البطاقة فقط: السعر والكود لكل فرع (وعند اختيار "فرعي" يظهر ذلك الفرع وحده)
+    function branchStripWithCodes(o) {
+        if (!hasBranchPrices(o)) return '';
+        const list = myBranch ? BRANCH_PRICES.filter(b => b.n === myBranch) : BRANCH_PRICES;
+        const uni = uniformBranchCode(o), uniform = !!uni;
+        const anyCode = list.some(b => branchCode(o, b));
+        const cells = list.map(b => {
+            const v = branchPrice(o, b), c = uniform ? '' : branchCode(o, b);
+            return v === null
+                ? `<div class="bp-cell na"><span class="bp-name">${b.n}</span><span class="bp-val">غير متوفرة</span></div>`
+                : `<div class="bp-cell"><span class="bp-name">${b.n}</span><span class="bp-val">${escapeHtml(v)}</span>${c ? `<span class="bp-code">${codeChip(c)}</span>` : ''}</div>`;
+        }).join('');
+        return (!uniform && anyCode ? `<div class="bp-code-one bps"><span class="bps-diff">أكواد حسب الفرع</span></div>` : '') +
+            `<div class="bp-strip codes ${myBranch ? 'one' : ''}">${cells}</div>` +
+            (uniform ? `<div class="bp-code-one bps"><span class="bps-same">كود موحّد</span> ${codeChip(uni)}</div>` : '');
+    }
+    // الكود الموحّد: يُرجع الكود فقط إذا كل فرع متوفر له نفس الكود (فرع بلا كود أو كود مختلف = '')
+    function uniformBranchCode(o) {
+        const all = BRANCH_PRICES.filter(b => branchPrice(o, b) !== null).map(b => branchCode(o, b));
+        return all.length > 0 && all[0] && all.every(c => c === all[0]) ? all[0] : '';
+    }
     function branchStrip(o) {
         if (!hasBranchPrices(o)) return '';
         return `<div class="bp-strip">${BRANCH_PRICES.map(b => {
@@ -5632,7 +5752,7 @@ Ferritin"></textarea>
             const mineV = branchPrice(o, BRANCH_PRICES.find(b => b.n === myBranch));
             return `<div class="bps-note"><i class="fas fa-circle-info"></i> ${mineV === null ? 'غير متوفرة في فرعك' : 'السعر يختلف في فروع أخرى'} — اضغط للتفاصيل</div>`;
         }
-        if (info.allSame) return `<div class="bps"><span class="bps-same"><i class="fas fa-check"></i> نفس السعر في الفروع الخمسة</span></div>`;
+        if (info.allSame) return `<div class="bps"><span class="bps-same"><i class="fas fa-check"></i> السعر موحّد</span></div>`;
         // متوفرة في فرع واحد فقط → شارة واحدة بدل شارات "غير متوفرة" للفروع الأخرى
         const availB = info.list.filter(x => x.v !== null && x.v !== undefined && x.v !== '' && !isNaN(Number(x.v)));
         if (availB.length === 1) return `<div class="bps"><span class="bps-diff"><i class="fas fa-location-dot"></i> متوفرة في ${availB[0].b.n} فقط</span></div>`;
@@ -5695,7 +5815,7 @@ Ferritin"></textarea>
             remove: o => removeFrom(individualTests, o),
             save: () => saveToStorage(), refresh: refreshTestsUI,
             title: o => o.nameAr || o.name, sub: o => o.name, price: o => o.price,
-            fields: [F.nameEn, F.nameAr, F.price, F_BRANCHES, F.tat, F.code,
+            fields: [F.nameEn, F.nameAr, F.price, F_BRANCHES, F.tat,
                 { k: 'cat', label: 'التصنيف', type: 'catselect', cats: () => getCategoriesFor('tests') },
                 F.fasting, { k: 'desc', label: 'وصف مختصر' }]
         },
@@ -5719,8 +5839,9 @@ Ferritin"></textarea>
             remove: o => removeFrom(packages, o),
             save: () => saveToStorage(), refresh: () => { renderCategories(); renderBrowseAll(); updateStats(); },
             title: o => o.name, sub: o => [o.code, (o.tests || []).length + ' تحليل'].filter(Boolean).join(' · '), price: o => o.price,
+            // الترتيب: الاسمان والسعر في صف، ثم أسعار الفروع، ثم الكود والفئة والمختبر في صف
             fields: [{ k: 'name', label: 'اسم الباقة بالعربي', req: true }, { k: 'nameEn', label: 'الاسم بالإنجليزي', ltr: true },
-                F.code, F.price, F_BRANCHES, { k: 'category', label: 'الفئة', type: 'catselect', cats: () => getCategoriesFor('packages') },
+                F.price, F_BRANCHES, { k: 'category', label: 'الفئة', type: 'catselect', cats: () => getCategoriesFor('packages') },
                 { k: 'lab', label: 'المختبر' }, { k: 'tests', label: 'التحاليل (مفصولة بفاصلة)', type: 'tests', req: true },
                 F.fasting, { k: 'homeVisit', label: 'زيارة منزلية', type: 'checkbox' }]
         },
@@ -5801,9 +5922,10 @@ Ferritin"></textarea>
                 save: () => saveGenericServices(dept),
                 refresh: () => { if (currentDeptId === dept) renderGenericServices(dept); },
                 title: o => o.name, sub: o => [o.code, o.cat].filter(Boolean).join(' · ') || o.description || '', price: o => o.price,
-                fields: [{ k: 'name', label: 'اسم الخدمة', req: true }, F.price, F_BRANCHES,
-                    { k: 'cat', label: 'التصنيف', type: 'catselect', cats: () => uniqueValues(genericServicesByDept[dept] || [], 'cat') }, F.code,
-                    { k: 'nameEn', label: 'الاسم بالإنجليزي', ltr: true }, { k: 'description', label: 'الوصف' }]
+                // الترتيب: الاسمان والسعر في صف، ثم أسعار الفروع، ثم التصنيف والكود والوصف في صف
+                fields: [{ k: 'name', label: 'اسم الخدمة', req: true }, { k: 'nameEn', label: 'الاسم بالإنجليزي', ltr: true }, F.price, F_BRANCHES,
+                    { k: 'cat', label: 'التصنيف', type: 'catselect', cats: () => uniqueValues(genericServicesByDept[dept] || [], 'cat') },
+                    { k: 'description', label: 'الوصف' }]
             };
         }
         return KINDS[key];
@@ -5862,16 +5984,17 @@ Ferritin"></textarea>
             const id = 'card_f' + i;
             const style = f.ltr ? 'direction:ltr;text-align:right;' : '';
             if (f.type === 'checkbox') return `<div class="form-group"><label style="display:flex;align-items:center;gap:6px;cursor:pointer;"><input type="checkbox" id="${id}" ${v ? 'checked' : ''} ${dis}> ${f.label}</label></div>`;
-            if (f.type === 'branchprices') return `<div class="form-group bp-edit" style="grid-column:1/-1;">
-                <label>${f.label} <small>(الفارغ = السعر العام)</small></label>
-                <div class="bp-edit-grid">${BRANCH_PRICES.map((b, j) => {
-                    const bv = src ? src[b.k] : undefined, na = bv === BP_NA;
-                    return `<div class="bp-edit-cell">
-                        <span class="bp-edit-name">${b.n}</span>
-                        <input type="number" min="0" class="admin-input" id="${id}_${j}" value="${na || bv == null ? '' : escapeHtml(bv)}" placeholder="${src && src.price != null && src.price !== '' ? escapeHtml(src.price) : 'عام'}" title="فارغ = السعر العام" ${na ? 'disabled' : ''} ${dis}>
-                        <label class="bp-edit-na"><input type="checkbox" id="${id}_${j}na" ${na ? 'checked' : ''} ${dis} onchange="document.getElementById('${id}_${j}').disabled=this.checked"> غير متوفرة</label>
-                    </div>`;
-                }).join('')}</div></div>`;
+            if (f.type === 'branchprices') {
+                // جدول مضغوط: صف الفروع ← صف السعر ← صف الكود ← صف "غير متوفرة" (نفس المعرّفات وآلية الحفظ)
+                const cells = (fn) => BRANCH_PRICES.map((b, j) => fn(b, j, src ? src[b.k] : undefined)).join('');
+                return `<div class="form-group bp-edit" style="grid-column:1/-1;">
+                <label>${f.label} <small>(السعر الفارغ = السعر العام · ☐ بجانب الفرع = غير متوفرة)</small></label>
+                <div class="bp-tbl">
+                    <span></span>${cells((b, j, bv) => `<label class="bp-th ${bv === BP_NA ? 'off' : ''}" title="حدّد إذا كانت غير متوفرة في ${b.n}"><input type="checkbox" id="${id}_${j}na" ${bv === BP_NA ? 'checked' : ''} ${dis} onchange="document.getElementById('${id}_${j}').disabled=this.checked;this.closest('.bp-th').classList.toggle('off',this.checked)"><span>${b.n}</span></label>`)}
+                    <span class="bp-rl">السعر</span>${cells((b, j, bv) => `<input type="number" min="0" class="admin-input" id="${id}_${j}" value="${bv === BP_NA || bv == null ? '' : escapeHtml(bv)}" placeholder="${bv === BP_NA ? 'غير متوفرة' : (src && src.price != null && src.price !== '' ? escapeHtml(src.price) : 'عام')}" title="فارغ = السعر العام" ${bv === BP_NA ? 'disabled' : ''} ${dis}>`)}
+                    <span class="bp-rl">الكود</span>${cells((b, j) => `<input type="text" class="admin-input bp-code-in" id="${id}_${j}c" value="${escapeHtml(src && src[b.ck] != null ? src[b.ck] : '')}" placeholder="${escapeHtml(src && src.code ? src.code : 'كود الفرع')}" title="كود هذا الفرع" ${dis}>`)}
+                </div></div>`;
+            }
             if (f.type === 'hidden') return `<input type="hidden" id="${id}" value="${escapeHtml(v == null ? '' : v)}">`;
             if (f.type === 'datepick') {
                 const cur = v == null ? '' : String(v), iso = /^\d{4}-\d{2}-\d{2}$/.test(cur);
@@ -5917,7 +6040,7 @@ Ferritin"></textarea>
             const isReq = f.req || (f.reqNew && !obj);
             const lbl = `<label class="${isReq ? 'req-label' : ''}">${f.label}${f.opt ? ' <small class="opt-tag">اختياري</small>' : ''}</label>`;
             const ph = f.ph ? ` placeholder="${escapeHtml(f.ph)}"` : '';
-            if (f.textarea) return `<div class="form-group" style="grid-column:1/-1;">${lbl}<textarea class="admin-input" id="${id}" rows="2"${ph} ${dis}>${escapeHtml(v == null ? '' : v)}</textarea></div>`;
+            if (f.textarea || ['desc', 'description', 'details', 'note'].includes(f.k)) return `<div class="form-group" style="grid-column:1/-1;">${lbl}<textarea class="admin-input desc-area" id="${id}" rows="${f.textarea ? 2 : 3}"${ph} ${dis}>${escapeHtml(v == null ? '' : v)}</textarea></div>`;
             return `<div class="form-group">${lbl}<input type="${f.type === 'number' ? 'number' : 'text'}" class="admin-input" id="${id}" value="${escapeHtml(v == null ? '' : v)}" style="${style}"${ph} ${listAttr} ${dis}>${dl}</div>`;
         }
         const meta = obj ? `
@@ -5946,7 +6069,7 @@ Ferritin"></textarea>
                     <button class="btn-admin-submit" style="max-width:110px;margin:0;background:var(--neutral);" onclick="closeItemCard()"><i class="fas fa-times"></i> ${obj ? 'إغلاق' : 'إلغاء'}</button>
                 </div>
             </div>`;
-        document.getElementById('modalOverlay').innerHTML = `<div class="modal ${kind.key === 'company' ? 'co-form' : ''}" style="max-width:${kind.key === 'company' ? 580 : 640}px;" onclick="event.stopPropagation()">${html}</div>`;
+        document.getElementById('modalOverlay').innerHTML = `<div class="modal ${kind.key === 'company' ? 'co-form' : 'ic-form'}" style="max-width:${kind.key === 'company' ? 580 : 680}px;" onclick="event.stopPropagation()">${html}</div>`;
         document.getElementById('modalOverlay').classList.add('show');
         if (document.getElementById('coEditor')) coInit(!editable);
     }
@@ -6117,6 +6240,8 @@ Ferritin"></textarea>
                     else if (inp.value.trim() === '') bv = null;
                     else { bv = Number(inp.value); if (isNaN(bv) || bv < 0) { showToast('سعر غير صحيح لفرع ' + b.n, 'warning'); inp.focus(); return; } }
                     if (bv === null) { if (!isNew) data[b.k] = null; } else data[b.k] = bv;
+                    const cv = (document.getElementById('card_f' + i + '_' + j + 'c')?.value || '').trim();
+                    if (cv) data[b.ck] = cv; else if (!isNew) data[b.ck] = null;
                 }
                 continue;
             }
@@ -7681,6 +7806,7 @@ Ferritin"></textarea>
         kind.fields.forEach(f => {
             if (f.type === 'branchprices') {
                 BRANCH_PRICES.forEach(b => { if (!audSame(before[b.k], after[b.k])) out.push('سعر فرع ' + b.n + ': من ' + audBranch(before[b.k]) + ' إلى ' + audBranch(after[b.k])); });
+                BRANCH_PRICES.forEach(b => { if (!audSame(before[b.ck], after[b.ck])) out.push('كود فرع ' + b.n + ': من ' + (before[b.ck] || 'الكود العام') + ' إلى ' + (after[b.ck] || 'الكود العام')); });
                 return;
             }
             const l = audLine(f.k, audLabel(f), before[f.k], after[f.k]);
@@ -8197,7 +8323,7 @@ Ferritin"></textarea>
             list = smartSearch(list, searchQuery, {
                 name: [x => x.name, x => x.nameEn],
                 cat: [x => x.cat],
-                extra: [x => x.code, x => x.description]
+                extra: [x => x.code, x => BRANCH_PRICES.map(b => x[b.ck] || '').join(' '), x => x.description]
             });
         }
 
@@ -8218,8 +8344,10 @@ Ferritin"></textarea>
     // سطر أسعار الفروع أسفل البطاقة — مكوّن واحد للخدمات والتحاليل والباقات (extra = زر إضافي في نفس السطر)
     function priceBottomHtml(o, extra) {
         const inner = hasBranchPrices(o) ? branchSummary(o)
-            : `<div class="bps"><span class="${o.isOffer ? 'oc-uni' : 'bps-same'}"><i class="fas fa-store"></i> سعر موحّد لجميع الفروع</span></div>`;
-        return `<div class="svc-bottom">${inner}${extra || ''}</div>`;
+            : o.isOffer ? `<div class="bps"><span class="oc-uni"><i class="fas fa-store"></i> سعر موحّد لجميع الفروع</span></div>`
+            : `<div class="bps"><span class="bps-same"><i class="fas fa-check"></i> السعر موحّد</span></div>`;   // الزيارات: سعر وكود واحد لكل الفروع
+        const uni = hasBranchPrices(o) ? uniformBranchCode(o) : (!o.isOffer && o.code != null ? String(o.code).trim() : '');   // الكود الموحّد فقط على البطاقة — المختلف داخل التفاصيل
+        return `<div class="svc-bottom">${inner}${uni ? `<span class="uni-code" title="الكود نفسه في جميع الفروع"><span class="uni-tag"><i class="fas fa-link"></i> الكود موحّد</span>${codeChip(uni)}</span>` : ''}${extra || ''}</div>`;
     }
     function serviceCardHtml(s, kk, desc) {
         return `
@@ -8235,8 +8363,7 @@ Ferritin"></textarea>
                         <div class="price-cur">ريال</div>
                     </div>
                 </div>
-                ${s.code || s.cat ? `<div class="ic-meta">
-                    ${codeChip(s.code)}
+                ${s.cat ? `<div class="ic-meta">
                     ${s.cat ? `<span class="service-card-cat">${escapeHtml(s.cat)}</span>` : ''}
                 </div>` : ''}
                 ${desc ? `<div class="svc-desc"><i class="fas fa-info-circle"></i> ${escapeHtml(desc)}</div>` : ''}
@@ -8494,7 +8621,6 @@ Ferritin"></textarea>
                     </div>
                 </div>
                 <div class="ic-meta">
-                    ${codeChip(t.code)}
                     ${t.isOffer ? `<span class="ic-offer"><i class="fas fa-${t.offerType === 'فروع' ? 'store' : 'home'}"></i> ${t.offerType === 'فروع' ? 'عرض فروع' : 'عرض زيارات منزلية'}</span>` : ''}
                     ${t.tat ? `<span class="ic-chip"><i class="fas fa-clock"></i> ${formatTat(t.tat)}</span>` : ''}
                     ${t.cat ? `<span class="ic-chip"><i class="fas fa-tag"></i> ${escapeHtml(t.cat)}</span>` : ''}
@@ -8576,7 +8702,7 @@ Ferritin"></textarea>
                     <button class="btn-admin-submit" style="max-width:110px;margin:0;background:var(--neutral);" onclick="closeOfferCard()"><i class="fas fa-times"></i> إغلاق</button>
                 </div>
             </div>`;
-        document.getElementById('modalOverlay').innerHTML = `<div class="modal" style="max-width:680px;" onclick="event.stopPropagation()">${html}</div>`;
+        document.getElementById('modalOverlay').innerHTML = `<div class="modal ic-form" style="max-width:680px;" onclick="event.stopPropagation()">${html}</div>`;
         document.getElementById('modalOverlay').classList.add('show');
         offerFormDeptChanged(true); offerFormKindChanged();
     }
@@ -8803,9 +8929,9 @@ Ferritin"></textarea>
                     </div>
                 </div>
                 ${!hasBranchPrices(o) ? `<div class="idt-uni"><i class="fas fa-store"></i> سعر موحّد لجميع الفروع</div>` : ''}
-                ${hasBranchPrices(o) ? `<div class="idt-label" style="margin-top:12px;">أسعار الفروع</div>${branchStrip(o)}` : ''}
+                ${hasBranchPrices(o) ? `<div class="idt-label" style="margin-top:12px;">${myBranch ? 'سعر فرع ' + escapeHtml(myBranch) : 'أسعار الفروع'}</div>${branchStripWithCodes(o)}` : ''}
                 <div class="idt-rows">
-                    ${row('fa-barcode', 'الكود', o.code)}
+                    ${o.isOffer ? row('fa-barcode', 'الكود', o.code) : (!hasBranchPrices(o) && o.code ? `<div class="idt-row"><i class="fas fa-barcode"></i><div><div class="idt-label">الكود</div><div class="idt-val">${codeChip(o.code)}</div></div></div>` : '')}
                     ${(tt => row('fa-clock', 'مدة النتيجة', tt ? formatTat(tt) : ''))(o.tat || (isTest && o.isOffer ? (individualTests.find(x => x && !x.isOffer && x.name === o.name) || {}).tat : ''))}
                     ${row('fa-info-circle', 'الوصف', o.desc || o.description || (isTest && o.isOffer ? (individualTests.find(x => x && !x.isOffer && x.name === o.name) || {}).desc : ''))}
                     ${row('fa-sticky-note', 'ملاحظة', o.note)}
