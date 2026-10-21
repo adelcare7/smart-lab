@@ -2908,6 +2908,9 @@
         .uni-tag { font-size: 10px; font-weight: 700; color: var(--success-fg); background: var(--success-soft); padding: 0 6px; line-height: 1.8; white-space: nowrap; }
         .uni-tag i { font-size: 9px; }
         .uni-code .ic-code { border: none; border-radius: 0; }
+        /* الأكواد تختلف بين الفروع — نفس حجم شارة «الكود موحّد» بلون محايد */
+        .uni-code.varied-code { border-color: var(--border); }
+        .uni-code.varied-code .uni-tag { color: var(--text-light); background: var(--bg); }
         .bp-code .ic-code { font-size: 10px; padding: 0 4px; max-width: 100%; overflow: hidden; }
         .bp-code-one { display: flex; align-items: center; gap: 6px; margin-top: 6px; font-size: 12px; color: var(--text-light); }
         .bp-code-one.bps { padding-top: 0; }
@@ -5787,6 +5790,14 @@ Ferritin"></textarea>
         const all = BRANCH_PRICES.filter(b => branchPrice(o, b) !== null).map(b => branchCode(o, b));
         return all.length > 0 && all[0] && all.every(c => c === all[0]) ? all[0] : '';
     }
+    // حالة أكواد الفروع: 'uniform' كود واحد للجميع · 'varied' تختلف أو ناقصة في بعض الفروع · 'none' بلا أكواد
+    function branchCodeState(o) {
+        if (!hasBranchPrices(o)) return 'none';
+        const all = BRANCH_PRICES.filter(b => branchPrice(o, b) !== null).map(b => branchCode(o, b));
+        const codes = all.filter(Boolean);
+        if (!codes.length) return 'none';
+        return (codes.length === all.length && codes.every(c => c === codes[0])) ? 'uniform' : 'varied';
+    }
     function branchStrip(o) {
         if (!hasBranchPrices(o)) return '';
         return `<div class="bp-strip">${BRANCH_PRICES.map(b => {
@@ -8447,9 +8458,13 @@ Ferritin"></textarea>
         // الكود الموحّد فقط على البطاقة — المختلف داخل التفاصيل.
         // العرض كوده واحد لكل الفروع، فيظهر على بطاقته داخل القسم بنفس شكل صفحة العروض (شارة الكود وحدها).
         const uni = hasBranchPrices(o) ? uniformBranchCode(o) : (o.code != null ? String(o.code).trim() : '');
-        const codeHtml = !uni ? ''
-            : o.isOffer ? `<span class="uni-code">${codeChip(uni)}</span>`
-            : `<span class="uni-code" title="الكود نفسه في جميع الفروع"><span class="uni-tag"><i class="fas fa-link"></i> الكود موحّد</span>${codeChip(uni)}</span>`;
+        const codeHtml = uni
+            ? (o.isOffer ? `<span class="uni-code">${codeChip(uni)}</span>`
+                : `<span class="uni-code" title="الكود نفسه في جميع الفروع"><span class="uni-tag"><i class="fas fa-link"></i> الكود موحّد</span>${codeChip(uni)}</span>`)
+            // الأكواد تختلف من فرع لآخر — إشارة مختصرة على البطاقة، والأكواد نفسها تبقى داخل التفاصيل
+            : branchCodeState(o) === 'varied'
+                ? `<span class="uni-code varied-code" title="الكود يختلف من فرع لآخر — افتح التفاصيل"><span class="uni-tag"><i class="fas fa-code-branch"></i> أكواد مختلفة</span></span>`
+                : '';
         return `<div class="svc-bottom">${inner}${codeHtml}${extra || ''}</div>`;
     }
     function serviceCardHtml(s, kk, desc) {
