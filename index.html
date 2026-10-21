@@ -4880,6 +4880,18 @@ Ferritin"></textarea>
         const hrM = s.match(/(\d+)\s*ساع\S*\s*-\s*يوم/);
         if (hrM) return [parseInt(hrM[1]), 24];
         if (s.includes('ساعة - يوم')) return [1, 24];
+        // «4 ساعات - 24 ساعة» (الوحدة مكتوبة مرتين)
+        const hrHr2 = s.match(/(\d+)\s*ساع\S*\s*[-–]\s*(\d+)\s*ساع/);
+        if (hrHr2) return [parseInt(hrHr2[1]), parseInt(hrHr2[2])];
+        // الأسابيع
+        const WEEK = '(?:[أا]سابيع|[أا]سبوع|[أا]سبوعين)';
+        const wkWk = s.match(new RegExp('(\\d+)\\s*[-–]\\s*(\\d+)\\s*' + WEEK));
+        if (wkWk) return [parseInt(wkWk[1]) * 168, parseInt(wkWk[2]) * 168];
+        const wk = s.match(new RegExp('(\\d+)\\s*' + WEEK));
+        if (wk) return [parseInt(wk[1]) * 168, parseInt(wk[1]) * 168];
+        if (/[أا]سبوعين/.test(s)) return [336, 336];
+        if (/[أا]سبوع/.test(s)) return [168, 168];
+        if (s.includes('يومان') || s.includes('يومين')) return [48, 48];
         const minHrM = s.match(/(\d+)\s*دقيق\S*\s*-\s*ساع/);
         if (minHrM) return [parseInt(minHrM[1])/60, 1];
         const minMinM = s.match(/(\d+)\s*[-–]\s*(\d+)\s*دقيق/);
@@ -4901,9 +4913,11 @@ Ferritin"></textarea>
     function formatTat(tat) {
         if (!tat) return '';
         const t = tat.replace(/ايام/g, 'أيام').replace(/\s*-\s*/g, '-');
-        const singulars = {'أيام':'يوم','ساعات':'ساعة','دقائق':'دقيقة'};
+        const singulars = {'أيام':'يوم','ساعات':'ساعة','دقائق':'دقيقة','أسابيع':'أسبوع'};
+        const duals = {'أيام':'يومين','ساعات':'ساعتين','دقائق':'دقيقتين','أسابيع':'أسبوعين'};
         function fixUnit(n, unit) {
             if (n === '1') return (singulars[unit] || unit);
+            if (n === '2' && duals[unit]) return duals[unit];
             return n + ' ' + unit;
         }
         const wordRange = t.match(/^([^\d-]+)-([^\d-]+)$/);
@@ -4927,20 +4941,31 @@ Ferritin"></textarea>
         'ANTICARDIOLIPIN IGG':'ANTI CARDIOLIPIN IGG','ANTICARDIOLIPIN IGM':'ANTI CARDIOLIPIN IGM',
         'CA19.9':'CA 19.9','PROLACTIN':'PRL','RUBELLA IGA':'RUBELLA IGG',
         'HCV AB':'ANTI-HCV','ANA THYROGLOBULIN AB':'ANA',
-        'VIT B1':'VITAMIN B1'
+        'VIT B1':'VITAMIN B1',
+        // أسماء تحاليل الباقات بعد تحديث ملف قسم المختبر
+        'LIPS':'LIPASE','AMYL':'AMYLASE','T.CHOL':'TOTAL CHOLESTEROL',
+        'THYROGLOBULIN AB':'ANTI THYROGLOBULIN','ANTI PHOSPHOLIPID':'ANTIPHOSPHOLIPID',
+        'TESTO TOTAL':'TOTAL TESTOSTERONE','SEMEN':'SEMEN ANALYSIS',
+        'ABO/RH':'BLOOD GROUP','ABO\\RH':'BLOOD GROUP','BLOOD.G':'BLOOD GROUP',
+        'GRAM STAIN OR C/S':'GRAM STAIN','C/S':'URINE C/S',
+        'PT/INR':'PROTHROMBIN TIME (PT)','UREA':'BUN'
     };
+    // مدد بنود ليست تحاليل مختبر (أشعة، كشوفات) — مضبوطة على نفس قاعدة العرض: لا أقل من 4 ساعات ولا نهاية أقل من 24 ساعة
     const TAT_MANUAL = {
         'TOXOPLASMA IGM':'3 أيام','TOXOPLASMA IGG':'3 أيام',
-        'BLOOD GROUP':'30 دقيقة - ساعة','AFP':'1-3 أيام',
+        'BLOOD GROUP':'4 ساعات - 24 ساعة','AFP':'1-3 أيام',
         'FOOD ALLERGY PANEL 1':'3-4 أيام','FOOD ALLERGY PANEL 2':'3-4 أيام',
         'ALLERGY PANEL':'3-4 أيام','INHALANT ALLERGY PANEL':'3-4 أيام',
-        'INR':'3 ساعات - يوم','X-RAY':'30 دقيقة - ساعة','ECG':'30 دقيقة - ساعة',
-        '1 OR 2 SAMPLE':'ساعة - يوم','VIT B1':'4 ساعات - يوم',
-        'EYES':'30 دقيقة - ساعة','HEAR':'30 دقيقة - ساعة','CRC':'30 دقيقة - ساعة',
-        'URINE C/S':'4-5 أيام'
+        'INR':'4 ساعات - 24 ساعة','X-RAY':'4 ساعات - 24 ساعة','ECG':'4 ساعات - 24 ساعة',
+        '1 OR 2 SAMPLE':'4 ساعات - 24 ساعة','VIT B1':'4 ساعات - 24 ساعة',
+        'EYES':'4 ساعات - 24 ساعة','HEAR':'4 ساعات - 24 ساعة','CRC':'4 ساعات - 24 ساعة',
+        'URINE C/S':'4-5 أيام',
+        'PULMONARY FUNCTION TEST':'4 ساعات - 24 ساعة','INDIRECT BILIRUBIN':'4 ساعات - 24 ساعة',
+        'FOOD ALLERGY PANEL 3':'3-4 أيام','يضم 300 نوع من أنواع حساسية الطعام':'3-4 أيام'
     };
     function getTestTat(testName) {
-        const u = testName.toUpperCase();
+        // تطبيع: «CBC (8)» ← CBC · «K+» ← K · مسافات زائدة
+        const u = String(testName).toUpperCase().replace(/\(\s*\d+\s*\)/g, '').replace(/\+\s*$/, '').replace(/\s+/g, ' ').trim();
         let t = individualTests.find(x => !x.isOffer && x.name.toUpperCase() === u);
         if (t) return t.tat;
         if (TAT_ALIAS[u]) {
@@ -4963,8 +4988,13 @@ Ferritin"></textarea>
         if (TAT_MANUAL[u]) return TAT_MANUAL[u];
         return '';
     }
+    // بنود الباقة غير التحليلية (سونار، زيارات، كشفية طبيب، كشوفات الفحص الوظيفي…) ليست لها مدة مختبر،
+    // فلا تمنع عرض مدة الباقة — تُحسب المدة من التحاليل المعروفة، وتُخفى فقط إذا لم يُعرف أي تحليل.
+    function pkgTats(pkg) {
+        return (pkg.tests || []).map(t => getTestTat(t)).filter(Boolean);
+    }
     function allTestsHaveTat(pkg) {
-        return pkg.tests.every(t => getTestTat(t));
+        return pkgTats(pkg).length > 0;
     }
     function hoursToLabel(h) {
         if (h <= 0.5) return '30 دقيقة';
@@ -4980,8 +5010,7 @@ Ferritin"></textarea>
     function getPackageTat(pkg) {
         if (!allTestsHaveTat(pkg)) return '';
         let minH = Infinity, maxH = 0;
-        for (const test of pkg.tests) {
-            const tat = getTestTat(test);
+        for (const tat of pkgTats(pkg)) {
             const range = tatToRange(tat);
             if (range[0] < minH) minH = range[0];
             if (range[1] > maxH) maxH = range[1];
