@@ -2614,6 +2614,24 @@
         .test-chip.matched { background: var(--success-soft); color: var(--success-text); }
         .test-chip.missing { background: var(--danger-soft); color: var(--danger-text); }
         .filter-chip.active, .individual-cat-btn.active { background: var(--primary); border-color: var(--primary); color: #fff; }
+        /* زر تصنيف «العروض» داخل القسم — بلون العروض الذهبي. بعد قواعد الوضع الليلي والحالة النشطة ليتغلّب عليها.
+           الحالة النشطة بإطار وخلفية خفيفة من نفس الذهبي بدل تعبئته كاملاً، فيبقى النص مقروءاً في الوضعين. */
+        .individual-cat-btn.cat-offers,
+        [data-theme="dark"] .individual-cat-btn.cat-offers {
+            color: var(--warning-fg);
+            border-color: var(--warning-fg);
+            background: var(--card-bg);
+        }
+        .individual-cat-btn.cat-offers:hover,
+        [data-theme="dark"] .individual-cat-btn.cat-offers:hover { border-color: var(--warning-fg); color: var(--warning-fg); }
+        .individual-cat-btn.cat-offers.active,
+        [data-theme="dark"] .individual-cat-btn.cat-offers.active {
+            color: var(--warning-fg);
+            border-color: var(--warning-fg);
+            box-shadow: inset 0 0 0 1px var(--warning-fg);
+            background: var(--card-bg);
+            background: color-mix(in srgb, var(--warning-fg) 18%, var(--card-bg));
+        }
         .individual-cat-btn { border-radius: 999px; }
         .individual-cat-btn:hover { border-color: var(--primary-border); color: var(--primary-fg); }
 
@@ -8365,19 +8383,25 @@ Ferritin"></textarea>
         if (!grid) return;
         let list = (genericServicesByDept[deptId] || []).filter(isActiveItem);
 
-        // التصنيفات تظهر فقط إن كانت خدمات القسم مصنّفة (مثل الأسنان)
-        const cats = [...new Set(list.map(s => s.cat).filter(Boolean))];
+        // التصنيفات تظهر إن كانت خدمات القسم مصنّفة (مثل الأسنان)، أو كان في القسم عروض
+        const baseList = list.filter(s => !s.isOffer);
+        const offerList = list.filter(s => s.isOffer);
+        const cats = [...new Set(baseList.map(s => s.cat).filter(Boolean))];
         const catsEl = document.getElementById('genericServicesCats');
+        const showCats = cats.length > 1 || offerList.length > 0;
         if (catsEl) {
-            if (currentGenericCat !== 'all' && !cats.includes(currentGenericCat)) currentGenericCat = 'all';
-            catsEl.style.display = cats.length > 1 ? '' : 'none';
-            catsEl.innerHTML = cats.length > 1
+            if (currentGenericCat !== 'all' && currentGenericCat !== OFFERS_CAT && !cats.includes(currentGenericCat)) currentGenericCat = 'all';
+            if (currentGenericCat === OFFERS_CAT && !offerList.length) currentGenericCat = 'all';
+            catsEl.style.display = showCats ? '' : 'none';
+            catsEl.innerHTML = showCats
                 ? `<button class="individual-cat-btn ${currentGenericCat === 'all' ? 'active' : ''}" data-cat="all">الكل (${list.length})</button>` +
-                  cats.map(c => `<button class="individual-cat-btn ${currentGenericCat === c ? 'active' : ''}" data-cat="${escapeHtml(c)}">${escapeHtml(c)} (${list.filter(s => s.cat === c).length})</button>`).join('')
+                  offersCatBtn(offerList.length, currentGenericCat, `data-cat="${OFFERS_CAT}"`) +
+                  cats.map(c => `<button class="individual-cat-btn ${currentGenericCat === c ? 'active' : ''}" data-cat="${escapeHtml(c)}">${escapeHtml(c)} (${baseList.filter(s => s.cat === c).length})</button>`).join('')
                 : '';
             catsEl.querySelectorAll('[data-cat]').forEach(b => b.onclick = () => { currentGenericCat = b.dataset.cat; filterGenericServices(); });
         }
-        if (currentGenericCat !== 'all') list = list.filter(s => s.cat === currentGenericCat);
+        if (currentGenericCat === OFFERS_CAT) list = offerList;
+        else if (currentGenericCat !== 'all') list = baseList.filter(s => s.cat === currentGenericCat);
 
         if (searchQuery && searchQuery.trim()) {
             list = smartSearch(list, searchQuery, {
@@ -8406,8 +8430,13 @@ Ferritin"></textarea>
         const inner = hasBranchPrices(o) ? branchSummary(o)
             : o.isOffer ? `<div class="bps"><span class="oc-uni"><i class="fas fa-store"></i> سعر موحّد لجميع الفروع</span></div>`
             : `<div class="bps"><span class="bps-same"><i class="fas fa-check"></i> السعر موحّد</span></div>`;   // الزيارات: سعر وكود واحد لكل الفروع
-        const uni = hasBranchPrices(o) ? uniformBranchCode(o) : (!o.isOffer && o.code != null ? String(o.code).trim() : '');   // الكود الموحّد فقط على البطاقة — المختلف داخل التفاصيل
-        return `<div class="svc-bottom">${inner}${uni ? `<span class="uni-code" title="الكود نفسه في جميع الفروع"><span class="uni-tag"><i class="fas fa-link"></i> الكود موحّد</span>${codeChip(uni)}</span>` : ''}${extra || ''}</div>`;
+        // الكود الموحّد فقط على البطاقة — المختلف داخل التفاصيل.
+        // العرض كوده واحد لكل الفروع، فيظهر على بطاقته داخل القسم بنفس شكل صفحة العروض (شارة الكود وحدها).
+        const uni = hasBranchPrices(o) ? uniformBranchCode(o) : (o.code != null ? String(o.code).trim() : '');
+        const codeHtml = !uni ? ''
+            : o.isOffer ? `<span class="uni-code">${codeChip(uni)}</span>`
+            : `<span class="uni-code" title="الكود نفسه في جميع الفروع"><span class="uni-tag"><i class="fas fa-link"></i> الكود موحّد</span>${codeChip(uni)}</span>`;
+        return `<div class="svc-bottom">${inner}${codeHtml}${extra || ''}</div>`;
     }
     function serviceCardHtml(s, kk, desc) {
         return `
@@ -8538,19 +8567,34 @@ Ferritin"></textarea>
     // ============================================
     let currentIndividualCat = 'all';
 
+    // ===== تصنيف «العروض» داخل كل قسم =====
+    // تصنيف افتراضي لا يُخزَّن في البيانات: يلتقط كل عنصر isOffer في القسم، فأي عرض جديد يُصنَّف تلقائياً،
+    // ولا يظهر الزر في قسم بلا عروض. الخدمات والأسعار الأساسية تبقى في تصنيفاتها كما هي.
+    const OFFERS_CAT = '__offers';
+    function offersCatBtn(count, current, attrs) {
+        if (!count) return '';
+        return `<button class="individual-cat-btn cat-offers ${current === OFFERS_CAT ? 'active' : ''}" ${attrs}><i class="fas fa-tag"></i> العروض (${count})</button>`;
+    }
+
     function renderIndividualTests(searchQuery) {
         if (deferIfHidden('tests', () => renderIndividualTests())) return;
         if (searchQuery === undefined) searchQuery = document.getElementById('individualSearchInput')?.value || '';
         const visTests = individualTests.filter(isActiveItem);   // غير النشط لا يظهر للمستخدمين
-        const cats = [...new Set(visTests.map(t => t.cat).filter(Boolean))];
+        const baseTests = visTests.filter(t => !t.isOffer);
+        const offerTests = visTests.filter(t => t.isOffer);
+        const cats = [...new Set(baseTests.map(t => t.cat).filter(Boolean))];
+        if (currentIndividualCat !== 'all' && currentIndividualCat !== OFFERS_CAT && !cats.includes(currentIndividualCat)) currentIndividualCat = 'all';
         const catsHtml = `<button class="individual-cat-btn ${currentIndividualCat === 'all' ? 'active' : ''}" onclick="filterIndividualCat('all')">الكل (${visTests.length})</button>` +
+            offersCatBtn(offerTests.length, currentIndividualCat, `onclick="filterIndividualCat('${OFFERS_CAT}')"`) +
             cats.map(c => {
-                const count = visTests.filter(t => t.cat === c).length;
+                const count = baseTests.filter(t => t.cat === c).length;
                 return `<button class="individual-cat-btn ${currentIndividualCat === c ? 'active' : ''}" onclick="filterIndividualCat('${c}')">${c} (${count})</button>`;
             }).join('');
         document.getElementById('individualCats').innerHTML = catsHtml;
 
-        let filtered = currentIndividualCat === 'all' ? [...visTests] : visTests.filter(t => t.cat === currentIndividualCat);
+        let filtered = currentIndividualCat === 'all' ? [...visTests]
+            : currentIndividualCat === OFFERS_CAT ? offerTests
+            : baseTests.filter(t => t.cat === currentIndividualCat);
 
         if (searchQuery) {
             const q = searchQuery.trim();
@@ -9127,15 +9171,21 @@ Ferritin"></textarea>
         if (deferIfHidden('services', () => renderServices())) return;
         if (searchQuery === undefined) searchQuery = document.getElementById('servicesSearchInput')?.value || '';
         const visSvcs = services.filter(isActiveItem);   // غير النشط لا يظهر للمستخدمين
-        const cats = [...new Set(visSvcs.map(s => s.cat).filter(Boolean))];
+        const baseSvcs = visSvcs.filter(s => !s.isOffer);
+        const offerSvcs = visSvcs.filter(s => s.isOffer);
+        const cats = [...new Set(baseSvcs.map(s => s.cat).filter(Boolean))];
+        if (currentServiceCat !== 'all' && currentServiceCat !== OFFERS_CAT && !cats.includes(currentServiceCat)) currentServiceCat = 'all';
         document.getElementById('servicesCats').innerHTML =
             `<button class="individual-cat-btn ${currentServiceCat === 'all' ? 'active' : ''}" onclick="filterServiceCat('all')">الكل (${visSvcs.length})</button>` +
+            offersCatBtn(offerSvcs.length, currentServiceCat, `onclick="filterServiceCat('${OFFERS_CAT}')"`) +
             cats.map(c => {
-                const count = visSvcs.filter(s => s.cat === c).length;
+                const count = baseSvcs.filter(s => s.cat === c).length;
                 return `<button class="individual-cat-btn ${currentServiceCat === c ? 'active' : ''}" onclick="filterServiceCat('${c}')">${c} (${count})</button>`;
             }).join('');
 
-        let filtered = currentServiceCat === 'all' ? [...visSvcs] : visSvcs.filter(s => s.cat === currentServiceCat);
+        let filtered = currentServiceCat === 'all' ? [...visSvcs]
+            : currentServiceCat === OFFERS_CAT ? offerSvcs
+            : baseSvcs.filter(s => s.cat === currentServiceCat);
         if (searchQuery && searchQuery.trim()) {
             filtered = smartSearch(filtered, searchQuery, {
                 name: [x => x.name],
