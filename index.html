@@ -4225,7 +4225,8 @@ Ferritin"></textarea>
         localStorage.setItem('searchStats', JSON.stringify(searchStats));
 
         // Calculate match for each package (الباقات غير النشطة لا تظهر في البحث)
-        currentResults = visiblePackages().map(pkg => {
+        // بحث المختبر يقارن الباقات الأساسية فقط — عروض الباقات لها تصنيف «العروض» في قسم الباقات وصفحة العروض
+        currentResults = visiblePackages().filter(p => !p.isOffer).map(pkg => {
             const pkgTestsUpper = pkg.tests.map(t => t.toUpperCase());
             const matched = [];
             const missing = [];
@@ -4626,18 +4627,21 @@ Ferritin"></textarea>
 
     function renderCategories() {
         const packages = visiblePackages();
+        const basePkgs = packages.filter(p => !p.isOffer);     // الباقات الأساسية
+        const offerPkgs = packages.filter(p => p.isOffer);     // عروض الباقات — تصنيف مستقل
         const cats = {};
-        packages.forEach(p => {
+        basePkgs.forEach(p => {
             if (!p.category) return;   // باقة بلا فئة تظهر ضمن "جميع الباقات" فقط
             if (!cats[p.category]) cats[p.category] = 0;
             cats[p.category]++;
         });
 
-        const homeVisitCount = packages.filter(p => p.homeVisit).length;
+        const homeVisitCount = basePkgs.filter(p => p.homeVisit).length;
         const select = document.getElementById('categorySelect');
         if (!select) return;
         select.innerHTML = `
             <option value="all">جميع الباقات (${packages.length})</option>
+            ${offerPkgs.length ? `<option value="${OFFERS_CAT}">العروض (${offerPkgs.length})</option>` : ''}
             <option value="home">زيارة منزلية (${homeVisitCount})</option>
             ${Object.entries(cats).map(([cat, count]) => `
                 <option value="${cat}">${cat} (${count})</option>
@@ -4808,7 +4812,11 @@ Ferritin"></textarea>
         if (deferIfHidden('packages', () => renderBrowseAll())) return;
         if (category === undefined) category = document.getElementById('categorySelect')?.value || 'all';
         const packages = visiblePackages();
-        let filtered = category === 'all' ? packages : category === 'home' ? packages.filter(p => p.homeVisit) : packages.filter(p => p.category === category);
+        const basePkgs = packages.filter(p => !p.isOffer);
+        let filtered = category === 'all' ? packages
+            : category === OFFERS_CAT ? packages.filter(p => p.isOffer)
+            : category === 'home' ? basePkgs.filter(p => p.homeVisit)
+            : basePkgs.filter(p => p.category === category);
         const nameQuery = (document.getElementById('packageNameSearch')?.value || '').trim();
         if (nameQuery) {
             const nq = normalizeArabic(nameQuery);
@@ -4863,10 +4871,10 @@ Ferritin"></textarea>
         document.getElementById('browseGrid').innerHTML = filtered.length === 0
             ? '<div style="text-align:center;padding:40px;color:var(--text-light);"><i class="fas fa-inbox" style="font-size:32px;margin-bottom:12px;display:block;"></i>لا توجد باقات بهذا السعر</div>'
             : filtered.map(pkg => { const tat = getPackageTat(pkg); const n = (pkg.tests || []).length; return `
-            <div class="package-card ic svc-ic ic-pkg ${compareList.includes(pkg.id) ? 'compared' : ''}" id="card-${pkg.id}" onclick="if(!event.target.closest('button,a,input,select'))showDetails(${pkg.id})" title="عرض التفاصيل">
+            <div class="package-card ic svc-ic ic-pkg ${pkg.isOffer ? 'ic-is-offer' : ''} ${compareList.includes(pkg.id) ? 'compared' : ''}" id="card-${pkg.id}" onclick="if(!event.target.closest('button,a,input,select'))showDetails(${pkg.id})" title="عرض التفاصيل">
                 <div class="ic-head">
                     <div class="ic-titles">
-                        <div class="card-title ic-name">${escapeHtml(pkg.name)}</div>
+                        <div class="card-title ic-name">${pkg.isOffer ? '<span class="ic-offer"><i class="fas fa-tag"></i> عرض</span>' : ''}${escapeHtml(pkg.name)}</div>
                         ${pkg.nameEn ? `<div class="ic-sub" style="direction:ltr;text-align:right;">${escapeHtml(pkg.nameEn)}</div>` : ''}
                     </div>
                     <div class="ic-price">
@@ -8128,6 +8136,12 @@ Ferritin"></textarea>
                     orig: (individualTests.find(x => x && !x.isOffer && x.name === t.name) || {}).price,
                     cat: t.cat, code: t.code, note: t.desc, incl: t.desc || (individualTests.find(x => x && !x.isOffer && x.name === t.name) || {}).desc, tat: t.tat || (individualTests.find(x => x && !x.isOffer && x.name === t.name) || {}).tat, endDate: t.endDate,
                     tag: t.offerType === 'فروع' ? 'عرض فروع' : (t.offerType ? 'عرض زيارات منزلية' : '')
+                }));
+                // عروض الباقات مخزّنة في مسار الباقات — نفس السجل يظهر هنا وفي قسم الباقات (بلا تكرار)
+                packages.filter(p => p && p.isOffer && isActiveItem(p)).forEach(p => out.push({
+                    kk: 'package', obj: p, dept: d, prio: offerPrio(p), okind: offerKindOf(p), name: p.name, sub: p.nameEn || '', price: p.price,
+                    cat: p.category, code: p.code, note: p.desc, incl: (p.tests || []).join(' · '),
+                    tat: getPackageTat(p), endDate: p.endDate, tag: 'باقة'
                 }));
             } else if (d.type === 'visits') {
                 services.filter(x => x && x.isOffer && isActiveItem(x)).forEach(x => out.push({
